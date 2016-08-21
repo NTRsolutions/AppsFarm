@@ -37,7 +37,8 @@ Configure Wildfly to run the app
 1.	In mysql create database:
 afm
 2.	In mysql make sure that user root (with password Treasur3) has privileges for afm database 
-3.	In wildfly add datasource section to standalone-full.xml file (under datasource sections). 
+3.	In wildfly add datasource section to standalone-full.xml file (under datasource sections).
+ 
 
 <datasource jndi-name="java:jboss/datasources/afmDS" pool-name="intellisoft-afm" enabled="true" use-java-context="true">
                     <connection-url>jdbc:mysql://localhost:3306/afm</connection-url>
@@ -96,13 +97,13 @@ Pulling existing ear repo from github onto local eclipse (when we want to work o
 ---------------------
 
 
-1. Tut: https://alextheedom.wordpress.com/cloud/java-ee-project-from-remote-git-repository/
-2. in git view select clone repository
-3. select repo from uri
-4. provide git https url for the github project
-5. https://github.com/aelbereth/Afm.git
-6. select local folder where to download it
-7. once repo is cloned select import existing maven project and provide url
+Tut: https://alextheedom.wordpress.com/cloud/java-ee-project-from-remote-git-repository/
+1. Open the Git Repository Exploring perspective. Navigate to Eclipse > Window > Open Perspective > Others and select the Git Repository Exploring perspective
+in git view select clone repository
+2. Select clone a Git repository and put following url: https://github.com/aelbereth/AppsFarm-Middleware.git
+3. provide git https url for the github project
+4. select local folder where to clone it
+6. once repo is cloned select import existing maven project and provide location of the folder where repo was cloned
 
 Creating and publishing new ear repo to github (only when we want to create new github repo from existing java code)
 ---------------------
@@ -112,7 +113,7 @@ Creating and publishing new ear repo to github (only when we want to create new 
 4. commit locally
 5. push to github (use https with user credentials for setting up github connection)
 (select master branch not head in push dialog in egit)
-6. http://stackoverflow.com/questions/10365958/when-pushing-to-remote-git-repo-using-egit-in-eclipse-what-should-i-choose
+http://stackoverflow.com/questions/10365958/when-pushing-to-remote-git-repo-using-egit-in-eclipse-what-should-i-choose
 
 Tut: http://teddsprogrammingblog.blogspot.com/2012/02/git-eclipse-and-maven-multi-module.html
 
