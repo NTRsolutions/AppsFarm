@@ -110,6 +110,8 @@ Creating and publishing new ear repo to github (only when we want to create new 
 3. team->add to index (add to index on global ear module)
 4. commit locally
 5. push to github (use https with user credentials for setting up github connection)
+(select master branch not head in push dialog in egit)
+6. http://stackoverflow.com/questions/10365958/when-pushing-to-remote-git-repo-using-egit-in-eclipse-what-should-i-choose
 
 Tut: http://teddsprogrammingblog.blogspot.com/2012/02/git-eclipse-and-maven-multi-module.html
 
