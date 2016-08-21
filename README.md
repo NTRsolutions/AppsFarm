@@ -116,7 +116,6 @@ http://stackoverflow.com/questions/10365958/when-pushing-to-remote-git-repo-usin
 
 Tut: http://teddsprogrammingblog.blogspot.com/2012/02/git-eclipse-and-maven-multi-module.html
 
-
 Github tuts
 ---------------------
 
