@@ -1,0 +1,640 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+
+<h:outputScript name="jqplot/jqplot.canvasAxisTickRenderer.js" />
+<h:outputScript name="jqplot/jqplot.canvasAxisTickRenderer.min.js" />
+<h:outputScript name="jqplot/jqplot.dateAxisRenderer.js" />
+<h:outputScript name="jqplot/jqplot.dateAxisRenderer.min.js" />
+
+	<p:growl id="idSystemStatusGrowl" showDetail="true"/>
+  	<h:form prependId="false">
+  	
+  	<p:tabView id="tabStats">
+  	 	<p:ajax event="tabChange" listener="#{systemStatusBean.onTabChange}" />
+  	 	
+		<p:tab id="tabServerInfo" title="Server Info">
+		    <h:panelGrid id="idServerInfoPanel" columns="2" cellpadding="4">
+   			    <h:outputText value="Host name:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.hostName}" style="text-align:left;" />
+   			    <h:outputText value="Server current time:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.serverCurrentTime}" style="text-align:left;" />
+   			    <h:outputText value="Server uptime:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.serverUpTime}" style="text-align:left;" />
+   			    <h:outputText value="OS name:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.osName}" style="text-align:left;" />
+   			    <h:outputText value="OS codename:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.osCodeName}" style="text-align:left;" />
+   			    <h:outputText value="OS vendor:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.osVendor}" style="text-align:left;" />
+   			    <h:outputText value="OS vendor version:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.osVendorVersion}" style="text-align:left;" />
+   			    <h:outputText value="OS patch level:" style="text-align:left;" />
+   			    <h:outputText value="#{systemStatusBean.osPatchLevel}" style="text-align:left;" />   			    
+		    </h:panelGrid>
+    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+		        action="#{systemStatusBean.refreshServerInfo}"
+		        ajax="true"
+		        update="idServerInfoPanel"
+		        process="@form"
+		        oncomplete="" />
+    	</p:tab>  
+  	 	    
+    	<p:tab id="tabJava" title="Java Virtual Machine Stats">
+	     <h:panelGrid columns="1" cellpadding="4">
+			<p:lineChart  id="idJavaStatsChart" value="#{systemStatusBean.chartJava}"
+				lazy="true"
+		     	widgetVar="widgetJavaStatsChart" title="System Memory, Java Memory and CPU utilisation"  
+		     	style="height:200px;width:800px; margin-top:20px"
+		     	minY="0"
+		     	maxY="100" 
+		     	xaxisAngle="90"
+		     	extender="extenderFunctionMem" 
+		     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+		     	showMarkers="false" 
+		     	zoom="true" autoScale="false">
+	     		<script>
+				   function extenderFunctionMem() {
+					   this.cfg.seriesDefaults = {
+							   shadowDepth: 1,
+							   showMarker: true,
+					            rendererOptions : {
+					            	  smooth: true,
+					                  animation: {
+					                      show: false
+					                  }
+					            }								            
+					   };
+					   this.cfg.axes = {
+						        xaxis : {
+						            renderer : $.jqplot.DateAxisRenderer,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						            tickOptions : { 
+						                fontSize:'10pt',
+						                fontFamily:'Tahoma',
+						                formatString: '%H:%M', 
+						                angle:-90
+						            }
+						        },
+						        yaxis : {
+						        	min: 0,
+						            max: 100,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						        	label: "",
+						        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+						        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+					                tickOptions: {
+						                fontSize:'10pt', 
+						                fontFamily:'Tahoma'
+					                }
+						        }               
+						    };
+						    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+					}
+				</script>
+	     	</p:lineChart>
+			<p:lineChart  id="idGCStatsChart" value="#{systemStatusBean.chartGC}"
+				lazy="true"   
+		     	widgetVar="widgetGCStatsChart" title="JVM Garbage Collector Stats"  
+		     	style="height:200px;width:800px; margin-top:20px"
+		     	xaxisAngle="90"
+		     	extender="extenderFunctionGC" 
+		     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+		     	showMarkers="false" 
+		     	zoom="true" autoScale="false">
+	     		<script>
+				   function extenderFunctionGC() {
+					   this.cfg.seriesDefaults = {
+							   shadowDepth: 1,
+							   showMarker: true,
+					            rendererOptions : {
+					            	  smooth: true,
+					                  animation: {
+					                      show: false
+					                  }
+					            }								            
+					   };
+					   this.cfg.axes = {
+						        xaxis : {
+						            renderer : $.jqplot.DateAxisRenderer,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						            tickOptions : { 
+						                fontSize:'10pt',
+						                fontFamily:'Tahoma',
+						                formatString: '%H:%M', 
+						                angle:-90
+						            }
+						        },
+						        yaxis : {
+						        	min: 0,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						        	label: "",
+						        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+						        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+					                tickOptions: {
+						                fontSize:'10pt', 
+						                fontFamily:'Tahoma'
+					                }
+						        }               
+						    };
+						    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+					}
+				</script>
+	     	</p:lineChart>
+		    </h:panelGrid>
+	     	
+	     	<h:panelGrid columns="8" cellpadding="4">
+	    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+			        action="#{systemStatusBean.refreshJavaStats}"
+			        ajax="true"
+			        update="idJavaStatsChart,idGCStatsChart"
+			        process="@form"
+			        oncomplete="" />
+				<p:commandButton type="button" value="Reset zoom" icon="ui-icon-cancel" onclick="widgetJavaStatsChart.resetZoom(),widgetGCStatsChart.resetZoom()"/>  
+  						<p:commandButton value="Last hour" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('1h')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 6h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('6h')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 12h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('12h')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last day" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('1d')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last week" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('7d')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last month" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateJavaChart('1m')}"
+                    update="idJavaStatsChart,idGCStatsChart"
+                    	        process="@form" />			                    
+	     	</h:panelGrid>
+    	</p:tab>
+    	
+    	
+    	
+    	<!-- server load tab (cwmp r/s, db r/s, es r/s -->
+    	<p:tab id="tabServerLoad" title="Server Load">
+		    <h:panelGrid columns="1" cellpadding="4">
+				<p:lineChart  id="idCWMPLoadChart" value="#{systemStatusBean.chartCWMPLoad}"
+					lazy="true"   
+			     	widgetVar="widgetCWMPStatsChart" title="CWMP Requests"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunctionCWMP" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunctionCWMP() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+				<p:lineChart  id="idDBLoadChart" value="#{systemStatusBean.chartDBLoad}"
+					lazy="true"   
+			     	widgetVar="widgetDBLoadChart" title="DB/Storage load"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunctionDB" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunctionDB() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+		    </h:panelGrid>
+	     	<h:panelGrid columns="8" cellpadding="4">
+	    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+			        action="#{systemStatusBean.refreshServerLoadStats}"
+			        ajax="true"
+			        update="idCWMPLoadChart,idDBLoadChart"
+			        process="@form"
+			        oncomplete="" />
+				<p:commandButton type="button" value="Reset zoom" icon="ui-icon-cancel" onclick="widgetCWMPStatsChart.resetZoom()"/>  
+  						<p:commandButton value="Last hour" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('1h')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 6h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('6h')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 12h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('12h')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last day" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('1d')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last week" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('7d')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last month" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateServerLoadChart('1m')}"
+                    update="idCWMPLoadChart,idDBLoadChart"
+                    	        process="@form" />			                    
+	     	</h:panelGrid>
+    	</p:tab>
+    	
+    	
+    	  
+    	
+    	
+    	
+    	<p:tab id="tabStorageLoad" title="Storage Load">
+		    <h:panelGrid columns="1" cellpadding="4">
+				<p:lineChart  id="idStorageReadLoadChart" value="#{systemStatusBean.chartStorageReadLoad}"
+					lazy="true"   
+			     	widgetVar="widgetStorageReadLoadChart" title="Storage read throughput"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunction" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunction() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+				<p:lineChart  id="idStorageWriteLoadChart" value="#{systemStatusBean.chartStorageWriteLoad}"
+					lazy="true"   
+			     	widgetVar="widgetStorageWriteLoadChart" title="Storage write throughput"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunctionDB" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunctionDB() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+		    </h:panelGrid>
+	     	<h:panelGrid columns="8" cellpadding="4">
+	    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+			        action="#{systemStatusBean.refreshStorageLoadStats}"
+			        ajax="true"
+			        update="idStorageReadLoadChart,idStorageWriteLoadChart"
+			        process="@form"
+			        oncomplete="" />
+				<p:commandButton type="button" value="Reset zoom" icon="ui-icon-cancel" onclick="widgetStorageReadLoadChart.resetZoom(), widgetStorageWriteLoadChart.resetZoom()"/>  
+  						<p:commandButton value="Last hour" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('1h')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 6h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('6h')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 12h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('12h')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last day" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('1d')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last week" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('7d')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last month" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateStorageLoadChart('1m')}"
+                    update="idStorageReadLoadChart,idStorageWriteLoadChart"
+                    	        process="@form" />			                    
+	     	</h:panelGrid>
+    	</p:tab>
+    	
+    	
+    	
+
+
+
+
+    	
+     	<p:tab id="tabNetworkLoad" title="Network Load">
+		    <h:panelGrid columns="1" cellpadding="4">
+				<p:lineChart  id="idNetworkDownloadChart" value="#{systemStatusBean.chartNetDownload}"
+					lazy="true"   
+			     	widgetVar="widgetNetworkDownloadChart" title="Network download"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunction" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunction() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+				<p:lineChart  id="idNetworkUploadChart" value="#{systemStatusBean.chartNetUpload}"
+					lazy="true"   
+			     	widgetVar="widgetNetworkUploadChart" title="Network upload"  
+			     	style="height:200px;width:800px; margin-top:20px"
+			     	xaxisAngle="90"
+			     	extender="extenderFunctionDB" 
+			     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+			     	showMarkers="false" 
+			     	zoom="true" autoScale="false">
+		     		<script>
+					   function extenderFunctionDB() {
+						   this.cfg.seriesDefaults = {
+								   shadowDepth: 1,
+								   showMarker: true,
+						            rendererOptions : {
+						            	  smooth: true,
+						                  animation: {
+						                      show: false
+						                  }
+						            }								            
+						   };
+						   this.cfg.axes = {
+							        xaxis : {
+							            renderer : $.jqplot.DateAxisRenderer,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							            tickOptions : { 
+							                fontSize:'10pt',
+							                fontFamily:'Tahoma',
+							                formatString: '%H:%M', 
+							                angle:-90
+							            }
+							        },
+							        yaxis : {
+							        	min: 0,
+							            rendererOptions : {
+							                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+							            },
+							        	label: "",
+							        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+							        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+						                tickOptions: {
+							                fontSize:'10pt', 
+							                fontFamily:'Tahoma'
+						                }
+							        }               
+							    };
+							    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+						}
+					</script>
+		     	</p:lineChart>
+		    </h:panelGrid>
+	     	<h:panelGrid columns="8" cellpadding="4">
+	    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+			        action="#{systemStatusBean.refreshNetworkLoadStats}"
+			        ajax="true"
+			        update="idNetworkDownloadChart,idNetworkUploadChart"
+			        process="@form"
+			        oncomplete="" />
+				<p:commandButton type="button" value="Reset zoom" icon="ui-icon-cancel" onclick="widgetNetworkDownloadChart.resetZoom(), widgetNetworkUploadChart.resetZoom()"/>  
+  						<p:commandButton value="Last hour" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('1h')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 6h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('6h')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 12h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('12h')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last day" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('1d')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last week" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('7d')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last month" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{systemStatusBean.generateNetworkLoadChart('1m')}"
+                    update="idNetworkDownloadChart,idNetworkUploadChart"
+                    	        process="@form" />			                    
+	     	</h:panelGrid>
+    	</p:tab>  
+    	  
+	</p:tabView>
+
+	</h:form>
+
+                    
+</html>
+

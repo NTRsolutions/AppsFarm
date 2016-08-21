@@ -1,0 +1,18 @@
+#!/bin/bash
+rm out/test/*
+rmdir out/test
+rmdir out
+
+export CLASSPATH=target/classes/:lib/*:import/
+#java com.astav.jsontojava.JsonToJava sample.json out test TestOutput regex-sample.json false
+
+#-------------- hasoffers api -----------------
+#java com.astav.jsontojava.JsonToJava jsonTemplates/hasoffers/findAllOfferGroups.json out is.iWeb.sentinel.data.dao.serde.hasoffers.findAllOfferGroups FindAllOfferGroups regex-sample.json false
+
+#java com.astav.jsontojava.JsonToJava jsonTemplates/hasoffers/findAllOfferGroupOfferIds.json out is.iWeb.sentinel.data.dao.serde.hasoffers.findAllOfferGroupOfferIds FindAllOfferGroupOfferIds regex-sample.json false
+
+#java com.astav.jsontojava.JsonToJava jsonTemplates/hasoffers/findOfferById.json out is.iWeb.sentinel.data.dao.serde.hasoffers.findOfferById FindOfferById regex-sample.json false
+
+java com.astav.jsontojava.JsonToJava jsonTemplates/fyber/getOffers.json out is.iWeb.sentinel.data.dao.serde.fyber.getOffers GetOffers regex-sample.json false
+
+

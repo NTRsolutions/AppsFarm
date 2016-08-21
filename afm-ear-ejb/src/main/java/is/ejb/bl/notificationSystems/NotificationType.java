@@ -1,0 +1,11 @@
+package is.ejb.bl.notificationSystems;
+
+public enum NotificationType {
+	REWARD_INSTANT,
+	REWARD_VIA_WALLET_PAYIN,
+	REWARD_VIA_REFERRAL_REGISTRATION,
+	WALLET_PAYOUT, 
+	REFERRAL_ABUSE,
+	INSTALL,
+	SNAPDEAL_EVENT_CHANGE;
+}

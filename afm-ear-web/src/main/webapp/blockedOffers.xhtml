@@ -1,0 +1,127 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
+
+		    	<h:form prependId="false" >
+   				    <p:growl id="idBlockedOffersGrowl" showDetail="true" life="3000" />
+
+				    <h:panelGrid columns="3" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Reward name: " />
+			            <p:selectOneMenu value="#{blockedOffersBean.rewardTypeName}">  
+				            <f:selectItems value="#{blockedOffersBean.listRewardTypes}"  
+				            				var="rewardType" 
+				            				itemLabel="#{rewardType.name}" 
+				            				itemValue="#{rewardType.name}" />   
+				        </p:selectOneMenu>
+  						<p:commandButton 
+							value="Select reward type" icon="ui-icon-search"
+		                    action="#{blockedOffersBean.displayOffersToBlock}"
+							process="@form"
+		                    update="idTableBlockedOffers" />
+					</h:panelGrid>
+				    <h:panelGrid id="idAvailableOffersList" columns="3" cellpadding="4">
+   				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Select offer to block: "  />
+				        <p:selectOneMenu id="idSelectOffersToBlock" value="#{blockedOffersBean.selectedOfferToBlockKey}" >  
+				            <f:selectItems value="#{blockedOffersBean.listAllAvctiveIndividualOffers}"  
+				            				var="individualOffer" 
+				            				itemLabel="#{individualOffer.title}  (Provider: #{individualOffer.adProviderCodeName})" 
+				            				itemValue="#{individualOffer.adProviderCodeName}-#{individualOffer.sourceId}" />   
+				        </p:selectOneMenu>
+  						<p:commandButton 
+							value="Block selected offer" icon="ui-icon-search"
+		                    action="#{blockedOffersBean.blockOffer}"
+							process="@form"
+		                    update="idTableBlockedOffers" />
+					</h:panelGrid>   				    
+   				      
+   				    <p:dataTable id="idTableBlockedOffers" var="blockedOffer" value="#{blockedOffersBean.blockedoffersDataModel}"   				    
+   				    rowKey="#{blockedOffer.rowKey}" selectionMode="single">
+
+				        <p:column headerText="Active" style="width:30px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        				        <p:selectBooleanCheckbox value="#{blockedOffer.active}" disabled="true" />
+				        </p:column>
+				        <p:column headerText="Title" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.title}" />  
+				        </p:column>
+
+				        <p:column headerText="Offer provider" style="width:70px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.adProviderCodeName}" />  
+				        </p:column>
+
+				        <p:column headerText="Source id" style="width:70px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.sourceId}" />  
+				        </p:column>
+
+				        <p:column headerText="Reward type" style="width:70px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.rewardType}" />  
+				        </p:column>
+
+				        <p:column headerText="Block type" style="width:40px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.blockType}" />  
+				        </p:column>
+
+				        <p:column headerText="Clicks" style="width:50px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader" >
+        						<h:outputText value="#{blockedOffer.sumClicks}" rendered="#{blockedOffer.renderConversionStats}" />  
+				        </p:column>
+				        <p:column headerText="Conversions" style="width:50px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader" >
+        						<h:outputText value="#{blockedOffer.sumConversions}" rendered="#{blockedOffer.renderConversionStats}" />  
+				        </p:column>
+				        <p:column headerText="Conversion ratio" style="width:50px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader" >
+        						<h:outputText value="#{blockedOffer.convRatio}" rendered="#{blockedOffer.renderConversionStats}" />  
+				        </p:column>
+				        <p:column headerText="Update time" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.lastUpdateTime.toString()}" rendered="#{blockedOffer.renderConversionStats}" />  
+				        </p:column>
+
+				        <p:column headerText="Entry time" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{blockedOffer.timestamp.toString()}" />  
+				        </p:column>
+
+   				        <p:column headerText="" style="width:50px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+            				<p:commandButton value="Edit" icon="ui-icon-search"  
+                        	     action="#{blockedOffersBean.setEditedOffer(blockedOffer)}" 
+                        	     style="margin-right:20px;"
+	                      	     oncomplete="widgetOfferEditDialog.show()"
+	                      	     update="@form" 
+	                      	     process="@this" />  
+				        </p:column>
+   				        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+            				<p:commandButton value="Remove blocking" icon="ui-icon-search"  
+                        	     action="#{blockedOffersBean.delete(blockedOffer)}" 
+                        	     style="margin-right:20px;"
+                        	     update="@form" 
+                        	     process="@this" />  
+				        </p:column>
+				    </p:dataTable>
+
+	<!-- edit offer dialog  -->
+		<p:dialog 
+			header="Edit blocked offer" widgetVar="widgetOfferEditDialog" 
+			resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+		    <h:panelGrid columns="2" cellpadding="4">
+		    	<h:outputText styleClass="dialog-mediumFont" value="Blocking active: " />
+		    	<p:selectBooleanCheckbox value="#{blockedOffersBean.editedBlockedOffer.active}" />
+			</h:panelGrid>	
+		    <h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search"
+    	           action="#{blockedOffersBean.updateEditedOffer}"
+				   process=""
+                   update=""
+                   oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"  
+                    update=""
+           	        process=""
+                    oncomplete="widgetOfferEditDialog.hide()" />				                    			
+		    </h:panelGrid>
+	    </p:dialog>  
+    				    
+	</h:form>
+                    
+</html>
+

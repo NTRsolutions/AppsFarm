@@ -1,0 +1,718 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false">
+	<p:growl id="idSnapdealEventBrowserGrowl" showDetail="true" life="3000" />
+
+	<p:accordionPanel multiple="true" activeIndex="1">
+		<p:tab title="Search criteria">
+			<p:panelGrid cellpadding="4"
+				style="border:none !important; background:white;">
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Identification information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderEventIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Transaction Row Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderUserIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="User Id" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderProviderTransactionIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Provider Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderInternalTransactionIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Internal Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderPhoneCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone number" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{snapdealEventBrowserBean.renderEmail}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Email" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Offer information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderApprovedCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Approved" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferTitleCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer title" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferProviderCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Provider"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferPayoutCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferPayoutCC}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferPayoutInTargetCurrencyCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Target Currency"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderOfferPayoutInTargetCCCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Target Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderUserEventCategory}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="User Event Category"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderApplicationName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Application Name"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Reward information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardTypeName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Type" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Name" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderProfitCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Value" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderCustomRewardValue}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Custom Reward Value"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderCustomRewardCurrency}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Custom Reward Currency"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderProfitCCCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderProfitSplitCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Split Value"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont"
+							value="Transaction processing information:" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderClickDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Click Date" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderConversionDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Conversion Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardReqDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardReqStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardReqStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardRespDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardRespStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderRewardRespStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderMobileAppNotificationDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderMobileAppNotificationStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderMobileAppNotificationStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Status Message"
+							tyleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{snapdealEventBrowserBean.renderInstant}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Instant" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{snapdealEventBrowserBean.renderFriendPhone}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Friend phone" styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+			</p:panelGrid>
+		</p:tab>
+		<p:tab title="Filters" id="idTimeframeSD">
+			<h:panelGrid columns="10" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetimeSD" value="#{snapdealEventBrowserBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetimeSD" value="#{snapdealEventBrowserBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="for reward type" />
+				<p:selectOneMenu value="#{snapdealEventBrowserBean.filterRewardTypeName}"
+					style="width:100px">
+					<f:selectItems value="#{snapdealEventBrowserBean.rewardTypeNames}" />
+				</p:selectOneMenu>
+				<h:outputText styleClass="dialog-mediumFont" value="and for" />
+				<p:selectOneMenu value="#{snapdealEventBrowserBean.filterType}"
+					style="width:150px">
+					<f:selectItem itemLabel="All" itemValue="All" />
+					<f:selectItem itemLabel="Offer provider"
+						itemValue="adProviderCodeName" />
+					<f:selectItem itemLabel="Phone number" itemValue="phoneNumber" />
+					<f:selectItem itemLabel="Email" itemValue="email" />
+					<f:selectItem itemLabel="Login name" itemValue="loginName" />
+					<f:selectItem itemLabel="Device type" itemValue="deviceType" />
+					<f:selectItem itemLabel="Reward name" itemValue="rewardName" />
+					<f:selectItem itemLabel="Internal transaction ID"
+						itemValue="internalTransactionId" />
+					<f:selectItem itemLabel="Profit currency code"
+						itemValue="rewardIsoCurrencyCode" />
+					<f:selectItem itemLabel="Offer payout currency"
+						itemValue="offerPayoutIsoCurrencyCode" />
+					<f:selectItem itemLabel="Offer title" itemValue="offerTitle" />
+					<f:selectItem itemLabel="Offer source ID" itemValue="offerSourceId" />
+					<f:selectItem itemLabel="Application name"
+						itemValue="applicationName" />
+					<f:selectItem itemLabel="Realm ID" itemValue="realmId" />
+					<f:selectItem itemLabel="User ID" itemValue="userId" />
+				</p:selectOneMenu>
+				<p:inputText id="idFilterValueFieldSD"
+					value="#{snapdealEventBrowserBean.filterValue}" style="width:250px" />
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{snapdealEventBrowserBean.refreshList}" update="" process="@form"
+					oncomplete="" />
+			</h:panelGrid>
+
+		</p:tab>
+	</p:accordionPanel>
+	<p:dataTable id="idUserEventsTableSD" sortBy="#{event.clickDate}"
+		sortOrder="DESCENDING" widgetVar="widgetUserEventsTable" var="event"
+		value="#{snapdealEventBrowserBean.lazyModel}" lazy="true" paginator="true"
+		paginatorPosition="top" rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,20,30,50,100" resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{snapdealEventBrowserBean.pageUpdate}" />
+
+
+		<p:column prependId="false" headerText="Logs" style="width:100px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="View logs" id="idLogButtonSD"
+				actionListener="#{snapdealEventBrowserBean.displayLogs(event)}"
+				oncomplete="widgetDialogLogs.show()" />
+		</p:column>
+
+		<p:column prependId="false" headerText="Reward" style="width:100px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Reward Manually" id="idRewardButtonSD"
+				actionListener="#{snapdealEventBrowserBean.setSelectedEventForRewardTool(event)}"
+				oncomplete="widgetDialogRewardTool.show()" />
+		</p:column>
+
+		<p:column rendered="#{snapdealEventBrowserBean.renderEventIdCol}"
+			prependId="false" headerText="Event Id" sortBy="id"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.id}" />
+		</p:column>
+		<p:column prependId="false" headerText="Status" sortBy="queueStatus"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.queueStatus}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderUserEventCategory}"
+			prependId="false" headerText="User event category"
+			sortBy="userEventCategory" style="width:100px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.userEventCategory}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderInstant}"
+			prependId="false" headerText="Instant" sortBy="instant"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.instant}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderOfferPayoutCol}"
+			prependId="false"
+			footerText="#{snapdealEventBrowserBean.sumOfferPayoutInOriginalCurrency}"
+			headerText="Payout (original currency)" sortBy="offerPayout"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayout} #{event.offerPayoutIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderOfferPayoutCC}"
+			prependId="false" headerText="Original Payout CC"
+			sortBy="offerPayoutIsoCurrencyCode"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.offerPayoutIsoCurrencyCode}" />
+		</p:column>
+
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderOfferPayoutInTargetCurrencyCol}"
+			prependId="false"
+			footerText="#{snapdealEventBrowserBean.sumOfferPayoutInTargetCurrency}"
+			headerText="Payout" sortBy="offerPayout"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayoutInTargetCurrency} #{event.offerPayoutInTargetCurrencyIsoCurrencyCode}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderOfferPayoutInTargetCCCol}"
+			prependId="false" headerText="Payout target CC"
+			sortBy="offerPayoutIsoCurrencyCode"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayoutInTargetCurrencyIsoCurrencyCode}" />
+		</p:column>
+
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardCol}"
+			prependId="false" footerText="#{snapdealEventBrowserBean.sumReward}"
+			headerText="Reward" sortBy="rewardValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.rewardValue} #{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderProfitCol}"
+			prependId="false" headerText="Profit"
+			footerText="#{snapdealEventBrowserBean.sumProfit}" sortBy="profitValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.profitValue} #{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderProfitCCCol}"
+			prependId="false" headerText="Profit CC"
+			sortBy="rewardIsoCurrencyCode" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderProfitSplitCol}"
+			prependId="false" headerText="Profit split"
+			sortBy="profilSplitFraction" style="width:50px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.profilSplitFraction}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardCol}"
+			prependId="false" headerText="Custom Reward" sortBy="rewardValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.customRewardValue} #{event.customRewardCurrencyCode}" />
+		</p:column>
+
+		<p:column rendered="#{snapdealEventBrowserBean.renderUserIdCol}"
+			prependId="false" headerText="User Id" sortBy="userId"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.userId}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderPhoneCol}"
+			prependId="false" headerText="Phone" sortBy="phoneNumber"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.phoneNumber}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderFriendPhone}"
+			prependId="false" headerText="Friend phone" sortBy="phoneNumber"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.friendPhoneNumber}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderEmail}" prependId="false"
+			headerText="Email" sortBy="email"
+			style="width:150px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.email}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderOfferTitleCol}"
+			prependId="false" headerText="Offer title" sortBy="offerTitle"
+			style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.offerTitle}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderApplicationName}"
+			prependId="false" headerText="Application name"
+			sortBy="applicationName" style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.applicationName}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderOfferProviderCol}"
+			prependId="false" headerText="Offer provider"
+			sortBy="adProviderCodeName" style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.adProviderCodeName}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderInternalTransactionIdCol}"
+			prependId="false" headerText="Internal transaction Id"
+			sortBy="internalTransactionId" style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.internalTransactionId}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderClickDateCol}"
+			prependId="false" headerText="Click date" sortBy="clickDate"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.clickDate.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderProviderTransactionIdCol}"
+			prependId="false" headerText="Provider transaction Id"
+			sortBy="transactionId" style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.transactionId}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderConversionDateCol}"
+			prependId="false" headerText="Conversion date"
+			sortBy="conversionDate" style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.conversionDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardReqDateCol}"
+			prependId="false" headerText="Reward req date"
+			sortBy="rewardRequestDate" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardReqStatusCol}"
+			prependId="false" headerText="Reward req status"
+			sortBy="rewardRequestStatus" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderRewardReqStatusMessageCol}"
+			prependId="false" headerText="Reward req status message"
+			sortBy="rewardRequestStatusMessage"
+			style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestStatusMessage}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardRespDateCol}"
+			prependId="false" headerText="Reward date" sortBy="rewardDate"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardRespStatusCol}"
+			prependId="false" headerText="Reward resp status"
+			sortBy="rewardResponseStatus" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardResponseStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderRewardRespStatusMessageCol}"
+			prependId="false" headerText="Reward resp status message"
+			sortBy="rewardResponseStatusMessage"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardResponseStatusMessage}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderMobileAppNotificationDateCol}"
+			prependId="false" headerText="AR notification date"
+			sortBy="mobileAppNotificationDate"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.mobileAppNotificationDate.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderMobileAppNotificationStatusCol}"
+			prependId="false" headerText="AR notification status"
+			sortBy="mobileAppNotificationStatus"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.mobileAppNotificationStatus.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{snapdealEventBrowserBean.renderMobileAppNotificationStatusMessageCol}"
+			prependId="false" headerText="AR notification status message"
+			sortBy="mobileAppNotificationStatusMessage"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.mobileAppNotificationStatusMessage.toString()}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardTypeName}"
+			prependId="false" headerText="Reward type" sortBy="rewardTypeName"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardTypeName}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderRewardName}"
+			prependId="false" headerText="Reward name" sortBy="rewardName"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardName}" />
+		</p:column>
+		<p:column rendered="#{snapdealEventBrowserBean.renderApprovedCol}"
+			prependId="false" headerText="Approved" sortBy="approved"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.approved}" />
+		</p:column>
+
+		<f:facet name="footer">
+			<h:outputText value="#{snapdealEventBrowserBean.sumTotalRows}" />
+		</f:facet>
+	</p:dataTable>
+
+	<p:dialog id="idDialogLogsSD"
+		header="Logs for #{snapdealEventBrowserBean.logUserEvent.internalTransactionId}"
+		widgetVar="widgetDialogLogs" width="60%" height="700"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+
+		<p:dataTable id="idLogsTableSD" value="#{snapdealEventBrowserBean.logs}"
+			var="log" widgetVar="widgetLogsTable">
+
+			<p:column headerText="Time" prependId="false"
+				styleClass="ui-nodesStatusTableHeader" style="width:120px"
+				sortBy="time">
+				<h:outputText value="#{log.time}" />
+			</p:column>
+			<p:column headerText="Log Status" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.logStatus}" />
+			</p:column>
+			<p:column headerText="Message" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.message}" />
+			</p:column>
+			<p:column headerText="Server Name" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.serverName}" />
+			</p:column>
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4"
+			style="position: absolute !important; bottom: 0px !important; vertical-align: bottom !important;">
+			<p:commandButton value="Close" icon="ui-icon-close" update=""
+				process="" oncomplete="widgetDialogLogs.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idWidgetDialogRewardToolSD" width="500"
+		style="width:500px;" header="Reward tool"
+		widgetVar="widgetDialogRewardTool" resizable="false" showEffect="clip"
+		hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText style="font-size:12px" value="Event id:" />
+			<h:outputText style="font-size:12px"
+				value="#{snapdealEventBrowserBean.selectedEventForRewardTool.id}" />
+			<h:outputText style="font-size:12px" value="Event transaction id:" />
+			<h:outputText style="font-size:12px"
+				value="#{snapdealEventBrowserBean.selectedEventForRewardTool.internalTransactionId}" />
+
+			<h:outputText style="font-size:12px" value="Phone number:" />
+			<h:outputText style="font-size:12px"
+				value="#{snapdealEventBrowserBean.selectedEventForRewardTool.phoneNumber}" />
+			<h:outputText style="font-size:12px" value="Reward value:" />
+			<p:inputText style="font-size:12px" size="30"
+				value="#{snapdealEventBrowserBean.selectedEventForRewardTool.rewardValue}" />
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Reward" icon="ui-icon-search" process=""
+				actionListener="#{snapdealEventBrowserBean.rewardEvent()}"
+				oncomplete="widgetDialogRewardTool.hide()" />
+
+			<p:commandButton value="Close" icon="ui-icon-search" process=""
+				oncomplete="widgetDialogRewardTool.hide()" />
+
+		</h:panelGrid>
+
+	</p:dialog>
+
+
+
+</h:form>
+
+</html>
+

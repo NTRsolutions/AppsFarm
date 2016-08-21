@@ -1,0 +1,113 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form prependId="false">
+	<p:growl id="idWalletSettingsGrowl" showDetail="true" life="3000" />
+
+	<p:dataTable id="idWalletPayoutCarriers" var="model" width="400"
+		style="width:400px;"
+		value="#{walletSettingsBean.walletSettingsTableDataModelBean}"
+		rowKey="#{domain.name}" selectionMode="single">
+
+
+		<p:column rendered="false" headerText="Id"
+			style="width:50px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{model.id}" />
+		</p:column>
+		
+		<p:column headerText="Carrier name"
+			style="width:100px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{model.name}" />
+		</p:column>
+
+		<p:column headerText="Reward type id"
+			style="width:50px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{walletSettingsBean.getRewardTypeName(model.rewardTypeId)}" />
+		</p:column>
+		<p:column headerText="Action" style="width:90px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Setup" icon="ui-icon-search"
+				action="#{walletSettingsBean.setEditingModel(model)}"
+				style="margin-right:20px;"
+				oncomplete="widgetEditWalletPayoutCarrier.show()" update="@form"
+				process="@this" />
+		</p:column>
+
+		<f:facet name="footer">
+			<div align="left">
+				<p:commandButton value="Create new payout carrier"
+					icon="ui-icon-search" style="margin-right:20px;"
+					oncomplete="widgetCreateWalletPayoutCarrier.show()"
+					action="#{walletSettingsBean.clearTable()}" update="@form"
+					process="@this" rendered="true" />
+			</div>
+		</f:facet>
+	</p:dataTable>
+	<!-- edit denomination model -->
+	<p:dialog id="idWalletPayoutCarrierCreate" width="500"
+		style="width:500px;" header="Create Wallet Payout Carrier"
+		widgetVar="widgetCreateWalletPayoutCarrier" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Carrier name:" />
+			<p:inputText size="30"
+				value="#{walletSettingsBean.createModel.name}" />
+			
+			 <h:outputText styleClass="dialog-mediumFont" value="Reward type:" />
+			<p:selectOneMenu value="#{walletSettingsBean.createModel.rewardTypeId}">
+				<f:selectItems value="#{walletSettingsBean.rewardType}"
+					var="rewardType" itemLabel="#{rewardType.name}"
+					itemValue="#{rewardType.id}" />
+			</p:selectOneMenu> 
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Create" icon="ui-icon-search"
+				action="#{walletSettingsBean.create()}" process="" update=""
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetCreateWalletPayoutCarrier.hide()" />
+		</h:panelGrid>
+
+	</p:dialog>
+
+
+	<p:dialog id="idWalletPayoutCarrierEdit" width="500"
+		style="width:500px;" header="Edit Wallet Payout Carrier"
+		widgetVar="widgetEditWalletPayoutCarrier" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont" value="Carrier name:" />
+			<p:inputText size="30"
+				value="#{walletSettingsBean.editModel.name}" />
+			 <h:outputText styleClass="dialog-mediumFont" value="Reward type:" />
+			<p:selectOneMenu value="#{walletSettingsBean.editModel.rewardTypeId}">
+				<f:selectItems value="#{walletSettingsBean.rewardType}"
+					var="rewardType" itemLabel="#{rewardType.name}"
+					itemValue="#{rewardType.id}" />
+			</p:selectOneMenu> 
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Edit" icon="ui-icon-search"
+				action="#{walletSettingsBean.edit()}" process="" update=""
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetEditWalletPayoutCarrier.hide()" />
+			<p:commandButton value="Delete" icon="ui-icon-search" update=""
+				action="#{walletSettingsBean.delete()}" process=""
+				oncomplete="widgetEditWalletPayoutCarrier.hide()" />
+		</h:panelGrid>
+
+	</p:dialog>
+</h:form>
+
+</html>
+

@@ -1,0 +1,377 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form prependId="false">
+	<p:growl id="idDisplayAppUsersGrowl" showDetail="true" life="3000" />
+
+	<p:dataTable id="idAppUsersTable" sortOrder="DESCENDING"
+		widgetVar="widgetAppUsersTable" var="appUser"
+		value="#{displayAppUsersBean.lazyModel}" lazy="true" paginator="true"
+		paginatorPosition="top" rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="1,10,30,50,50,100" resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{displayAppUsersBean.pageUpdate}" />
+
+		<p:column prependId="false" headerText="User Id" sortBy="id"
+			filterBy="#{appUser.id}" filterStyle="width: 100%;"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandLink id="ajaxLink"
+				actionListener="#{displayAppUsersBean.displayDownloadHistory(appUser)}"
+				style="width:140px;text-align:left;" ajax="true"
+				oncomplete="widgetUserDetailsDialog.show();" update="@form">
+				<h:outputText value="#{appUser.id}" />
+			</p:commandLink>
+		</p:column>
+		<p:column prependId="false" headerText="Name" sortBy="fullName"
+			filterBy="#{appUser.fullName}" filterStyle="width: 100%;"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{appUser.fullName}" />
+		</p:column>
+		<p:column prependId="false" headerText="Email" sortBy="email"
+			filterBy="#{appUser.email}" filterStyle="width: 100%;"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{appUser.email}" />
+		</p:column>
+		<p:column prependId="false" headerText="Phone" sortBy="phoneNumber"
+			filterBy="#{appUser.phoneNumber}" filterStyle="width: 100%;"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{appUser.phoneNumber}" />
+		</p:column>
+		<!-- 
+   			        <p:column prependId="false" headerText="Male" sortBy="male" filterBy="#{appUser.male}" filterStyle="width: 100%;" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{appUser.male}" />  
+			        </p:column>
+			         -->
+		<p:column prependId="false" headerText="Age range" sortBy="ageRange"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{appUser.ageRange}" />
+		</p:column>
+		<p:column prependId="false" headerText="Registration time"
+			sortBy="registrationTime" style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{appUser.registrationTime.toString()}" />
+		</p:column>
+		<!-- 
+   			        <p:column prependId="false" headerText="" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<p:commandButton value="Download history" icon="ui-icon-search" style="vertical-align:text-top;"  
+			                   action="#{displayAppUsersBean.displayDownloadHistory(appUser)}"
+			                    update=""
+			          	        process="@form"
+			                   oncomplete="widgetDownloadHistoryDialog.show()" />
+			        </p:column>
+			         -->
+		<p:column prependId="false" headerText=""
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Delete" icon="ui-icon-search"
+				style="vertical-align:text-top;"
+				action="#{displayAppUsersBean.deleteUser(appUser)}" update=""
+				process="@form" oncomplete="">
+				<p:confirm header="Confirmation"
+					message="Are you sure? Selected user and his history will be deleted from the system?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+		</p:column>
+
+		<f:facet name="footer">
+			<p:commandButton value="Refresh list" icon="ui-icon-search"
+				style="vertical-align:text-top;"
+				action="#{displayAppUsersBean.refreshList}" update=""
+				process="@form" oncomplete="" />
+		</f:facet>
+	</p:dataTable>
+
+	<!-- user details -->
+	<p:dialog header="User details" widgetVar="widgetUserDetailsDialog"
+		width="800" resizable="false" showEffect="clip" hideEffect="fold"
+		modal="false" appendToBody="false">
+
+		<p:tabView id="tabAppUsersData">
+			<!-- user info -->
+			<p:tab title="User Details" rendered="true">
+				<p:panel header="User Details" toggleable="false" closable="false"
+					toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+					styleClass="single-node-stats-performance-panel">
+					<h:panelGrid id="idUserDetails" columns="1" cellpadding="4">
+						<h:panelGrid columns="2" cellpadding="4">
+							<h:outputText styleClass="dialog-mediumFont" value="User Id:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.id}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Network Id:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.realmId}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Full Name:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.fullName}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Email:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.email}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Phone number extension:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.phoneNumberExtension}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Phone number:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.phoneNumber}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Age range:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.ageRange}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Male:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.male}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Registration time:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.registrationTime.toString()}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Wallet balance:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.loadUserBalance()}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Available Spinner uses:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.loadUserAvailableSpins()}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Last daily spinner bonus:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.loadUserLastDailyBonusTime()}" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+			</p:tab>
+
+			<!-- tracking user info -->
+			<p:tab title="User Tracking Data" rendered="true">
+				<p:panel header="User Tracking Data" toggleable="false"
+					closable="false" toggleSpeed="500" closeSpeed="500"
+					style="margin-top:0px;width:99%"
+					styleClass="single-node-stats-performance-panel">
+
+					<h:panelGrid id="idUserTrackingDetails" columns="1" cellpadding="4">
+						<h:panelGrid columns="2" cellpadding="4">
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Country Code:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.countryCode}" />
+							<h:outputText styleClass="dialog-mediumFont" value="System Info:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.systemInfo}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Device Type:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.deviceType}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Device Id (Android):" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.deviceId}" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Phone Id (Android):" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.phoneId}" />
+							<h:outputText styleClass="dialog-mediumFont" value="MAC:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.mac}" />
+							<h:outputText styleClass="dialog-mediumFont" value="IDFA (iOS):" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.idfa}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Locale:" />
+							<h:outputText styleClass="dialog-mediumFont"
+								value="#{displayAppUsersBean.currentlyViewedUser.locale}" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel header="User download history" toggleable="false"
+					closable="false" toggleSpeed="500" closeSpeed="500"
+					style="margin-top:0px;width:99%"
+					styleClass="single-node-stats-performance-panel">
+
+					<h:panelGrid columns="1" cellpadding="4">
+						<h:panelGrid columns="2" cellpadding="4">
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Display internal user history: " />
+							<p:selectBooleanCheckbox
+								value="#{displayAppUsersBean.displayInternalUserHistory}" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+
+
+
+			</p:tab>
+
+			<p:tab title="Mobile details" rendered="true">
+				<p:panel header="Mobile details" toggleable="false" closable="false"
+					toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+					styleClass="single-node-stats-performance-panel">
+					#{displayAppUsersBean.mobileDetails}
+				</p:panel>
+			</p:tab>
+			
+			<p:tab title="Queued Events" rendered="true">
+				<p:panel header="Queued Events" toggleable="false" closable="false"
+					toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+					styleClass="single-node-stats-performance-panel">
+					<p:dataTable id="idQueuedEventsTable" var="model"
+						value="#{displayAppUsersBean.loadEventQueueTable()}"
+						rowKey="#{model.id}" selectionMode="single">
+
+						<p:column rendered="false" headerText="Id"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.id}" />
+						</p:column>
+
+						<p:column rendered="true" headerText="Event ID"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.eventId}" />
+						</p:column>
+
+						<p:column rendered="true" headerText="Generation Date"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.generationDate}" />
+						</p:column>
+
+						<p:column rendered="true" headerText="Rewarding System Issue Date"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.rewardingSystemIssueDate}" />
+						</p:column>
+
+						<p:column rendered="true" headerText="Pushed"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.pushedToRewardingSystem}" />
+						</p:column>
+
+						<p:column rendered="true" headerText="Action"
+							style="width:100px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<p:commandButton value="Trigger" icon="ui-icon-search"
+								style="vertical-align:text-top;"
+								action="#{displayAppUsersBean.sendEvent(model)}" update=""
+								process="" oncomplete="" />
+						</p:column>
+						
+					</p:dataTable>
+				</p:panel>
+			</p:tab>
+		</p:tabView>
+
+
+
+		<h:panelGrid columns="2" cellpadding="4">
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetUserDetailsDialog.hide()" />
+			<p:commandButton value="View download history" icon="ui-icon-search"
+				update="@form" process=""
+				oncomplete="widgetDownloadHistoryDialog.show()" />
+		</h:panelGrid>
+	</p:dialog>
+
+
+	<!-- display download history -->
+	<p:dialog header="Download history"
+		widgetVar="widgetDownloadHistoryDialog" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<p:dataTable id="idDownloadHistoryTable" sortBy="#{event.clickDate}"
+			sortOrder="DESCENDING" widgetVar="widgetDownloadHistoryTable"
+			var="downloadEntry"
+			value="#{displayAppUsersBean.lazyModelDownloadHistory}" lazy="true"
+			paginator="true" paginatorPosition="top" rows="10"
+			currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="1,10,30,50,50,100" resizableColumns="true">
+
+			<p:ajax event="page" update="" onstart="" oncomplete=""
+				listener="#{displayAppUsersBean.pageUpdate}" />
+			<!-- 
+   			        <p:column prependId="false" headerText="Offer Id" sortBy="email" filterBy="#{appUser.email}" filterStyle="width: 100%;" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{downloadEntry.offerId}" />  
+			        </p:column>
+ -->
+			<p:column prependId="false" headerText="Transaction Id"
+				sortBy="internalTransactionId"
+				filterBy="#{appUser.internalTransactionId}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.internalTransactionId}" />
+			</p:column>
+			<p:column prependId="false" headerText="Title" sortBy="phoneNumber"
+				filterBy="#{appUser.phoneNumber}" filterStyle="width: 100%;"
+				style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.offerTitle}" />
+			</p:column>
+			<p:column prependId="false" headerText="Offer Provider"
+				sortBy="fullName" filterBy="#{appUser.fullName}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.adProviderCodeName}" />
+			</p:column>
+			<p:column prependId="false" headerText="Click date"
+				sortBy="clickTimestamp" filterBy="#{downloadEntry.clickTimestamp}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.clickTimestamp.toString()}" />
+			</p:column>
+			<p:column prependId="false" headerText="Conversion date"
+				sortBy="conversionTimestamp"
+				filterBy="#{downloadEntry.conversionTimestamp}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText
+					value="#{downloadEntry.conversionTimestamp.toString()}" />
+			</p:column>
+			<p:column prependId="false" headerText="Reward date"
+				sortBy="rewardTimestamp" filterBy="#{downloadEntry.rewardTimestamp}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.rewardTimestamp.toString()}" />
+			</p:column>
+			<p:column prependId="false" headerText="Reward status"
+				sortBy="rewardStatus" filterBy="#{downloadEntry.rewardStatus}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.rewardStatus}" />
+			</p:column>
+			<p:column prependId="false" headerText="Reward message"
+				sortBy="rewardStatusMessage"
+				filterBy="#{downloadEntry.rewardStatusMessage}"
+				filterStyle="width: 100%;" style="width:120px;text-align: left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{downloadEntry.rewardStatusMessage}" />
+			</p:column>
+
+			<f:facet name="footer">
+				<p:commandButton value="Refresh list" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{displayAppUsersBean.refreshDownloadHistory}" update=""
+					process="@form" oncomplete="" />
+			</f:facet>
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4">
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetDownloadHistoryDialog.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+</h:form>
+
+</html>
+

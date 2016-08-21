@@ -1,0 +1,719 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false">
+	<p:growl id="idEventBrowserGrowl" showDetail="true" life="3000" />
+
+	<p:accordionPanel multiple="true" activeIndex="1">
+		<p:tab title="Search criteria">
+			<p:panelGrid cellpadding="4"
+				style="border:none !important; background:white;">
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Identification information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderEventIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Transaction Row Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderUserIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="User Id" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderProviderTransactionIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Provider Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderInternalTransactionIdCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Internal Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderPhoneCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone number" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{eventBrowserBean.renderEmail}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Email" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Offer information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderApprovedCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Approved" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferTitleCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer title" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferProviderCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Provider"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferPayoutCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferPayoutCC}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferPayoutInTargetCurrencyCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Target Currency"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderOfferPayoutInTargetCCCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Offer Payout Target Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderUserEventCategory}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="User Event Category"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderApplicationName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Application Name"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Reward information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardTypeName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Type" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardName}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Name" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderProfitCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Value" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderCustomRewardValue}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Custom Reward Value"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderCustomRewardCurrency}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Custom Reward Currency"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderProfitCCCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Currency Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderProfitSplitCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Profit Split Value"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont"
+							value="Transaction processing information:" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderClickDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Click Date" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderConversionDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Conversion Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardReqDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardReqStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardReqStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Request Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardRespDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardRespStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderRewardRespStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Resposne Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderMobileAppNotificationDateCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderMobileAppNotificationStatusCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderMobileAppNotificationStatusMessageCol}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="AR Reward Notification Status Message"
+							tyleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{eventBrowserBean.renderInstant}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Instant" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{eventBrowserBean.renderFriendPhone}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Friend phone" styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+			</p:panelGrid>
+		</p:tab>
+		<p:tab title="Filters" id="idTimeframe">
+			<h:panelGrid columns="10" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetime" value="#{eventBrowserBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetime" value="#{eventBrowserBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="for reward type" />
+				<p:selectOneMenu value="#{eventBrowserBean.filterRewardTypeName}">
+					<f:selectItems value="#{eventBrowserBean.rewardTypeNames}" />
+				</p:selectOneMenu>
+				<h:outputText styleClass="dialog-mediumFont" value="and for" />
+				<p:selectOneMenu value="#{eventBrowserBean.filterType}"
+					style="width:150px">
+					<f:selectItem itemLabel="All" itemValue="All" />
+					<f:selectItem itemLabel="Offer provider"
+						itemValue="adProviderCodeName" />
+					<f:selectItem itemLabel="Phone number" itemValue="phoneNumber" />
+					<f:selectItem itemLabel="Email" itemValue="email" />
+					<f:selectItem itemLabel="Login name" itemValue="loginName" />
+					<f:selectItem itemLabel="Device type" itemValue="deviceType" />
+					<f:selectItem itemLabel="Reward name" itemValue="rewardName" />
+					<f:selectItem itemLabel="Internal transaction ID"
+						itemValue="internalTransactionId" />
+					<f:selectItem itemLabel="Profit currency code"
+						itemValue="rewardIsoCurrencyCode" />
+					<f:selectItem itemLabel="Offer payout currency"
+						itemValue="offerPayoutIsoCurrencyCode" />
+					<f:selectItem itemLabel="Offer title" itemValue="offerTitle" />
+					<f:selectItem itemLabel="Offer source ID" itemValue="offerSourceId" />
+					<f:selectItem itemLabel="Application name"
+						itemValue="applicationName" />
+					<f:selectItem itemLabel="Realm ID" itemValue="realmId" />
+					<f:selectItem itemLabel="User ID" itemValue="userId" />
+					<f:selectItem itemLabel="User event category"
+						itemValue="userEventCategory" />
+				</p:selectOneMenu>
+				<p:inputText id="idFilterValueField"
+					value="#{eventBrowserBean.filterValue}" style="width:250px" />
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{eventBrowserBean.refreshList}" update="" process="@form"
+					oncomplete="" />
+			</h:panelGrid>
+
+		</p:tab>
+	</p:accordionPanel>
+	<p:dataTable id="idUserEventsTable" sortBy="#{event.clickDate}"
+		sortOrder="DESCENDING" widgetVar="widgetUserEventsTable" var="event"
+		value="#{eventBrowserBean.lazyModel}" lazy="true" paginator="true"
+		paginatorPosition="top" rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,20,30,50,100" resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{eventBrowserBean.pageUpdate}" />
+
+
+		<p:column prependId="false" headerText="Logs" style="width:100px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="View logs" id="idLogButton"
+				actionListener="#{eventBrowserBean.displayLogs(event)}"
+				oncomplete="widgetDialogLogs.show()" />
+		</p:column>
+
+		<p:column prependId="false" headerText="Reward" style="width:100px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Reward Manually" id="idRewardButton"
+				actionListener="#{eventBrowserBean.setSelectedEventForRewardTool(event)}"
+				oncomplete="widgetDialogRewardTool.show()" />
+		</p:column>
+
+		<p:column rendered="#{eventBrowserBean.renderEventIdCol}"
+			prependId="false" headerText="Event Id" sortBy="id"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.id}" />
+		</p:column>
+		<p:column prependId="false" headerText="Status" sortBy="queueStatus"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.queueStatus}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderUserEventCategory}"
+			prependId="false" headerText="User event category"
+			sortBy="userEventCategory" style="width:100px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.userEventCategory}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderInstant}"
+			prependId="false" headerText="Instant" sortBy="instant"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.instant}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderOfferPayoutCol}"
+			prependId="false"
+			footerText="#{eventBrowserBean.sumOfferPayoutInOriginalCurrency}"
+			headerText="Payout (original currency)" sortBy="offerPayout"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayout} #{event.offerPayoutIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderOfferPayoutCC}"
+			prependId="false" headerText="Original Payout CC"
+			sortBy="offerPayoutIsoCurrencyCode"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.offerPayoutIsoCurrencyCode}" />
+		</p:column>
+
+		<p:column
+			rendered="#{eventBrowserBean.renderOfferPayoutInTargetCurrencyCol}"
+			prependId="false"
+			footerText="#{eventBrowserBean.sumOfferPayoutInTargetCurrency}"
+			headerText="Payout" sortBy="offerPayout"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayoutInTargetCurrency} #{event.offerPayoutInTargetCurrencyIsoCurrencyCode}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderOfferPayoutInTargetCCCol}"
+			prependId="false" headerText="Payout target CC"
+			sortBy="offerPayoutIsoCurrencyCode"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.offerPayoutInTargetCurrencyIsoCurrencyCode}" />
+		</p:column>
+
+		<p:column rendered="#{eventBrowserBean.renderRewardCol}"
+			prependId="false" footerText="#{eventBrowserBean.sumReward}"
+			headerText="Reward" sortBy="rewardValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.rewardValue} #{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderProfitCol}"
+			prependId="false" headerText="Profit"
+			footerText="#{eventBrowserBean.sumProfit}" sortBy="profitValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.profitValue} #{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderProfitCCCol}"
+			prependId="false" headerText="Profit CC"
+			sortBy="rewardIsoCurrencyCode" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardIsoCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderProfitSplitCol}"
+			prependId="false" headerText="Profit split"
+			sortBy="profilSplitFraction" style="width:50px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.profilSplitFraction}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardCol}"
+			prependId="false" headerText="Custom Reward" sortBy="rewardValue"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.customRewardValue} #{event.customRewardCurrencyCode}" />
+		</p:column>
+
+		<p:column rendered="#{eventBrowserBean.renderUserIdCol}"
+			prependId="false" headerText="User Id" sortBy="userId"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.userId}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderPhoneCol}"
+			prependId="false" headerText="Phone" sortBy="phoneNumber"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.phoneNumber}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderFriendPhone}"
+			prependId="false" headerText="Friend phone" sortBy="phoneNumber"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.friendPhoneNumber}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderEmail}" prependId="false"
+			headerText="Email" sortBy="email"
+			style="width:150px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.email}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderOfferTitleCol}"
+			prependId="false" headerText="Offer title" sortBy="offerTitle"
+			style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.offerTitle}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderApplicationName}"
+			prependId="false" headerText="Application name"
+			sortBy="applicationName" style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.applicationName}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderOfferProviderCol}"
+			prependId="false" headerText="Offer provider"
+			sortBy="adProviderCodeName" style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.adProviderCodeName}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderInternalTransactionIdCol}"
+			prependId="false" headerText="Internal transaction Id"
+			sortBy="internalTransactionId" style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.internalTransactionId}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderClickDateCol}"
+			prependId="false" headerText="Click date" sortBy="clickDate"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.clickDate.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderProviderTransactionIdCol}"
+			prependId="false" headerText="Provider transaction Id"
+			sortBy="transactionId" style="width:240px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.transactionId}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderConversionDateCol}"
+			prependId="false" headerText="Conversion date"
+			sortBy="conversionDate" style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.conversionDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardReqDateCol}"
+			prependId="false" headerText="Reward req date"
+			sortBy="rewardRequestDate" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardReqStatusCol}"
+			prependId="false" headerText="Reward req status"
+			sortBy="rewardRequestStatus" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderRewardReqStatusMessageCol}"
+			prependId="false" headerText="Reward req status message"
+			sortBy="rewardRequestStatusMessage"
+			style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardRequestStatusMessage}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardRespDateCol}"
+			prependId="false" headerText="Reward date" sortBy="rewardDate"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardRespStatusCol}"
+			prependId="false" headerText="Reward resp status"
+			sortBy="rewardResponseStatus" style="width:140px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardResponseStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderRewardRespStatusMessageCol}"
+			prependId="false" headerText="Reward resp status message"
+			sortBy="rewardResponseStatusMessage"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardResponseStatusMessage}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderMobileAppNotificationDateCol}"
+			prependId="false" headerText="AR notification date"
+			sortBy="mobileAppNotificationDate"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.mobileAppNotificationDate.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderMobileAppNotificationStatusCol}"
+			prependId="false" headerText="AR notification status"
+			sortBy="mobileAppNotificationStatus"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.mobileAppNotificationStatus.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{eventBrowserBean.renderMobileAppNotificationStatusMessageCol}"
+			prependId="false" headerText="AR notification status message"
+			sortBy="mobileAppNotificationStatusMessage"
+			style="width:180px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{event.mobileAppNotificationStatusMessage.toString()}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardTypeName}"
+			prependId="false" headerText="Reward type" sortBy="rewardTypeName"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardTypeName}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderRewardName}"
+			prependId="false" headerText="Reward name" sortBy="rewardName"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardName}" />
+		</p:column>
+		<p:column rendered="#{eventBrowserBean.renderApprovedCol}"
+			prependId="false" headerText="Approved" sortBy="approved"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.approved}" />
+		</p:column>
+
+		<f:facet name="footer">
+			<h:outputText value="#{eventBrowserBean.sumTotalRows}" />
+		</f:facet>
+	</p:dataTable>
+
+	<p:dialog id="idDialogLogs"
+		header="Logs for #{eventBrowserBean.logUserEvent.internalTransactionId}"
+		widgetVar="widgetDialogLogs" width="60%" height="700"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+
+		<p:dataTable id="idLogsTable" value="#{eventBrowserBean.logs}"
+			var="log" widgetVar="widgetLogsTable">
+
+			<p:column headerText="Time" prependId="false"
+				styleClass="ui-nodesStatusTableHeader" style="width:120px"
+				sortBy="time">
+				<h:outputText value="#{log.time}" />
+			</p:column>
+			<p:column headerText="Log Status" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.logStatus}" />
+			</p:column>
+			<p:column headerText="Message" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.message}" />
+			</p:column>
+			<p:column headerText="Server Name" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.serverName}" />
+			</p:column>
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4"
+			style="position: absolute !important; bottom: 0px !important; vertical-align: bottom !important;">
+			<p:commandButton value="Close" icon="ui-icon-close" update=""
+				process="" oncomplete="widgetDialogLogs.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idWidgetDialogRewardTool" width="500"
+		style="width:500px;" header="Reward tool"
+		widgetVar="widgetDialogRewardTool" resizable="false" showEffect="clip"
+		hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText style="font-size:12px" value="Event id:" />
+			<h:outputText style="font-size:12px"
+				value="#{eventBrowserBean.selectedEventForRewardTool.id}" />
+			<h:outputText style="font-size:12px" value="Event transaction id:" />
+			<h:outputText style="font-size:12px"
+				value="#{eventBrowserBean.selectedEventForRewardTool.internalTransactionId}" />
+
+			<h:outputText style="font-size:12px" value="Phone number:" />
+			<h:outputText style="font-size:12px"
+				value="#{eventBrowserBean.selectedEventForRewardTool.phoneNumber}" />
+			<h:outputText style="font-size:12px" value="Reward value:" />
+			<p:inputText style="font-size:12px" size="30"
+				value="#{eventBrowserBean.selectedEventForRewardTool.rewardValue}" />
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Reward" icon="ui-icon-search" process=""
+				actionListener="#{eventBrowserBean.rewardEvent()}"
+				oncomplete="widgetDialogRewardTool.hide()" />
+
+			<p:commandButton value="Close" icon="ui-icon-search" process=""
+				oncomplete="widgetDialogRewardTool.hide()" />
+
+		</h:panelGrid>
+
+	</p:dialog>
+
+
+
+</h:form>
+
+</html>
+

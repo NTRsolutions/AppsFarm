@@ -1,0 +1,111 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+>
+
+	<h:form prependId="false" >
+	    <p:growl id="idSetupCurrenciesGrowl" showDetail="true" life="3000" />  
+		
+		    <p:dataTable id="idCurrencyTable" var="currency" value="#{offerCurrenciesBean.currencyTableDataModelBean}"   				    
+ 				    rowKey="#{currency.code}" selectionMode="single" >
+
+		        <p:column headerText="Currency code" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{currency.code}" />  
+		        </p:column>
+		        <p:column rendered="false" headerText="Minimal payout threshold" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{currency.payoutTreshold}" />  
+		        </p:column>
+		        <p:column rendered="false" headerText="Minimal instant reward threshold" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{currency.instantRewardTreshold}" />  
+		        </p:column>
+		        
+   		        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+          				<p:commandButton value="Setup" icon="ui-icon-search"  
+                      	     action="#{offerCurrenciesBean.setEditedCurrency(currency)}" 
+                      	     style="margin-right:20px;"
+                      	     oncomplete="widgetCurrencyEditDialog.show()"
+                      	     update="@form" 
+                      	     process="@this" />  
+		        </p:column>
+   		        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+          				<p:commandButton value="Delete" icon="ui-icon-search"  
+                      	     action="#{offerCurrenciesBean.deleteCurrency(currency)}" 
+                      	     style="margin-right:20px;"
+                      	     oncomplete=""
+                      	     update="@form" 
+                      	     process="@this" >
+	                   		 <p:confirm header="Confirmation" message="Are you sure? Deleting selected currency will automatically discard all offers that have payout currency matching the one you wish to delete?" icon="ui-icon-alert" />
+                        </p:commandButton>  
+		        </p:column>
+		        
+		        <f:facet name="footer">
+      		        	<div align="left">
+          					<p:commandButton value="Add new currency" icon="ui-icon-search"  
+                       	     style="margin-right:20px;"
+                       	     oncomplete="widgetCurrencyAddDialog.show()"
+                       	     rendered="true" />  
+					</div>	                        	     
+                </f:facet>
+	    	</p:dataTable>
+
+	
+	<!-- add currency element -->
+		<p:dialog  
+			header="Add supported payout currency" widgetVar="widgetCurrencyAddDialog" 
+			resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+		    <h:panelGrid columns="2" cellpadding="4">
+		    	<h:outputText styleClass="dialog-mediumFont" value="Currency code: " />
+		    	<p:inputText  size="35" value="#{offerCurrenciesBean.createdCurrencyCode.code}" />
+		    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Payout threshold: " />
+		    	<p:inputText rendered="false" size="35" value="#{offerCurrenciesBean.createdCurrencyCode.payoutTreshold}" />
+		    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Instant reward threshold: " />
+		    	<p:inputText rendered="false" size="35" value="#{offerCurrenciesBean.createdCurrencyCode.instantRewardTreshold}" />
+			</h:panelGrid>	
+		    <h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Add" icon="ui-icon-search"
+    	           action="#{offerCurrenciesBean.addCurrency}"
+				   process=""
+                   update=""
+                   oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"  
+                    update=""
+           	        process=""
+                    oncomplete="widgetCurrencyAddDialog.hide()" />				                    			
+		    </h:panelGrid>
+	    </p:dialog>  
+
+	<!-- edit currency element -->
+		<p:dialog 
+			header="Edit selected payout currency" widgetVar="widgetCurrencyEditDialog" 
+			resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+		    <h:panelGrid id="idEditCurrency" columns="2" cellpadding="4">
+		    	<h:outputText styleClass="dialog-mediumFont" value="Currency code: " />
+		    	<p:inputText  size="35" value="#{offerCurrenciesBean.editedCurrencyCode.code}" />
+		    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Payout threshold: " />
+		    	<p:inputText  rendered="false" size="35" value="#{offerCurrenciesBean.editedCurrencyCode.payoutTreshold}" />
+		    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Instant reward threshold: " />
+		    	<p:inputText  rendered="false" size="35" value="#{offerCurrenciesBean.editedCurrencyCode.instantRewardTreshold}" />
+			</h:panelGrid>	
+		    <h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search"
+    	           action="#{offerCurrenciesBean.updateEditedCurrency}"
+				   process=""
+                   update=""
+                   oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"  
+                    update=""
+           	        process=""
+                    oncomplete="widgetCurrencyEditDialog.hide()" />				                    			
+		    </h:panelGrid>
+	    </p:dialog>  
+
+	</h:form>
+	
+</html>
+

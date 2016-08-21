@@ -1,0 +1,49 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
+
+	<h:form prependId="false" >
+	    <p:growl id="idSetupOfferFiltersGrowl" showDetail="true" life="3000" />  
+
+			<p:panel header="Offer Wall Filter" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="500" 
+						style="margin-top:0px;width:99%" 
+						styleClass="single-node-stats-performance-panel">
+			    <h:panelGrid id="idOfferWallFilterDataGrid" columns="2" cellpadding="4">
+   			    	<h:outputText styleClass="dialog-mediumFont" value="Reject non-incentivised offers: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectNotIncentivisedOffers}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject offers with missing currency: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectOfferWithMissingCurrency}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject offers with missing thumbnail: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectOfferWithMissingImage}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject offers with missing url: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectOfferWithMissingUrl}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject offers with missing payout value: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectOfferWithMissingPayout}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject duplicate offers: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectDuplicateOffers}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject blocked offers: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectBlockedOffers}"  />
+			    	<h:outputText styleClass="dialog-mediumFont" value="Reject stale offers: " />
+			        <p:selectBooleanCheckbox value="#{offerFiltersBean.offerFilter.rejectStaleOffers}"  />
+				</h:panelGrid>
+			</p:panel>
+
+		    <h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search"
+					update=""  
+       	            action="#{offerFiltersBean.update}"
+              	        process="@form" 
+              	        oncomplete="" > 
+  	                </p:commandButton>
+			</h:panelGrid>
+		
+	</h:form>
+	
+</html>
+

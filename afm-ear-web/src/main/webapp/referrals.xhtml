@@ -1,0 +1,522 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false">
+	<p:growl id="idReferralGrowl" showDetail="true" life="3000" />
+
+	<p:accordionPanel multiple="true" activeIndex="0,1">
+		<p:tab title="Columns">
+			<p:panelGrid cellpadding="4"
+				style="border:none !important; background:white;">
+
+
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{referralBean.renderCode}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invitation code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderDateOfInvitation}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Date of invitation"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderDateOfRegistration}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Date of registration"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderEmailInvited}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Email invited" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderEmailInviting}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Email inviting"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedInternalTransactionId}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Internal Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedRewardResponseStatus}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Reward Response Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedRewardResponseStatusMessage}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Reward Response Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedRewardRequestDate}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Reward Request Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedRewardRequestStatus}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Reward Request Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitedRewardRequestStatusMessage}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Invited Reward Request Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingFBInviteCode}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting FB Invite Code"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingInternalTransactionId}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Internal Transaction Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingRewardResponseStatus}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Response Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingRewardResponseStatusMessage}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Response Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingRewardRequestDate}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Reward Request Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingRewardRequestStatus}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Reward Request Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderInvitingRewardRequestStatusMessage}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Inviting Reward Request Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{referralBean.renderIsRealized}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Is Realized" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{referralBean.renderIsValid}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Is Valid" styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderPhoneNumberExtInvited}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone Number Extension Invited"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderPhoneNumberExtInviting}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone Number Extension Inviting"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderPhoneNumberInvited}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone Number Invited"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderPhoneNumberInviting}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Phone NUmber Inviting"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderProcessingStatus}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Processing Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderProcessingStatusMessage}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Processing Status Message"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderReferralSource}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Referral Source"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{referralBean.renderRewardType}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Type" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderRewardValueCurrencyCodeInvited}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value Currency Code Invited"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderRewardValueCurrencyCodeInviting}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value Currency Code Inviting"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderRewardValueInvited}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value Invited"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{referralBean.renderRewardValueInviting}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Value Inviting"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+
+
+				</p:row>
+			</p:panelGrid>
+		</p:tab>
+		<p:tab title="Criteria" id="idCriteria">
+			<h:panelGrid columns="8" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetime" value="#{referralBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetime" value="#{referralBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="for" />
+				<p:selectOneMenu value="#{referralBean.filterType}"
+					style="width:150px">
+					<f:selectItem itemLabel="All" itemValue="All" />
+					<f:selectItem itemLabel="Phone Number Inviting"
+						itemValue="phoneNumberInviting" />
+					<f:selectItem itemLabel="Email Inviting" itemValue="emailInviting" />
+					<f:selectItem itemLabel="Processing Status"
+						itemValue="processingStatus" />
+				</p:selectOneMenu>
+				<p:inputText id="idFilterValueField"
+					value="#{referralBean.filterValue}" style="width:250px" />
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;" action="#{referralBean.refresh()}"
+					update="" process="@form" oncomplete="" />
+			</h:panelGrid>
+		</p:tab>
+	</p:accordionPanel>
+
+
+	<p:dataTable id="idReferralBeanTable" widgetVar="widgetReferralTable"
+		var="transaction" value="#{referralBean.lazyModel}" lazy="true"
+		paginator="true" paginatorPosition="top" rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,20,30,50,100" resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{referralBean.pageUpdate}" />
+
+		<p:column rendered="#{referralBean.renderId}" prependId="false"
+			headerText="Id" sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.id}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderDateOfInvitation}"
+			prependId="false" headerText="Date Of Invitation" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.dateOfInvitation}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderDateOfRegistration}"
+			prependId="false" headerText="Date Of Registration" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.dateOfRegistration}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderEmailInvited}"
+			prependId="false" headerText="Email Invited" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.emailInvited}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderEmailInviting}"
+			prependId="false" headerText="Email Inviting" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.emailInviting}" />
+		</p:column>
+
+		<p:column
+			rendered="#{referralBean.renderInvitedInternalTransactionId}"
+			prependId="false" headerText="Invited Internal Transaction Id"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitedInternalTransactionId}" />
+		</p:column>
+
+
+		<p:column rendered="#{referralBean.renderInvitedRewardRequestDate}"
+			prependId="false" headerText="Invited Reward Request Date"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitedRewardRequestDate}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderInvitedRewardRequestStatus}"
+			prependId="false" headerText="Invited Reward Request Status"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitedRewardRequestStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{referralBean.renderInvitedRewardRequestStatusMessage}"
+			prependId="false" headerText="Reward Request Status Message"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{transaction.invitedRewardRequestStatusMessage}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderInvitedRewardResponseStatus}"
+			prependId="false" headerText="Invited Reward Response Status"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitedRewardResponseStatus}" />
+		</p:column>
+		<p:column
+			rendered="#{referralBean.renderInvitedRewardResponseStatusMessage}"
+			prependId="false" headerText="Invited Reward Response Status Message"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{transaction.invitedRewardResponseStatusMessage}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderInvitingFBInviteCode}"
+			prependId="false" headerText="Inviting FB Invite Code" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitingFBInviteCode}" />
+		</p:column>
+
+		<p:column
+			rendered="#{referralBean.renderInvitingInternalTransactionId}"
+			prependId="false" headerText="Inviting Internal Transaction Id"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitingInternalTransactionId}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderInvitingRewardRequestDate}"
+			prependId="false" headerText="Inviting Reward Request Date"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitingRewardRequestDate}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderInvitingRewardRequestStatus}"
+			prependId="false" headerText="Inviting Reward Request Status"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitingRewardRequestStatus}" />
+		</p:column>
+
+		<p:column
+			rendered="#{referralBean.renderInvitingRewardRequestStatusMessage}"
+			prependId="false" headerText="Inviting Reward Request Status Message"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{transaction.invitingRewardRequestStatusMessage}" />
+		</p:column>
+
+		<p:column
+			rendered="#{referralBean.renderInvitingRewardResponseStatus}"
+			prependId="false" headerText="Inviting Reward Response Status"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.invitingRewardResponseStatus}" />
+		</p:column>
+
+		<p:column
+			rendered="#{referralBean.renderInvitingRewardResponseStatusMessage}"
+			prependId="false" headerText="Inviting Reward Response Status"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{transaction.invitingRewardResponseStatusMessage}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderIsRealized}"
+			prependId="false" headerText="Is Realized" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.realized}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderIsValid}" prependId="false"
+			headerText="Is Valid" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.valid}" />
+		</p:column>
+
+
+		<p:column rendered="#{referralBean.renderPhoneNumberExtInvited}"
+			prependId="false" headerText="Phone Number Ext Invited" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.phoneNumberExtInvited}" />
+		</p:column>
+
+		<p:column rendered="#{referralBean.renderPhoneNumberExtInviting}"
+			prependId="false" headerText="Phone Number Ext Inviting" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.phoneNumberExtInviting}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderPhoneNumberInvited}"
+			prependId="false" headerText="Phone Number Invited" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.phoneNumberInvited}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderPhoneNumberInviting}"
+			prependId="false" headerText="Phone Number Inviting" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.phoneNumberInviting}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderProcessingStatus}"
+			prependId="false" headerText="Processing Status" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.processingStatus}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderProcessingStatusMessage}"
+			prependId="false" headerText="Processing Status Message" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.processingStatusMessage}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderReferralSource}"
+			prependId="false" headerText="Referral Source" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.referralSource}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderRewardType}"
+			prependId="false" headerText="Reward Type" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardType}" />
+		</p:column>
+		<p:column
+			rendered="#{referralBean.renderRewardValueCurrencyCodeInvited}"
+			prependId="false" headerText="Reward Value Currency Code Invited"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardValueCurrencyCodeInvited}" />
+		</p:column>
+		<p:column
+			rendered="#{referralBean.renderRewardValueCurrencyCodeInviting}"
+			prependId="false" headerText="Reward Value Currency Code Inviting"
+			sortBy="id" style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardValueCurrencyCodeInviting}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderRewardValueInvited}"
+			prependId="false" headerText="Reward Value Invited" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardValueInvited}" />
+		</p:column>
+		<p:column rendered="#{referralBean.renderRewardValueInviting}"
+			prependId="false" headerText="Reward Value Inviting" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardValueInviting}" />
+		</p:column>
+
+	</p:dataTable>
+
+</h:form>
+
+</html>

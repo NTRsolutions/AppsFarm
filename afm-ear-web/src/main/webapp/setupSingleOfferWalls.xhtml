@@ -1,0 +1,210 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+
+		    	<h:form prependId="false" >
+   				    <p:growl id="idOfferWallGrowl" showDetail="true" life="3000" />  
+   				    <p:dataTable id="idOfferWall" var="domain" value="#{offerWallConfigurationBean.domainDataModel}"   				    
+   				    rowKey="#{domain.name}" selectionMode="single">
+
+				        <p:column headerText="Active" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+						        <p:selectBooleanCheckbox value="#{domain.active}" disabled="true" />
+				        </p:column>
+				        <p:column headerText="Name" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.name}" />  
+				        </p:column>
+				        <p:column headerText="Ad Provider" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.providerCodeName}" />  
+				        </p:column>
+				        
+   				        <p:column headerText="Configure" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+            				<p:commandButton value="Configure" icon="ui-icon-search"  
+                        	     action="#{offerWallConfigurationBean.setEditedDomain(domain)}" 
+                        	     style="margin-right:20px;"
+                        	     oncomplete="widgetOfferWallEdit.show()"
+                        	     update="@form" 
+                        	     process="@this" />  
+				        </p:column>
+				        
+   				        <p:column headerText="" style="margin:auto;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				        </p:column>
+				        
+				        <f:facet name="footer">
+        		        	<div align="left">
+            					<p:commandButton value="Create new Offer Wall" icon="ui-icon-search"  
+	                        	     style="margin-right:20px;"
+	                        	     oncomplete="widgetOfferWallCreate.show()"
+	                        	     update="@form" 
+	                        	     process="@this"
+	                        	     rendered="true" />  
+							</div>	                        	     
+                         </f:facet>
+				    </p:dataTable>
+					
+					<!-- configuration for Mocean Ad Provider -->
+  					<p:dialog id="idOfferWallEditDialog" 
+							header="Edit #{offerWallConfigurationBean.editedDomain.name}" 
+							widgetVar="widgetOfferWallEdit" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idOfferWallEditData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+						    	<h:outputText styleClass="dialog-mediumFont" value="Active: " />
+  								<h:panelGrid columns="3" cellpadding="1">
+  									<p:selectBooleanCheckbox value="#{offerWallConfigurationBean.editedDomain.active}"  />
+		 	  						<p:commandButton value="Generate offer wall" icon="ui-icon-search"
+		   	  								update=""  
+						                    action="#{offerWallConfigurationBean.generateOfferWall}"
+			                       	        process="@form" />
+		 	  						<p:commandButton value="Preview offer wall" icon="ui-icon-search"
+		   	  								update=""  
+						                    action="#{offerWallConfigurationBean.previewOfferWall}"
+						                    oncomplete="widgetPreviewOfferWall.show()"
+			                       	        process="@form" />
+								</h:panelGrid>	   					    
+						        
+						    	<h:outputText styleClass="dialog-mediumFont" value="Ad Provider name: " />
+						         <p:selectOneMenu value="#{offerWallConfigurationBean.editedDomain.providerCodeName}">  
+						            <f:selectItems value="#{offerWallConfigurationBean.listAdProviders}"   
+						            				var="adProvider" 
+						            				itemLabel="#{adProvider.name}" 
+						            				itemValue="#{adProvider.codeName}" />   
+						        </p:selectOneMenu>    
+						    	<h:outputText styleClass="dialog-mediumFont" value="Number of offers to generate: " />
+   		   					    <h:panelGrid columns="4" cellpadding="4">
+   		   					    	<p:inputText  size="4" value="#{offerWallConfigurationBean.editedDomain.numberOfOffers}" />
+   		   					    	<h:outputText styleClass="dialog-mediumFont" value="generated every" />
+   		   					    	<p:inputText  size="2" value="#{offerWallConfigurationBean.offerWallGenerationIntervals} " disabled="true"/>
+						        	<h:outputText styleClass="dialog-mediumFont" value="hour(s)" />
+								</h:panelGrid>					    	
+
+								<!-- 					            
+						    	<h:outputText styleClass="dialog-mediumFont" value="Ad request url: " rendered="#{offerWallConfigurationBean.renderMocean}" />  
+	   				            <p:inputText value="#{offerWallConfigurationBean.moceanAdUrl}" size="100" rendered="#{offerWallConfigurationBean.renderMocean}" />
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Fiber param1: " rendered="#{offerWallConfigurationBean.renderFyber}" />  
+	   				            <p:inputText value="#{offerWallConfigurationBean.fyberParam1}" size="100" rendered="#{offerWallConfigurationBean.renderFyber}" />
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Hasoffers param1: " rendered="#{offerWallConfigurationBean.renderHasoffers}" />  
+	   				            <p:inputText value="#{offerWallConfigurationBean.hasoffersParam1}" size="100" rendered="#{offerWallConfigurationBean.renderHasoffers}" />
+	   				             -->
+	   					    </h:panelGrid>
+						</h:panelGrid>
+   					    <h:panelGrid columns="3" cellpadding="1">
+   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+				                    update=""
+	                       	        process=""
+				                    oncomplete="widgetOfferWallEdit.hide()" />
+   	  						<p:commandButton value="Update" icon="ui-icon-search"
+   	  								update=""  
+				                    action="#{offerWallConfigurationBean.update}"
+	                       	        process="@form" />
+   	  						<p:commandButton value="Delete" icon="ui-icon-search"
+   	  								update=""  
+				                    action="#{offerWallConfigurationBean.delete}"
+	                       	        process="@form" 
+	                       	        oncomplete="widgetOfferWallEdit.hide()" > 
+              	                   		<p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+              	                </p:commandButton>
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+					<!-- preview offer wall -->
+  					<p:dialog id="idPreviewOfferWallDialog" 
+							header="Preview of #{offerWallConfigurationBean.editedDomain.name} offer wall" 
+							widgetVar="widgetPreviewOfferWall" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idPreviewOfferWall" columns="1" cellpadding="4">
+				            <p:inputTextarea maxlength="300" rows="30" cols="150" style="width: 100% !important;font-size: 15px !important;" autoResize="false"
+				            	readonly="true" 
+				            	value="#{offerWallConfigurationBean.editedDomain.content}" />
+   					    </h:panelGrid>
+   					    <h:panelGrid columns="1" cellpadding="1">
+   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+				                    update=""
+	                       	        process=""
+				                    oncomplete="widgetPreviewOfferWall.hide()" />
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+					<!-- create offer wall -->
+					<p:dialog id="idOfferWallCreateDialog" 
+							header="Create new Offer Wall" widgetVar="widgetOfferWallCreate" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+   					    <h:panelGrid id="idOfferWallCreateData" columns="1" cellpadding="4">
+						    <h:panelGrid columns="2" cellpadding="4">
+						    	<h:outputText styleClass="dialog-mediumFont" value="Active: " />  
+						        <p:selectBooleanCheckbox value="#{offerWallConfigurationBean.createdDomain.active}"  />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Generation interval: " />
+   						        <h:panelGrid columns="2" cellpadding="4">
+   		   				            <p:inputText  size="2" value="#{offerWallConfigurationBean.offerWallGenerationIntervals} " disabled="true"/>
+						        	<h:outputText styleClass="dialog-mediumFont" value="hour(s)" />
+								</h:panelGrid>						    	  
+						    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />
+	   				            <p:inputText  size="40" value="#{offerWallConfigurationBean.createdDomain.name}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Ad Provider name: " />
+						         <p:selectOneMenu value="#{offerWallConfigurationBean.createdDomain.providerCodeName}">  
+						            <f:selectItems value="#{offerWallConfigurationBean.listAdProviders}"  
+						            				var="adProvider" 
+						            				itemLabel="#{adProvider.name}" 
+						            				itemValue="#{adProvider.codeName}" />   
+						        </p:selectOneMenu>
+						    	<h:outputText styleClass="dialog-mediumFont" value="Number of offers to generate: " />
+					            <p:inputText  size="4" value="#{offerWallConfigurationBean.createdDomain.numberOfOffers}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Description: " rendered="false" />
+					            <p:inputTextarea maxlength="300" rows="3" cols="150" style="width: 100% !important;" autoResize="false" 
+					            	value="#{offerWallConfigurationBean.createdDomain.description}" rendered="false" />
+	    				    </h:panelGrid>
+						</h:panelGrid>
+
+	   				    <p:dataTable id="idOfferWallConfigurationsTable" var="singelWallConfig" value="#{offerWallConfigurationBean.offerWallConfigurationsDataModel}"   				    
+	   				    rowKey="#{singelWallConfig.name}" selectionMode="single">
+	
+					        <p:column headerText="Name" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+	        						<h:outputText value="#{singelWallConfig.name}" />  
+					        </p:column>
+					        <p:column headerText="Ad Provider" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+	        						<h:outputText value="#{singelWallConfig.adProviderCodeName}" />  
+					        </p:column>
+					        <p:column headerText="Number of offers" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+	        						<h:outputText value="#{singelWallConfig.numberOfOffers}" />  
+					        </p:column>
+	   				        <p:column headerText="" style="margin:auto;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+					        </p:column>
+					        
+					        <f:facet name="footer">
+	        		        	<div align="left">
+	            					<p:commandButton value="Add new offer wall" icon="ui-icon-search"  
+		                        	     style="margin-right:20px;"
+		                        	     oncomplete="widgetOfferWallCreate.show()"
+		                        	     update="@form" 
+		                        	     process="@this"
+		                        	     rendered="true" />  
+								</div>	                        	     
+	                         </f:facet>
+					    </p:dataTable>
+    				    
+   					    <h:panelGrid columns="3" cellpadding="4">
+   	  						<p:commandButton 
+   	  								value="Create" icon="ui-icon-search"
+				                    action="#{offerWallConfigurationBean.create}"
+   	  								process="@form"
+				                    update="idOfferWallCreateData"
+				                    oncomplete="widgetOfferWallCreate.hide()" />
+							<p:commandButton value="Close" icon="ui-icon-search"  
+					                    update=""
+		                       	        process=""
+					                    oncomplete="widgetOfferWallCreate.hide()" />				                    			
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+				</h:form>
+                    
+</html>
+

@@ -1,0 +1,52 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:form prependId="false">
+	<p:growl id="idProviderReport" showDetail="true" life="3000" />
+
+	<p:accordionPanel multiple="true" activeIndex="0"  >
+		<p:tab title="Criteria" id="idCriteria">
+			<h:panelGrid columns="8" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetime"
+					value="#{providerReportBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetime" value="#{providerReportBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="Reward Type" />
+				<p:selectOneMenu value="#{providerReportBean.rewardTypeName}"
+					style="width:150px">
+					<f:selectItems value="#{providerReportBean.rewardTypes}" />
+				</p:selectOneMenu>
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{providerReportBean.refreshReport()}" update=""
+					process="@form" oncomplete="" />
+			</h:panelGrid>
+		</p:tab>
+	</p:accordionPanel>
+	
+	<h:panelGrid id="idProviderReportPanel" columns="2" styleClass="dialog-mediumFont" style="margin-left:20px" >
+		<h:outputText value="Time range:" />
+		<h:outputText value="#{providerReportBean.report.dateStart} - #{providerReportBean.report.dateEnd}" />
+		<h:outputText value="Registrations:" />
+		<h:outputText value="#{providerReportBean.report.registrationsSum}" />
+		<h:outputText value="Clicks:" />
+		<h:outputText value="#{providerReportBean.report.clicksSum}" />
+		<h:outputText value="Conversions:" />
+		<h:outputText value="#{providerReportBean.report.conversionsSum}" />
+		<h:outputText value="Conversion rate (CR):" />
+		<h:outputText value="#{providerReportBean.report.conversionRate}" />
+		<h:outputText value="Gained profit value:" />
+		<h:outputText value="#{providerReportBean.report.profitSumInTargetCurrency}" />
+		<h:outputText value="Spent reward value:" />
+		<h:outputText value="#{providerReportBean.report.rewardSumInTargetCurrency}" />
+	</h:panelGrid>
+		
+</h:form>
+</html>

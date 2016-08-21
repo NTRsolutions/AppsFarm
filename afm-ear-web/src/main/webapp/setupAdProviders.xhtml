@@ -1,0 +1,340 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
+		    	<h:form prependId="false" >
+   				    <p:growl id="idDomainConfigurationGrowl" showDetail="true" life="3000" />  
+   				    <p:dataTable id="idDomainConfiguration" var="domain" value="#{adProviderConfigurationBean.domainDataModel}"   				    
+   				    rowKey="#{domain.name}" selectionMode="single">
+
+				        <p:column headerText="Active" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+						        <p:selectBooleanCheckbox value="#{domain.active}" disabled="true" />
+				        </p:column>
+				        <p:column headerText="Name" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.name}" />  
+				        </p:column>
+				        <p:column headerText="Type" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.codeName}" />  
+				        </p:column>
+				        <p:column headerText="Description" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.description}" />  
+				        </p:column>
+				        <p:column headerText="Tags" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{domain.tags}" />  
+				        </p:column>
+   				        <p:column headerText="Configure" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+            				<p:commandButton value="Configure" icon="ui-icon-search"  
+                        	     action="#{adProviderConfigurationBean.setEditedDomain(domain)}" 
+                        	     style="margin-right:20px;"
+                        	     oncomplete="widgetDomainEdit.show()"
+                        	     update="@form" 
+                        	     process="@this" />  
+				        </p:column>
+				        
+   				        <p:column headerText="" style="margin:auto;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				        </p:column>
+				        
+				        <f:facet name="footer">
+        		        	<div align="left">
+            					<p:commandButton value="Create New Ad Provider" icon="ui-icon-search"  
+	                        	     style="margin-right:20px;"
+	                        	     action="#{adProviderConfigurationBean.preCreate}"
+	                        	     oncomplete="widgetSelectProviderType.show()"
+	                        	     update="@form" 
+	                        	     process="@this"
+	                        	     rendered="true" />  
+							</div>	                        	     
+                         </f:facet>
+				    </p:dataTable>
+					
+					<!-- configuration for Minimob Ad Provider -->
+  					<p:dialog id="idDomainEditDialog" 
+							header="Edit #{adProviderConfigurationBean.editedDomain.name}" 
+							widgetVar="widgetDomainEdit" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idDomainEditData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+						    	<h:outputText styleClass="dialog-mediumFont" value="Active: " />  
+						        <p:selectBooleanCheckbox value="#{adProviderConfigurationBean.editedDomain.active}"  />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="Id: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.snapdealId}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
+								<h:outputText styleClass="dialog-mediumFont" value="Token: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.snapdealToken}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="App hash : " rendered="#{adProviderConfigurationBean.renderPersonaly}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.personalyAppHash}" size="100" rendered="#{adProviderConfigurationBean.renderPersonaly}" />
+								<h:outputText styleClass="dialog-mediumFont" value="Records per page: " rendered="#{adProviderConfigurationBean.renderPersonaly}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.personalyRecordsPerPage}" size="100" rendered="#{adProviderConfigurationBean.renderPersonaly}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="Vic : " rendered="#{adProviderConfigurationBean.renderTrialPay}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.trialPayVic}" size="100" rendered="#{adProviderConfigurationBean.renderTrialPay}" />
+								<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderTrialPay}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.trialPayNmberOfPulledOffers}" size="100" rendered="#{adProviderConfigurationBean.renderTrialPay}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderClickey}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.clickeyApiUrl}" size="100" rendered="#{adProviderConfigurationBean.renderClickey}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderWoobiAndroid}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.woobiAndroidApiUrl}" size="100" rendered="#{adProviderConfigurationBean.renderWoobiAndroid}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderWoobiIOS}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.woobiIOSApiUrl}" size="100" rendered="#{adProviderConfigurationBean.renderWoobiIOS}" />
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="Access Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.supersonicAccessKey}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Application Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.supersonicApplicationKey}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Secret Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.supersonicSecretKey}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Platform: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.supersonicPlatform}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+	   				            <p:inputText id="idNumberOfPulledOffersSupersonic" value="#{adProviderConfigurationBean.supersonicNumberOfPulledOffers}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+ 								<pe:tooltip for="idNumberOfPulledOffersSupersonic" value="This number represents the total size of offer pool from which offers will be randomly selected during offer wall composition, set it to -1 to pull all offers" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="Placement Id: " rendered="#{adProviderConfigurationBean.renderAarki}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.aarkiPlacementId}" size="100" rendered="#{adProviderConfigurationBean.renderAarki}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderAarki}" />  
+	   				            <p:inputText id="idNumberOfPulledOffers" value="#{adProviderConfigurationBean.aarkiNumberOfPulledOffers}" size="100" rendered="#{adProviderConfigurationBean.renderAarki}" />
+ 								<pe:tooltip for="idNumberOfPulledOffers" value="This number represents the total size of offer pool from which offers will be randomly selected during offer wall composition, set it to -1 to pull all offers" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderAarki}" />  
+
+						    	<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.minimobApiKey}" size="100" rendered="#{adProviderConfigurationBean.renderMinimob}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+					            <p:inputText id="idMinimobServiceQueryInterval" value="#{adProviderConfigurationBean.minimobServiceQueryInterval}" size="100" rendered="#{adProviderConfigurationBean.renderMinimob}" />
+ 								<pe:tooltip for="idMinimobServiceQueryInterval" value="Value im milliseconds that defines sleep periods between queries to Minimob service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Api ID: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.fyberApiId}" size="40" rendered="#{adProviderConfigurationBean.renderFyber}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.fyberApiKey}" size="40" rendered="#{adProviderConfigurationBean.renderFyber}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Offer types filter: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+	   				            <p:inputText id="idOfferTypes" value="#{adProviderConfigurationBean.offerTypes}" size="80" rendered="#{adProviderConfigurationBean.renderFyber}" />
+ 								<pe:tooltip for="idOfferTypes" value="100-Mobile, 101-Download, 102-Trial, 103-Sale, 104-Information request, 105-Registration, 106-Gaming, 107-Gambling, 108-Data generation, 109-Games, 110-Surveys, 111-Dating, 112-Free, 113-Video" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderFyber}" />  
+   						    	
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNetworkId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNetworkToken}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate ID: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersAffId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Group name: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersGroupName}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+					            <p:inputText id="idHasoffersServiceQueryInterval" value="#{adProviderConfigurationBean.hasoffersServiceQueryInterval}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+ 								<pe:tooltip for="idHasoffersServiceQueryInterval" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtNetworkId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtNetworkToken}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate ID: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtAffId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Category name: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtCategoryName}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+					            <p:inputText id="idHasoffersExtServiceQueryInterval" value="#{adProviderConfigurationBean.hasoffersExtServiceQueryInterval}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+ 								<pe:tooltip for="idHasoffersExtServiceQueryInterval" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNativexNetworkId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNativexNetworkToken}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+   						    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Affiliate ID: "  />  
+	   				            <p:inputText rendered="false" value="#{adProviderConfigurationBean.hasoffersNativexAffId}" size="100"  />
+   						    	<h:outputText rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" styleClass="dialog-mediumFont" value="Category name: " />  
+	   				            <p:inputText rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" value="#{adProviderConfigurationBean.hasoffersNativexCategoryName}" size="100" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+					            <p:inputText id="idHasoffersNativexServiceQueryInterval" value="#{adProviderConfigurationBean.hasoffersNativexServiceQueryInterval}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+ 								<pe:tooltip for="idHasoffersNativexServiceQueryInterval" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersVCNetworkId}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersVCNetworkToken}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+   						    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Affiliate ID: "  />  
+	   				            <p:inputText rendered="false" value="#{adProviderConfigurationBean.hasoffersVCAffId}" size="100"  />
+   						    	<h:outputText rendered="#{adProviderConfigurationBean.renderHasoffersVC}" styleClass="dialog-mediumFont" value="Category name: " />  
+	   				            <p:inputText rendered="#{adProviderConfigurationBean.renderHasoffersVC}" value="#{adProviderConfigurationBean.hasoffersVCCategoryName}" size="100" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+					            <p:inputText id="idHasoffersVCServiceQueryInterval" value="#{adProviderConfigurationBean.hasoffersVCServiceQueryInterval}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+ 								<pe:tooltip for="idHasoffersVCServiceQueryInterval" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+
+	   					    </h:panelGrid>
+						</h:panelGrid>	   					    
+	   					    <h:panelGrid columns="3" cellpadding="4">
+	   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+					                    update=""
+		                       	        process=""
+					                    oncomplete="widgetDomainEdit.hide()" />
+	   	  						<p:commandButton value="Update" icon="ui-icon-search"
+	   	  								update=""  
+					                    action="#{adProviderConfigurationBean.update}"
+		                       	        process="@form" />
+	   	  						<p:commandButton value="Delete" icon="ui-icon-search"
+					                    oncomplete="widgetDomainEdit.hide()" 
+	   	  								update=""  
+					                    action="#{adProviderConfigurationBean.delete}"
+		                       	        process="@form" />
+	   					    </h:panelGrid>
+   					    
+				    </p:dialog>  
+<!-- create provider dialog -->
+					<p:dialog id="idSelectProviderTypeDialog" width="800" 
+							header="Select Provider Type" widgetVar="widgetSelectProviderType" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+						<p:tabView id="idSelectProviderDetails">
+							<!-- web services - tracking settings -->    
+							<p:tab  title="Provider Type" rendered="true" >
+		   					    <h:panelGrid id="idSelectProviderTypeData" columns="2" cellpadding="4">
+							    	<h:outputText styleClass="dialog-mediumFont" value="Provider type: " />
+						            <p:selectOneMenu value="#{adProviderConfigurationBean.createdDomain.codeName}" >  
+							            <f:selectItems value="#{adProviderConfigurationBean.listOfferProviderTypes}"
+							            				var="providerType" 
+							            				itemLabel="#{providerType}" 
+							            				itemValue="#{providerType}" />
+							        	<p:ajax listener="#{adProviderConfigurationBean.adjustUIForSelectedProviderType}" />  
+									</p:selectOneMenu>
+							    	<h:outputText styleClass="dialog-mediumFont" value="Active: " />  
+							        <p:selectBooleanCheckbox value="#{adProviderConfigurationBean.createdDomain.active}"  />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />
+		   				            <p:inputText  size="100" value="#{adProviderConfigurationBean.createdDomain.name}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Description: " />
+							    	<p:inputText  size="100" value="#{adProviderConfigurationBean.createdDomain.description}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Tags: " />
+		   				            <p:inputText  size="100" value="#{adProviderConfigurationBean.createdDomain.tags}" />
+								</h:panelGrid>
+							</p:tab>
+							<p:tab title="Provider Configuration" rendered="true" >
+							    <h:panelGrid columns="2" cellpadding="4">
+   							    	<h:outputText styleClass="dialog-mediumFont" value="Id: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.snapdealIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Token: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.snapdealTokenCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
+							    
+							    	<h:outputText styleClass="dialog-mediumFont" value="App hash: " rendered="#{adProviderConfigurationBean.renderPersonaly}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.personalyAppHashCreate}" size="100" rendered="#{adProviderConfigurationBean.renderPersonaly}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Records per page: " rendered="#{adProviderConfigurationBean.renderPersonaly}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.personalyRecordsPerPageCreate}" size="100" rendered="#{adProviderConfigurationBean.renderPersonaly}" />
+
+							    	<h:outputText styleClass="dialog-mediumFont" value="Vic: " rendered="#{adProviderConfigurationBean.renderTrialPay}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.trialPayVicCreate}" size="100" rendered="#{adProviderConfigurationBean.renderTrialPay}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderTrialPay}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.trialPayNmberOfPulledOffersCreate}" size="100" rendered="#{adProviderConfigurationBean.renderTrialPay}" />
+
+							    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderWoobiAndroid}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.woobiAndroidApiUrlCreate}" size="100" rendered="#{adProviderConfigurationBean.renderWoobiAndroid}" />
+
+							    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderClickey}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.clickeyApiUrlCreate}" size="100" rendered="#{adProviderConfigurationBean.renderClickey}" />
+		
+							    	<h:outputText styleClass="dialog-mediumFont" value="API Url: " rendered="#{adProviderConfigurationBean.renderWoobiIOS}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.woobiIOSApiUrlCreate}" size="100" rendered="#{adProviderConfigurationBean.renderWoobiIOS}" />
+		
+							    	<h:outputText styleClass="dialog-mediumFont" value="Access Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.supersonicAccessKeyCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Application Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.supersonicApplicationKeyCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Secret Key: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.supersonicSecretKeyCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Platform: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.supersonicPlatformCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		   				            <p:inputText id="idNumberOfPulledOffersSupersonicCreate" value="#{adProviderConfigurationBean.supersonicNumberOfPulledOffersCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSupersonic}" />
+									<pe:tooltip for="idNumberOfPulledOffersSupersonicCreate" value="This number represents the total size of offer pool from which offers will be randomly selected during offer wall composition, set it to -1 to pull all offers" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderSupersonic}" />  
+		
+							    	<h:outputText styleClass="dialog-mediumFont" value="Placement Id: " rendered="#{adProviderConfigurationBean.renderAarki}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.aarkiPlacementIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderAarki}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Number of pulled offers: " rendered="#{adProviderConfigurationBean.renderAarki}" />  
+		   				            <p:inputText id="idNumberOfPulledOffersCreate" value="#{adProviderConfigurationBean.aarkiNumberOfPulledOffersCreate}" size="100" rendered="#{adProviderConfigurationBean.renderAarki}" />
+									<pe:tooltip for="idNumberOfPulledOffersCreate" value="This number represents the total size of offer pool from which offers will be randomly selected during offer wall composition, set it to -1 to pull all offers" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderAarki}" />  
+		
+							    	<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.minimobApiKeyCreate}" size="100" rendered="#{adProviderConfigurationBean.renderMinimob}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+						            <p:inputText id="idMinimobServiceQueryIntervalCreate" value="#{adProviderConfigurationBean.minimobServiceQueryIntervalCreate}" size="100" rendered="#{adProviderConfigurationBean.renderMinimob}" />
+									<pe:tooltip for="idMinimobServiceQueryIntervalCreate" value="Value im milliseconds that defines sleep periods between queries to Minimob service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderMinimob}" />  
+		
+		  					    	<h:outputText styleClass="dialog-mediumFont" value="Api ID: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.fyberApiIdCreate}" size="40" rendered="#{adProviderConfigurationBean.renderFyber}" />
+		  					    	<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.fyberApiKeyCreate}" size="40" rendered="#{adProviderConfigurationBean.renderFyber}" />
+		  					    	<h:outputText styleClass="dialog-mediumFont" value="Offer types filter: " rendered="#{adProviderConfigurationBean.renderFyber}" />  
+		   				            <p:inputText id="idOfferTypesCreate" value="#{adProviderConfigurationBean.offerTypesCreate}" size="80" rendered="#{adProviderConfigurationBean.renderFyber}" />
+									<pe:tooltip for="idOfferTypesCreate" value="100-Mobile, 101-Download, 102-Trial, 103-Sale, 104-Information request, 105-Registration, 106-Gaming, 107-Gambling, 108-Data generation, 109-Games, 110-Surveys, 111-Dating, 112-Free, 113-Video" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderFyber}" />  
+		  						    	
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNetworkIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNetworkTokenCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+	   						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate ID: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersAffIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+	   						    	<h:outputText styleClass="dialog-mediumFont" value="Group name: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersGroupNameCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffers}" />  
+						            <p:inputText id="idHasoffersServiceQueryIntervalCreate" value="#{adProviderConfigurationBean.hasoffersServiceQueryIntervalCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+									<pe:tooltip for="idHasoffersServiceQueryIntervalCreate" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffers}" />
+									
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtNetworkIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtNetworkTokenCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+	   						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate ID: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtAffIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+	   						    	<h:outputText styleClass="dialog-mediumFont" value="Category name: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersExtCategoryNameCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+						            <p:inputText id="idHasoffersExtServiceQueryIntervalCreate" value="#{adProviderConfigurationBean.hasoffersExtServiceQueryIntervalCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />
+									<pe:tooltip for="idHasoffersExtServiceQueryIntervalCreate" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersExt}" />  
+
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNativexNetworkIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersNativexNetworkTokenCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+	   						    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Affiliate ID: "  />  
+		   				            <p:inputText  rendered="false" value="#{adProviderConfigurationBean.hasoffersNativexAffIdCreate}" size="100" />
+	   						    	<h:outputText rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" styleClass="dialog-mediumFont" value="Category name: " />  
+		   				            <p:inputText rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" value="#{adProviderConfigurationBean.hasoffersNativexCategoryNameCreate}" size="100" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+						            <p:inputText id="idHasoffersNativexServiceQueryIntervalCreate" value="#{adProviderConfigurationBean.hasoffersNativexServiceQueryIntervalCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />
+									<pe:tooltip for="idHasoffersNativexServiceQueryIntervalCreate" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersNativex}" />  
+
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network ID: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersVCNetworkIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+	  						    	<h:outputText styleClass="dialog-mediumFont" value="Network Token: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.hasoffersVCNetworkTokenCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+	   						    	<h:outputText rendered="false" styleClass="dialog-mediumFont" value="Affiliate ID: "  />  
+		   				            <p:inputText  rendered="false" value="#{adProviderConfigurationBean.hasoffersVCAffIdCreate}" size="100" />
+	   						    	<h:outputText rendered="#{adProviderConfigurationBean.renderHasoffersVC}" styleClass="dialog-mediumFont" value="Category name: " />  
+		   				            <p:inputText rendered="#{adProviderConfigurationBean.renderHasoffersVC}" value="#{adProviderConfigurationBean.hasoffersVCCategoryNameCreate}" size="100" />
+							    	<h:outputText styleClass="dialog-mediumFont" value="Service query interval: " rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+						            <p:inputText id="idHasoffersVCServiceQueryIntervalCreate" value="#{adProviderConfigurationBean.hasoffersVCServiceQueryIntervalCreate}" size="100" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />
+									<pe:tooltip for="idHasoffersVCServiceQueryIntervalCreate" value="Value im milliseconds that defines sleep periods between queries to Hasoffers service" myPosition="top, right" rendered="#{adProviderConfigurationBean.renderHasoffersVC}" />  
+									  
+		    				    </h:panelGrid>
+							</p:tab>
+						</p:tabView>
+						
+   					    <h:panelGrid columns="3" cellpadding="4">
+   	  						<p:commandButton 
+   	  								value="Create" icon="ui-icon-search"
+   	  								process="@form"
+				                    action="#{adProviderConfigurationBean.create}"
+				                    oncomplete="widgetSelectProviderType.hide()" />
+							<p:commandButton value="Close" icon="ui-icon-search"  
+					                    update=""
+		                       	        process=""
+					                    oncomplete="widgetSelectProviderType.hide()" />				                    			
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+				</h:form>
+                    
+</html>
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="ar/templates/yoo_unity/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="resources/css/invitationWebpageStyle.css" />
+</head>
+
+<body>
+#{InvitationBean.loadParameters()}
+
+	<div class="page">
+		<h:form style="margin: 0px;">
+		<div class="content">
+			<div class="logo">
+				<img src="ar/images/ArLogo3.png" alt="logo" width="85%" />
+			</div>
+			<div class="sub_content">
+				<div class="content_text">
+					You have been asked to sign up to Air Rewardz!
+					<br/>
+					<br/>
+					When you install, register and complete one offer,
+					your friend will receive their referral reward.
+					<br/>
+					<br/>
+					Once you are registered, you can earn your own airtime rewardz
+					by inviting your own friends to use Air Rewardz.
+					<br/>
+					<br/>
+					In order to receive referrals rewards, please activate your email after registration
+					<br/>
+				</div>
+				<h:commandButton actionListener="#{InvitationBean.execute()}" value="complete referral" styleClass="button"/>
+				<div class="content_text">
+					Air Rewardz is the app that earns you airtime credit 
+					straight to your mobile phone account. 
+					<br/>
+					<br/>
+					Air Rewardz has partnered with your mobile network provider 
+					to deliver you this exciting service.
+					<br/>
+					<br/>
+					Air Rewardz offers you a massive choice of the hottest 
+					new apps – click on the latest rewardz 
+					section to see what is available to you.  You can opt 
+					to get the airtime reward instantly or 
+					put it in your wallet until you want to cash it in. 
+					Just install and open the apps or follow the offer instructions. 
+					You can now also watch videos to earn airtime, by checking out the videos in Video Rewardz. 
+					Every time you watch a video you will be credited to your wallet. 
+					<br/>
+				</div>
+			</div>
+		</div>
+	</h:form>
+	</div>
+</body>
+
+</html>

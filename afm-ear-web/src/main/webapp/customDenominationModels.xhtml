@@ -1,0 +1,67 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
+
+		    	<h:form prependId="false" >
+   				    <p:growl id="idCustomDenominationModelsGrowl" showDetail="true" life="3000" />
+
+				    <h:panelGrid columns="5" cellpadding="4">
+   				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Select offer: "  />
+				        <p:selectOneMenu id="idSelectOffers" value="#{customDenominationModelsBean.selectedOfferToAssignToDenominationModelKey}" >  
+				            <f:selectItems value="#{customDenominationModelsBean.listAllAvctiveIndividualOffers}"  
+				            				var="individualOffer" 
+				            				itemLabel="#{individualOffer.title}  (Provider: #{individualOffer.adProviderCodeName})" 
+				            				itemValue="#{individualOffer.adProviderCodeName}-#{individualOffer.sourceId}" />   
+				        </p:selectOneMenu>
+   				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Select custom denomination model: "  />
+				        <p:selectOneMenu id="idSelectDenominationModels" value="#{customDenominationModelsBean.selectedDenominationModelId}" >  
+				            <f:selectItems value="#{customDenominationModelsBean.listDenominationModels}"  
+				            				var="denominationModel" 
+				            				itemLabel="#{denominationModel.name}" 
+				            				itemValue="#{denominationModel.id}" />   
+				        </p:selectOneMenu>
+				        
+  						<p:commandButton 
+							value="Assign denomination model to offer" icon="ui-icon-search"
+		                    action="#{customDenominationModelsBean.blockOffer}"
+							process="@form"
+		                    update="idTableCustomDenominationModels" />
+					</h:panelGrid>   				    
+   				      
+   				    <p:dataTable id="idTableCustomDenominationModels" var="customDenominationModelAssignment" value="#{customDenominationModelsBean.customDenominationModelAssignmentsDataModel}"   				    
+   				    rowKey="#{customDenominationModelAssignment.rowKey}" selectionMode="single">
+ 
+				        <p:column headerText="Title" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{customDenominationModelAssignment.title}" />  
+				        </p:column>
+
+				        <p:column headerText="Offer provider" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{customDenominationModelAssignment.adProviderCodeName}" />  
+				        </p:column>
+
+				        <p:column headerText="Assigned Denomination Model Name" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{customDenominationModelAssignment.denominationModelName}" />  
+				        </p:column>
+
+				        <p:column headerText="Entry time" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+        						<h:outputText value="#{customDenominationModelAssignment.timestamp.toString()}" />  
+				        </p:column>
+				        
+   				        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+            				<p:commandButton value="Remove assignment" icon="ui-icon-search"  
+                        	     action="#{customDenominationModelsBean.delete(customDenominationModelAssignment)}" 
+                        	     style="margin-right:20px;"
+                        	     update="@form" 
+                        	     process="@this" />  
+				        </p:column>
+				    </p:dataTable>
+    				    
+				</h:form>
+                    
+</html>
+

@@ -1,0 +1,285 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+
+	<p:growl id="idSystemSettingsGrowl" showDetail="true"/>
+
+
+<h:form prependId="false" >
+<h:outputText id="idMaintenanceStatusMessage" styleClass="tinyFontAlert" value="#{systemSettingsBean.infoMaintenaceStatus}" />
+<p:tabView id="tabSystemSettings">
+  <!-- server settings -->
+  <p:tab id="tabServerSettings" title="Server monitoring" rendered="false" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Server performance data collection:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio value="#{systemSettingsBean.rbServerStatusCollection}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Collect server status data every:" />
+			<p:spinner value="#{systemSettingsBean.serverStatusCollectionIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="second(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- Master server settings -->
+  <p:tab id="tabMasterServerConfiguration" title="MasterSettings" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Master node IP:" />
+			<p:inputText  size="16" value="#{systemSettingsBean.masterServerIp}" />
+			<h:outputText styleClass="dialog-mediumFont" value="(only Master server performs monitoring, reporting and maintenance activities)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- maintenance mode -->
+  <p:tab id="tabMaintenance" title="Server maintenance" rendered="false" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+        <h:panelGrid id="idInfoMaintenanceSetup" columns="2" >
+	    	<h:outputText styleClass="dialog-mediumFont" value="Maintenance active:" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceActive}" />
+
+    		<h:outputText styleClass="dialog-mediumFont" value="Maintenance duration (minutes):" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceDuration}" />
+    		
+    		<h:outputText styleClass="dialog-mediumFont" value="Maintenance start date:" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceStartDate}" />
+    		
+    		<h:outputText styleClass="dialog-mediumFont" value="Maintenance finish date:" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceEndDate}" />
+    		
+    		<h:outputText styleClass="dialog-mediumFont" value="Activation of advanced server functionality:" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceAdvancedFunctionalityStartDate}" />
+    		
+    		<h:outputText styleClass="dialog-mediumFont" value="Maintenance configuration adjustment date:" />
+    		<h:outputText styleClass="dialog-mediumFont" value="#{systemSettingsBean.infoMaintenaceSetupAdjustmentDate}" />
+        </h:panelGrid>
+		<h:outputText styleClass="dialog-mediumFont" value="Maintenance mode:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio value="#{systemSettingsBean.rbMaintenance}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Maintenance duration:" />
+			<p:spinner value="#{systemSettingsBean.maintenanceDuration}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- offer wall settings -->
+  <p:tab id="tabOfferGenerationConfiguration" title="OfferWallSettings" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Offer walls automatic generation:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio id="idOfferWallGenerationMode" value="#{systemSettingsBean.rbOfferWallGeneration}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Generate offer walls every:" />
+			<p:spinner value="#{systemSettingsBean.offerWallGenerationIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- CRF settings -->
+  <p:tab id="tabCRFConfiguration" title="CRFSettings" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Conversion Rate Filter (CRF) status:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio value="#{systemSettingsBean.rbCRFEnabled}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="CRF trigger interval:" />
+			<p:spinner value="#{systemSettingsBean.crfTriggerIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- storage size monitor -->
+  <p:tab id="tabDBStorageSizeMonitor" title="SQLStorageSizeMonitor" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Automatic SQL data size maintenance:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio value="#{systemSettingsBean.rbSQLStorageSizeMonitor}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Monitor data size every:" />
+			<p:spinner value="#{systemSettingsBean.sqlStorageSizeMonitorIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Remove data older than:" />
+			<p:spinner value="#{systemSettingsBean.sqlStorageHistoryLength}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="day(s)" />
+		</h:panelGrid>
+		
+    </h:panelGrid>
+  </p:tab>
+
+<!-- storage settings -->
+  <p:tab id="tabStorageConfiguration" title="Log Analytics Storage">
+    <h:panelGrid columns="1" cellpadding="4"  >
+	    <h:panelGrid columns="2" cellpadding="4"  >
+			<h:outputText styleClass="dialog-mediumFont" value="Storage server IP: " />
+			<p:inputText  size="16" value="#{systemSettingsBean.storageServerIp}" />
+			<h:outputText styleClass="dialog-mediumFont" value="Backup storage server IP: " />
+			<p:inputText  size="16" value="#{systemSettingsBean.storageServerBackupIp}" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+<!-- ui settings -->
+  <p:tab id="tabUIConfiguration" title="UI" rendered="false" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+    	<h:panelGrid columns="2" cellpadding="4"  >
+			<h:outputText styleClass="dialog-mediumFont" value="Number of displayed CPE log events:" />
+		   	<p:spinner value="#{systemSettingsBean.displayedCpeLogEvents}" stepFactor="1.0" size="5" style="text-align:left;vertical-align:top;" />
+			<h:outputText styleClass="dialog-mediumFont" value="Number of displayed alerts:" />
+		   	<p:spinner value="#{systemSettingsBean.displayedAlertEvents}" stepFactor="1.0" size="5" style="text-align:left;vertical-align:top;" />
+    	</h:panelGrid>
+  	</h:panelGrid>
+  </p:tab>
+
+
+  <!-- monitoring settings -->
+  <p:tab id="tabMonitoringConfiguration" title="Monitoring" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="System Operation Monitoring (KPI metrics such as number of clicks, conversions, rewards):" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio id="idMonitoringMode" value="#{systemSettingsBean.rbMonitoring}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:outputText styleClass="dialog-mediumFont" value="Server Resources Monitoring (resource utilisation metrics such as CPU, RAM, Network, HD utilisation):" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio value="#{systemSettingsBean.rbServerMonitoring}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Monitor system operation every:" />
+			<p:spinner value="#{systemSettingsBean.monitoringIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- reporting settings -->
+  <p:tab id="tabReportingConfiguration" title="Reporting" rendered="true" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Reporting:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio id="idReportingMode" value="#{systemSettingsBean.rbReporting}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Generate report every:" />
+			<p:spinner value="#{systemSettingsBean.reportingIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+    </h:panelGrid>
+  </p:tab>
+
+  <!-- forecasting settings -->
+  <p:tab id="tabForecastingConfiguration" title="Forecasting" rendered="false" >
+    <h:panelGrid columns="1" cellpadding="4"  >
+		<h:outputText styleClass="dialog-mediumFont" value="Forecasting:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio id="idForecastingMode" value="#{systemSettingsBean.rbForecasting}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+		<h:panelGrid columns="3" >
+			<h:outputText styleClass="dialog-mediumFont" value="Generate forecasts every:" />
+			<p:spinner value="#{systemSettingsBean.forecastingIntervals}" stepFactor="1.0" size="5"  />
+			<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+		</h:panelGrid>
+	    <h:panelGrid columns="2" cellpadding="4"  >
+			<h:outputText styleClass="dialog-mediumFont" value="Forecasting server IP: " />
+			<p:inputText  size="16" value="#{systemSettingsBean.forecastingServerIp}" />
+		</h:panelGrid>
+	    <h:panelGrid columns="2" cellpadding="4"  >
+			<h:outputText styleClass="dialog-mediumFont" value="In-memory data grid IP: " />
+			<p:inputText  size="16" value="#{systemSettingsBean.imdgIp}" />
+		</h:panelGrid>
+		
+    </h:panelGrid>
+  </p:tab>
+
+  
+  <p:tab id="tabTRConfiguration" title="CWMP settings" rendered="false" >
+    <h:panelGrid id="idSystemSettings" columns="1" cellpadding="4"  >
+	    <!-- auto-configuration -->
+		<h:outputText styleClass="dialog-mediumFont" value="Auto-configuration:" />
+		<h:panelGrid columns="2" >
+		    <p:selectOneRadio id="idAcMode" value="#{systemSettingsBean.rbAutoconfMode}" >
+	           <f:selectItem itemLabel="Enabled" itemValue="enabled" />
+	           <f:selectItem itemLabel="Disabled" itemValue="disabled" />
+			</p:selectOneRadio>
+		</h:panelGrid>
+
+	    <!-- cpe registration mode -->
+		<h:outputText styleClass="dialog-mediumFont" value="CPE registration mode:" />
+	    <p:selectOneRadio id="idCpeCreation" value="#{systemSettingsBean.rbCpeCreationMode}" >
+           <f:selectItem itemLabel="Automatic" itemValue="auto" />
+           <f:selectItem itemLabel="Manual" itemValue="manual" />
+		</p:selectOneRadio>
+
+	    <!-- logging -->
+		<h:outputText styleClass="dialog-mediumFont" value="CPE logging level:" />
+	    <p:selectOneRadio id="idLogging" value="#{systemSettingsBean.rbLoggingMode}" >
+           <f:selectItem itemLabel="Default" itemValue="default" />
+           <f:selectItem itemLabel="Detailed" itemValue="detailed" />
+		</p:selectOneRadio>
+		
+		<!-- stun-configuration -->
+		<h:outputText styleClass="dialog-mediumFont" value="STUN:" />
+	    <h:panelGrid columns="2" cellpadding="4"  >
+			<h:outputText styleClass="dialog-mediumFont" value="STUN port:" />
+			<p:inputText  size="10" value="#{systemSettingsBean.stunPort}" />
+	  	</h:panelGrid>
+		
+	</h:panelGrid>		
+  </p:tab>
+
+</p:tabView>
+
+	<!-- save button -->	
+    <h:panelGrid columns="1" cellpadding="4">
+		<p:commandButton 
+			value="Save settings" icon="ui-icon-search"
+			process="@form"
+                  action="#{systemSettingsBean.saveSettings}"
+                  update="" />
+    </h:panelGrid>
+</h:form>
+                    
+</html>
+

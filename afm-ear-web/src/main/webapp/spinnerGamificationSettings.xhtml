@@ -1,0 +1,387 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form id="idSpinnerRewardModelsForm" prependId="false">
+	<p:growl id="idSpinnerRewardModelGrowl" showDetail="true" life="3000" />
+
+
+	<p:dataTable id="idSpinnerGamificationTable" var="model"
+		value="#{spinnerGamificationBean.rewardTypeDataModelBean}"
+		rowKey="#{model.id}" selectionMode="single">
+
+		<p:column rendered="false" headerText="Id"
+			style="width:100px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{model.id}" />
+		</p:column>
+
+		<p:column rendered="true" headerText="Reward type"
+			style="width:100px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{model.name}" />
+		</p:column>
+
+
+		<p:column rendered="true" headerText="Spinner rewards"
+			style="width:100px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{spinnerGamificationBean.getRewardTypeSpinnerRewardCount(model)}" />
+		</p:column>
+
+
+
+		<p:column rendered="true" headerText="Action"
+			style="width:20px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Setup" icon="ui-icon-search"
+				action="#{spinnerGamificationBean.setEditRewardTypeEntityForSpinnerReward(model)}"
+				style="margin-right:20px;"
+				oncomplete="widgetSpinnerRewardEditDialog.show()" update="@form"
+				process="@this" />
+
+		</p:column>
+		<p:column rendered="true" headerText="Test generator"
+			style="width:20px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Test" icon="ui-icon-search"
+				style="margin-right:20px;" oncomplete="widgetGeneratorTest.show()"
+				action="#{spinnerGamificationBean.testRewardEntity(model)}"
+				update="" process="" />
+
+		</p:column>
+
+
+
+
+	</p:dataTable>
+
+	<p:dialog id="idWidgetSpinnerRewardEditDialog" width="900"
+		style="width:900px;" header="Edit Spinner Rewards"
+		widgetVar="widgetSpinnerRewardEditDialog" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+
+		<p:pieChart id="idSpinnerRewardChart" showDataLabels="true"
+			legendPosition="r"
+			value="#{spinnerGamificationBean.spinnerRewardsChartModel}"
+			style="width:870px;height:300px" />
+
+		<h:panelGrid id="idSpinnerRewardEditGrid" columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Spinner cost value:" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editRewardTypeEntityForSpinnerReward.spinnerUseValue}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Free daily spins enabled:" />
+			<p:selectBooleanCheckbox
+				value="#{spinnerGamificationBean.editRewardTypeEntityForSpinnerReward.spinnerDailyRewardEnabled}" />
+
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Free daily spins number:" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editRewardTypeEntityForSpinnerReward.spinnerDailyRewardUseValue}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Free daily spins number notification message:" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editRewardTypeEntityForSpinnerReward.spinnerDailyRewardNotificationMessage}" />
+		</h:panelGrid>
+
+		<p:dataTable id="idWidgetSpinnerRewardEditTable"
+			var="spinnerRewardRow"
+			value="#{spinnerGamificationBean.spinnerRewardTableDataModelBean}"
+			scrollable="true" scrollHeight="250" scrollRows="10" height="100"
+			rowKey="#{spinnerRewardRow.id}" selectionMode="single">
+
+			<p:column rendered="false" headerText="Id"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.id}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Reward name"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.rewardName}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Reward type"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.rewardType}" />
+			</p:column>
+			<p:column rendered="true" headerText="Reward value"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.rewardValue}" />
+			</p:column>
+			<p:column rendered="true" headerText="Reward probability"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText
+					value="#{spinnerRewardRow.rewardProbability}%  (#{spinnerRewardRow.ratioX}/#{spinnerRewardRow.ratioY})" />
+			</p:column>
+			<p:column rendered="true" headerText="Notification message"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.notificationMessage}" />
+			</p:column>
+			<p:column rendered="true" headerText="Month limit"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.monthLimit}" />
+			</p:column>
+			<p:column rendered="true" headerText="Month limit count"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.monthLimitCount}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Last reward"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText
+					value="#{spinnerRewardRow.monthLimitLastRewardTimestamp}" />
+			</p:column>
+			<p:column rendered="true" headerText="Update time"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{spinnerRewardRow.updateTime}" />
+			</p:column>
+
+
+			<p:column rendered="true" headerText="Action"
+				style="width:60px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<p:commandButton value="Edit" icon="ui-icon-search"
+					style="margin-right:20px;"
+					action="#{spinnerGamificationBean.editTableRow(spinnerRewardRow)}"
+					oncomplete="widgetSpinnerRewardEditEntry.show()" update=""
+					process="" />
+				<p:commandButton value="Delete" icon="ui-icon-search"
+					action="#{spinnerGamificationBean.deleteSpinnerRewardEntity(spinnerRewardRow)}"
+					style="margin-right:20px;" oncomplete="" update="" process="" />
+
+			</p:column>
+
+
+			<f:facet name="footer">
+				<div align="left">
+					<p:commandButton value="Add row" icon="ui-icon-plus"
+						style="margin-right:20px;"
+						oncomplete="widgetSpinnerRewardAddEntry.show()" update=""
+						process="@this" rendered="true" />
+				</div>
+			</f:facet>
+		</p:dataTable>
+
+		<h:panelGrid columns="4" cellpadding="4">
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetSpinnerRewardEditDialog.hide()" />
+			<p:commandButton value="Save" icon="ui-icon-search"
+				action="#{spinnerGamificationBean.saveRewardType()}" process="@form" />
+			<p:commandButton value="Test" icon="ui-icon-search"
+				style="margin-right:20px;" oncomplete="widgetGeneratorTest.show()"
+				action="#{spinnerGamificationBean.testRewardEntity(spinnerGamificationBean.editRewardTypeEntityForSpinnerReward)}"
+				update="" process="" />
+
+
+		</h:panelGrid>
+	</p:dialog>
+
+
+	<p:dialog id="idWidgetSpinnerRewardEditEntry"
+		header="Spinner Reward Edit  Row Entry"
+		widgetVar="widgetSpinnerRewardEditEntry" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid id="idSpinnerModelRowEditGrid" columns="2"
+			cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont" value="Reward name" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editSpinnerRewardEntity.rewardName}" />
+			<h:outputText styleClass="dialog-mediumFont" value="Reward type" />
+			<h:selectOneMenu id="rewardType"
+				value="#{spinnerGamificationBean.editSpinnerRewardEntity.rewardType}">
+				<f:selectItems value="#{spinnerGamificationBean.spinnerRewardTypes}"
+					var="rewardType" itemValue="#{rewardType}"
+					itemLabel="#{rewardType}" />
+			</h:selectOneMenu>
+
+			<h:outputText styleClass="dialog-mediumFont" value="Reward value" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editSpinnerRewardEntity.rewardValue}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Notification message" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.editSpinnerRewardEntity.notificationMessage}" />
+			<h:outputText styleClass="dialog-mediumFont" value=" " />
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="To add value in your text put 'VALUE' inside text. &lt;br/&gt;
+				For example 'You have been rewarded with VALUE Rs will &lt;br/&gt;
+				be changed to You have been rewarded with 5 Rs. " />
+
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Reward probability" />
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:inputText size="10"
+					value="#{spinnerGamificationBean.editSpinnerRewardEntity.ratioX}" />
+				<h:outputText styleClass="dialog-mediumFont" value="/" />
+				<p:inputText size="10"
+					value="#{spinnerGamificationBean.editSpinnerRewardEntity.ratioY}" />
+			</h:panelGrid>
+			<h:outputText styleClass="dialog-mediumFont" value=" " />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="( Example: 1 / 1000 = 0.1% )" />
+			<h:outputText styleClass="dialog-mediumFont" value="Month limit: " />
+			<p:inputText size="15"
+				value="#{spinnerGamificationBean.editSpinnerRewardEntity.monthLimit}" />
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Update" icon="ui-icon-search"
+				action="#{spinnerGamificationBean.processEditSpinnerReward()}"
+				process="@form"
+				update="idWidgetSpinnerRewardEditEntry,idSpinnerGamificationTable"
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetSpinnerRewardEditEntry.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+
+
+	<p:dialog id="idSpinnerRewardAddEntry"
+		header="Spinner Reward Add  Row Entry"
+		widgetVar="widgetSpinnerRewardAddEntry" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid id="idModelRowAdd" columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont" value="Reward name" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.addSpinnerRewardEntity.rewardName}" />
+			<h:outputText styleClass="dialog-mediumFont" value="Reward type" />
+			<h:selectOneMenu id="addRewardType"
+				value="#{spinnerGamificationBean.addSpinnerRewardEntity.rewardType}">
+				<f:selectItems value="#{spinnerGamificationBean.spinnerRewardTypes}"
+					var="rewardType" itemValue="#{rewardType}"
+					itemLabel="#{rewardType}" />
+			</h:selectOneMenu>
+			<h:outputText styleClass="dialog-mediumFont" value="Reward value" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.addSpinnerRewardEntity.rewardValue}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Notification message" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.addSpinnerRewardEntity.notificationMessage}" />
+			<h:outputText styleClass="dialog-mediumFont" value=" " />
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="To add value in your text put 'VALUE' inside text. &lt;br/&gt;
+				For example 'You have been rewarded with VALUE Rs will &lt;br/&gt;
+				be changed to You have been rewarded with 5 Rs. " />
+
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Reward probability" />
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:inputText size="10"
+					value="#{spinnerGamificationBean.addSpinnerRewardEntity.ratioX}" />
+				<h:outputText styleClass="dialog-mediumFont" value="/" />
+				<p:inputText size="10"
+					value="#{spinnerGamificationBean.addSpinnerRewardEntity.ratioY}" />
+			</h:panelGrid>
+			<h:outputText styleClass="dialog-mediumFont" value=" " />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="( Example: 1 / 1000 = 0.1% )" />
+			<h:outputText styleClass="dialog-mediumFont" value="Month limit: " />
+			<p:inputText size="15"
+				value="#{spinnerGamificationBean.addSpinnerRewardEntity.monthLimit}" />
+
+
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Create" icon="ui-icon-search"
+				action="#{spinnerGamificationBean.processAddSpinnerReward()}"
+				process="@form" update="idSpinnerRewardAddEntry" oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetSpinnerRewardAddEntry.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+
+	<p:dialog id="idWidgetGeneratorTest" width="420" style="width:420px;"
+		header="Generator test result" widgetVar="widgetGeneratorTest"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+		<h:panelGrid id="idGeneratorTestGrid" columns="1" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Testing: #{spinnerGamificationBean.testRewardType.name}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Number of bought spins:" />
+			<p:inputText size="30" value="#{spinnerGamificationBean.testSamples}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Number of free spins:" />
+			<p:inputText size="30"
+				value="#{spinnerGamificationBean.dailySpinsSamples}" />
+			<p:commandButton value="Run test" icon="
+			ui-icon-search"
+				action="#{spinnerGamificationBean.runTest()}" update="" process=""
+				oncomplete="widgetGeneratorTestResult.show()" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetGeneratorTest.hide()" />
+		</h:panelGrid>
+
+	</p:dialog>
+
+	<p:dialog id="idWidgetGeneratorTestResult" width="800"
+		style="width:800px;" header="Generator test result"
+		widgetVar="widgetGeneratorTestResult" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<p:pieChart showDataLabels="true" legendPosition="r"
+			value="#{spinnerGamificationBean.pieModel1}"
+			style="width:780px;height:300px" />
+
+
+
+		<p:scrollPanel style="width:800px;height:300px">
+
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="#{spinnerGamificationBean.testAnalysisResult[2]}" />
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="#{spinnerGamificationBean.testAnalysisResult[3]}" />
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="#{spinnerGamificationBean.testAnalysisResult[1]}" />
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="#{spinnerGamificationBean.testAnalysisResult[0]}" />
+		</p:scrollPanel>
+
+
+
+	</p:dialog>
+
+
+	<p:remoteCommand name="refreshCommand"
+		actionListener="#{denominationModelBean.refresh()}" />
+</h:form>
+
+
+
+
+<script type="text/javascript">
+	function start() {
+
+	}
+
+	function stop() {
+
+	}
+</script>
+
+</html>
+

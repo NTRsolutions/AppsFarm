@@ -1,0 +1,204 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+
+
+
+<h:form>
+	<p:panel header="Application rewards" toggleable="false"
+		closable="false" toggleSpeed="500" closeSpeed="500"
+		style="margin-top:0px;width:99%"
+		styleClass="single-node-stats-performance-panel">
+
+		<p:growl id="idApplicationReward" showDetail="true" />
+		<p:dataTable id="idApplicationRewardTable" var="model" width="500"
+			style="width:500px;"
+			value="#{applicationRewardBean.applicationRewardTableDataModel}"
+			rowKey="#{model.id}" selectionMode="single">
+
+
+
+			<p:column rendered="false" headerText="Id"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.id}" />
+			</p:column>
+			<p:column rendered="true" headerText="Name"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.rewardName}" />
+			</p:column>
+			<p:column rendered="true" headerText="Value"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.rewardValue}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Application"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.applicationName}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Currency"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.currencyCode}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Reward Type"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.rewardType}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Action"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+
+
+				<p:commandButton value="Setup" icon="ui-icon-search"
+					action="#{applicationRewardBean.setEditModel(model)}"
+					style="margin-right:20px;"
+					oncomplete="widgetEditApplicationReward.show()" update="@form"
+					process="@this" />
+			</p:column>
+
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4">
+			<p:commandButton value="Create mobile application reward"
+				icon="ui-icon-search" update="@form"
+				oncomplete="widgetCreateApplicationReward.show()" process="@this">
+			</p:commandButton>
+		</h:panelGrid>
+
+
+		<p:dialog id="idWidgetCreateApplicationReward" width="500"
+			style="width:500px;" header="Create mobile application reward"
+			widgetVar="widgetCreateApplicationReward" resizable="false"
+			showEffect="clip" hideEffect="fold" modal="false"
+			appendToBody="false">
+			<h:panelGrid columns="2" cellpadding="4">
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward name:" />
+				<p:inputText size="30"
+					value="#{applicationRewardBean.createModel.rewardName}" />
+
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward value:" />
+				<p:inputText size="30"
+					value="#{applicationRewardBean.createModel.rewardValue}" />
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Application:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.createModel.applicationName}">
+					<f:selectItems
+						value="#{applicationRewardBean.mobileAppSelectItemList}" />
+				</p:selectOneMenu>
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Currency:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.createModel.currencyCode}">
+					<f:selectItems
+						value="#{applicationRewardBean.currencyCodeSelectItemList}" />
+				</p:selectOneMenu>
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Reward Type:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.createModel.rewardType}">
+					<f:selectItems value="#{applicationRewardBean.rewardTypesList}" />
+				</p:selectOneMenu>
+
+
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Create" icon="ui-icon-search"
+					action="#{applicationRewardBean.create()}" update="@form"
+					oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"
+					oncomplete="widgetCreateApplicationReward.hide()"
+					action="#{applicationRewardBean.refresh()}" update="@form" />
+
+			</h:panelGrid>
+
+		</p:dialog>
+
+
+		<p:dialog id="idWidgetEditApplicationReward" width="500"
+			style="width:500px;" header="Create mobile application reward"
+			widgetVar="widgetEditApplicationReward" resizable="false"
+			showEffect="clip" hideEffect="fold" modal="false"
+			appendToBody="false">
+			<h:panelGrid columns="2" cellpadding="4">
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward name:" />
+				<p:inputText size="30"
+					value="#{applicationRewardBean.editModel.rewardName}" />
+
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward value:" />
+				<p:inputText size="30"
+					value="#{applicationRewardBean.editModel.rewardValue}" />
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Application:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.editModel.applicationName}">
+					<f:selectItems
+						value="#{applicationRewardBean.mobileAppSelectItemList}" />
+				</p:selectOneMenu>
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Currency:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.editModel.currencyCode}">
+					<f:selectItems
+						value="#{applicationRewardBean.currencyCodeSelectItemList}" />
+				</p:selectOneMenu>
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Reward Type:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.editModel.rewardType}">
+					<f:selectItems
+						value="#{applicationRewardBean.rewardTypesList}" />
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Save" icon="ui-icon-search"
+					action="#{applicationRewardBean.edit()}" update="@form"
+					oncomplete="" />
+
+				<p:commandButton value="Delete" icon="ui-icon-search"
+					action="#{applicationRewardBean.delete()}" update="@form"
+					oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"
+					oncomplete="widgetEditApplicationReward.hide()"
+					action="#{applicationRewardBean.refresh()}" update="@form" />
+
+			</h:panelGrid>
+
+		</p:dialog>
+
+
+
+
+
+	</p:panel>
+</h:form>
+
+
+</html>
+

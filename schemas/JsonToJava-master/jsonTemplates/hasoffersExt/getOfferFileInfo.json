@@ -1,0 +1,102 @@
+{
+  "request": {
+    "Target": "Affiliate_OfferFile",
+    "Format": "jsonp",
+    "Service": "HasOffers",
+    "Version": "2",
+    "NetworkId": "nativex",
+    "Method": "findAll",
+    "api_key": "8202723cf6cb67bb77efe3d7047e1ccdd449838540ec42671e44ead9f1ef91be",
+    "callback": "angular.callbacks._e",
+    "_hp2_id_1318563364": "5040382024243823.2442919859.3493224853",
+    "__lc_visitor_id_1040387": "S1446216790.4cc4fa418c",
+    "_ga": "GA1.2.1145896101.1448030861",
+    "__gaTune": "GA1.2.769125371.1448030896",
+    "__utma": "267117079.1145896101.1448030861.1448030896.1448030896.1",
+    "__utmz": "267117079.1448030896.1.1.utmcsr=developers.hasoffers.com|utmccn=(referral)|utmcmd=referral|utmcct=/",
+    "_biz_dfsA": "[]",
+    "_biz_uid": "70bf25ae404540978785898c150a97fd",
+    "_biz_nA": "1",
+    "_biz_pendingA": "[\"m/ipv?_biz_r=http%3A%2F%2Fdevelopers.hasoffers.com%2F&_biz_h=802060723&_biz_u=70bf25ae404540978785898c150a97fd&_biz_s=5105db&_biz_l=http%3A%2F%2Fwww.hasoffers.com%2Ffeatures%2F&_biz_t=1448030895985&_biz_i=Product%20Feature%20Overview%20-%20HasOffers%20Performance%20Advertising%20Software&_biz_n=0&rnd=836612\"]"
+  },
+  "response": {
+    "status": 1,
+    "httpStatus": 200,
+    "data": {
+      "page": 1,
+      "current": 0,
+      "count": 488,
+      "pageCount": 1,
+      "data": [
+        {
+          "OfferFile": {
+            "id": "913",
+            "offer_id": "1595",
+            "display": "fd17f0f6-d95e-421c-8dd5-c37f7a21d52f.jpg",
+            "filename": "fd17f0f6-d95e-421c-8dd5-c37f7a21d52f.jpg",
+            "size": "33392",
+            "status": "active",
+            "type": "image banner",
+            "width": "240",
+            "height": "350",
+            "code": null,
+            "flash_vars": null,
+            "interface": "network",
+            "account_id": "0",
+            "is_private": "0",
+            "created": "2015-11-06 16:54:06",
+            "modified": "0000-00-00 00:00:00",
+            "url": "https://media.go2speed.org/brand/files/nativex/1595/fd17f0f6-d95e-421c-8dd5-c37f7a21d52f.jpg",
+            "thumbnail": "https://media.go2speed.org/brand/files/nativex/1595/thumbnails_100/fd17f0f6-d95e-421c-8dd5-c37f7a21d52f.jpg"
+          }
+        },
+        {
+          "OfferFile": {
+            "id": "915",
+            "offer_id": "1595",
+            "display": "163f56fb-7724-4178-95f2-7cf858957a49.jpg",
+            "filename": "163f56fb-7724-4178-95f2-7cf858957a49.jpg",
+            "size": "23756",
+            "status": "active",
+            "type": "image banner",
+            "width": "390",
+            "height": "200",
+            "code": null,
+            "flash_vars": null,
+            "interface": "network",
+            "account_id": "0",
+            "is_private": "0",
+            "created": "2015-11-06 16:54:09",
+            "modified": "0000-00-00 00:00:00",
+            "url": "https://media.go2speed.org/brand/files/nativex/1595/163f56fb-7724-4178-95f2-7cf858957a49.jpg",
+            "thumbnail": "https://media.go2speed.org/brand/files/nativex/1595/thumbnails_100/163f56fb-7724-4178-95f2-7cf858957a49.jpg"
+          }
+        },
+        {
+          "OfferFile": {
+            "id": "2655",
+            "offer_id": "1761",
+            "display": "f494590f-9c8e-445c-b86d-fabf341722b0.jpg",
+            "filename": "f494590f-9c8e-445c-b86d-fabf341722b0.jpg",
+            "size": "59492",
+            "status": "active",
+            "type": "image banner",
+            "width": "512",
+            "height": "512",
+            "code": null,
+            "flash_vars": null,
+            "interface": "network",
+            "account_id": "0",
+            "is_private": "0",
+            "created": "2015-12-03 06:34:34",
+            "modified": "0000-00-00 00:00:00",
+            "url": "https://media.go2speed.org/brand/files/nativex/1761/f494590f-9c8e-445c-b86d-fabf341722b0.jpg",
+            "thumbnail": "https://media.go2speed.org/brand/files/nativex/1761/thumbnails_100/f494590f-9c8e-445c-b86d-fabf341722b0.jpg"
+          }
+        }
+      ]
+    },
+    "errors": [],
+    "errorMessage": null
+  }
+}

@@ -1,0 +1,35 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+>
+	<p:panel header="Activate license" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="500" 
+				style="margin-top:0px;width:99%" 
+				styleClass="single-node-stats-performance-panel">
+		<h:form enctype="multipart/form-data">
+		   		<p:growl id="idLicenseManagementGrowl" showDetail="true"/>
+	  			<p:fileUpload fileUploadListener="#{licenseManagementBean.handleFileUpload}"  
+	            mode="advanced"
+	            update="messages"     
+	            sizeLimit="10000000"/>
+	            <p:growl id="messages" showDetail="true"/>   
+		</h:form>   											            
+	</p:panel>
+
+	<p:panel header="Currently activated license" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="500" 
+				style="margin-top:0px;width:99%" 
+				styleClass="single-node-stats-performance-panel">
+		<h:panelGrid columns="1" cellpadding="4">
+		    <h:outputText styleClass="dialog-mediumFont" value="Currently loaded license storage folder: " />
+            <p:inputTextarea id="idActiveLicenseContent" maxlength="32700" rows="15" cols="250" style="width: 100% !important; font-size: 15px !important;" autoResize="false" 
+				            value="#{licenseManagementBean.activeLicenseContent}" />
+		</h:panelGrid>
+	</p:panel>
+
+
+	
+</html>
+

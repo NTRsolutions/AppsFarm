@@ -1,0 +1,34 @@
+{
+  "request": {
+    "Target": "Affiliate_Offer",
+    "Format": "jsonp",
+    "Service": "HasOffers",
+    "Version": "2",
+    "NetworkId": "vcm",
+    "Method": "getPayoutDetails",
+    "api_key": "00efd7005191899d6ccac33c4b5e9398582cd1f68d4abe9e743e5cb1613abbcf",
+    "offer_id": "889",
+    "callback": "angular.callbacks._1",
+    "_hp2_id_1318563364": "5040382024243823.2442919859.3493224853",
+    "__lc_visitor_id_1040387": "S1446216790.4cc4fa418c",
+    "_ga": "GA1.2.1145896101.1448030861",
+    "__gaTune": "GA1.2.769125371.1448030896",
+    "__utma": "267117079.1145896101.1448030861.1448030896.1448030896.1",
+    "__utmz": "267117079.1448030896.1.1.utmcsr=developers.hasoffers.com|utmccn=(referral)|utmcmd=referral|utmcct=/",
+    "_biz_dfsA": "[]",
+    "_biz_uid": "70bf25ae404540978785898c150a97fd",
+    "_biz_nA": "1",
+    "_biz_pendingA": "[\"m/ipv?_biz_r=http%3A%2F%2Fdevelopers.hasoffers.com%2F&_biz_h=802060723&_biz_u=70bf25ae404540978785898c150a97fd&_biz_s=5105db&_biz_l=http%3A%2F%2Fwww.hasoffers.com%2Ffeatures%2F&_biz_t=1448030895985&_biz_i=Product%20Feature%20Overview%20-%20HasOffers%20Performance%20Advertising%20Software&_biz_n=0&rnd=836612\"]"
+  },
+  "response": {
+    "status": 1,
+    "httpStatus": 200,
+    "data": {
+      "offer_payout": {
+        "payout": "17.50000"
+      }
+    },
+    "errors": [],
+    "errorMessage": null
+  }
+}

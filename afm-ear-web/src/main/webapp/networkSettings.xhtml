@@ -1,0 +1,1209 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+
+<h:form prependId="false">
+	<p:growl id="idApiGrowl" showDetail="true" life="3000" />
+
+	<p:tabView id="tabNetworkSettings">
+		<!-- web services - tracking settings -->
+		<p:tab title="General Settings" rendered="true">
+			<p:panel header="Mode request queueing" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Enable mode request queueing: " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.modeQueueing}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Mode mockup enabled " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.modeMockupEnabled}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Mode mockup url address " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.modeMockupUrl}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Mode mockup timer " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.modeMockupTimer}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel header="Test mode" toggleable="false" closable="false"
+				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Enable global test mode (across all apps): " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.testMode}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Test url (ip:port): " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.testModeUrl}" />
+
+				</h:panelGrid>
+				<h:outputText styleClass="dialog-mediumFont"
+					value="Enable test mode for specific reward type: " />
+				<p:dataTable id="idRewardTypesEnableTable" var="model" width="500"
+					style="width:500px;"
+					value="#{networkSettingsBean.rewardTypeDataModelBean}"
+					rowKey="#{model.id}" selectionMode="single">
+
+					<p:column rendered="false" headerText="Id"
+						style="width:50px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.id}" />
+					</p:column>
+					<p:column rendered="true" headerText="Name"
+						style="width:50px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.name}" />
+					</p:column>
+					<p:column rendered="true" headerText="Test mode"
+						style="width:50px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+
+						<h:outputText value="Enabled" rendered="#{model.testMode}" />
+						<h:outputText value="Disabled" rendered="#{!model.testMode}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="Action"
+						style="width:50px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+
+						<p:commandButton value="Enable/Disable" icon="ui-icon-search"
+							update="@form" process=""
+							action="#{networkSettingsBean.updateRewardTypeStatus(model)}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			<p:panel header="Generated walls lifetime" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="3" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="Lifetime: " />
+					<p:inputText size="3"
+						value="#{networkSettingsBean.realm.wallLifetime}" />
+					<h:outputText styleClass="dialog-mediumFont" value="minutes" />
+				</h:panelGrid>
+			</p:panel>
+			<p:panel header="General Services Invocation Settings"
+				toggleable="false" closable="false" toggleSpeed="500"
+				closeSpeed="500" style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="3" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Connection request timeout: " />
+					<p:inputText size="3"
+						value="#{networkSettingsBean.realm.connectionTimeout}" />
+					<h:outputText styleClass="dialog-mediumFont" value="seconds" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Connection response timeout: " />
+					<p:inputText size="3"
+						value="#{networkSettingsBean.realm.readTimeout}" />
+					<h:outputText styleClass="dialog-mediumFont" value="seconds" />
+				</h:panelGrid>
+			</p:panel>
+			<p:panel header="Tracking Services URL Settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500" rendered="false"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Composite Offer Wall Regeneartion Notification Service Url: " />
+					<p:inputText size="90"
+						value="#{networkSettingsBean.realm.cowRegenerationNotificationUrl}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Conversion Notification Service Url: " />
+					<p:inputText size="90"
+						value="#{networkSettingsBean.realm.conversionNotificationUrl}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Reward Notification Service Url: " />
+					<p:inputText size="90"
+						value="#{networkSettingsBean.realm.rewardNotificationUrl}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel header="ES logger settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="ES primary storage: " />
+					<p:inputText size="20"
+						value="#{networkSettingsBean.realm.esPrimaryStorageIp}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+
+		<p:tab title="Reward Provider Settings" rendered="true">
+			<p:panel header="Mode integration" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid id="idModeDataGrid" columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="User: " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.modeBPUser}" />
+					<h:outputText styleClass="dialog-mediumFont" value="Password: " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.modeBPPassword}" />
+					<h:outputText styleClass="dialog-mediumFont" value="Credit Url: " />
+					<p:inputText size="60"
+						value="#{networkSettingsBean.realm.modeCreditUrl}" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="CRF Settings" rendered="true">
+			<p:panel header="Conversion Rate Filter (CRF)" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="CRF enabled: " />
+					<p:selectOneMenu value="#{networkSettingsBean.realm.crfEnabled}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+					<h:outputText styleClass="dialog-mediumFont"
+						value="CRF threshold (below which offers are blocked): " />
+					<p:inputText size="6"
+						value="#{networkSettingsBean.realm.crfCRThreshold}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Minimal click rate after which CRF is actived: " />
+					<p:inputText size="6"
+						value="#{networkSettingsBean.realm.crfMinimalClickRate}" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="Reporting Settings" rendered="true">
+			<p:panel header="Reporting settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Reporting enabled: " />
+					<p:selectOneMenu
+						value="#{networkSettingsBean.realm.reportingEnabled}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Emails (comma separated): " />
+					<p:inputText size="150"
+						value="#{networkSettingsBean.realm.reportingEmails}" />
+				</h:panelGrid>
+			</p:panel>
+
+
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+
+			<p:panel header="Generate report" toggleable="false" closable="false"
+				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Report start date " />
+					<p:calendar id="startReportDate"
+						value="#{networkSettingsBean.reportStartDate}"
+						pattern="dd/MM/yyyy" size="25" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Report offset (in days): " />
+					<p:inputText size="25" value="#{networkSettingsBean.reportOffset}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Report reward type: " />
+					<p:selectOneMenu size="25"
+						value="#{networkSettingsBean.reportRewardType}">
+
+						<f:selectItems value="#{networkSettingsBean.getRewardTypes()}" />
+					</p:selectOneMenu>
+
+					<p:commandButton value="Generate report" icon="ui-icon-search"
+						update="" action="#{networkSettingsBean.generateReport}"
+						process="@form" oncomplete="" />
+
+
+				</h:panelGrid>
+
+				<h:outputText style="font-size:20px" escape="false"
+					value="#{networkSettingsBean.reportResult}" />
+			</p:panel>
+
+
+		</p:tab>
+
+		<!-- mail sender settings -->
+		<p:tab title="Mail Server Settings" rendered="true">
+			<p:panel header="Sytem Email Account Settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:outputText styleClass="dialog-mediumFont"
+					value="Status and alert reports will be sent via below configured account." />
+				<h:panelGrid id="idEmailAccountSetupDataGrid" columns="2"
+					cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Mail From Address: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailFromAddress}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server User Name: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailAccountUserName}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server User Password: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailAccountPassword}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP host: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.smtpHost}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP auth: " />
+					<p:selectOneMenu
+						value="#{networkSettingsBean.monitoringSetup.smtpAuth}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP TLS: " />
+					<p:selectOneMenu
+						value="#{networkSettingsBean.monitoringSetup.smtpTTLS}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP port: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpPort}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server connection timeout: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpConnectionTimeout}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMPT timeout: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpTimeout}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+
+		</p:tab>
+
+		<!-- monitoring settings -->
+		<p:tab title="Monitoring Settings" rendered="true">
+			<p:panel header="Monitoring Settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+
+				<h:panelGrid columns="3" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Send alert and status notifications via e-mail: " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.monitoringSetup.emailNotificationActive}" />
+				</h:panelGrid>
+				<h:panelGrid columns="3" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Monitoring triggered every: " />
+					<p:inputText size="3"
+						value="#{networkSettingsBean.monitoringInterval}" disabled="true" />
+					<h:outputText styleClass="dialog-mediumFont" value="minute(s)" />
+				</h:panelGrid>
+				<h:panelGrid id="idMonitoringSettingsDataGrid" columns="3"
+					cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="E-mail operation status reports to: " />
+					<p:inputText size="80"
+						value="#{networkSettingsBean.monitoringSetup.operationStatusReportEmails}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="(use following format: e-mail1, e-mail2,...)" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="E-mail alerts to: " />
+					<p:inputText size="80"
+						value="#{networkSettingsBean.monitoringSetup.alertEmails}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="(use following format: e-mail1, e-mail2,...)" />
+				</h:panelGrid>
+			</p:panel>
+
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<!-- server settings -->
+		<p:tab title="API Key" rendered="true">
+			<p:panel render="false" header="Network API key" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid id="idApiDataGrid" columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="Network ID: " />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="#{networkSettingsBean.networkId}" />
+					<h:outputText styleClass="dialog-mediumFont" value="API Key: " />
+					<h:panelGrid columns="2" cellpadding="4">
+						<p:inputText size="30" value="#{networkSettingsBean.realm.apiKey}" />
+						<!-- this is not rendered (used for automatic key generation -->
+						<h:outputText styleClass="dialog-mediumFont"
+							value="#{networkSettingsBean.apiKey}" rendered="false" />
+						<p:commandButton value="Create API key" icon="ui-icon-search"
+							update="" action="#{networkSettingsBean.regenerate}"
+							process="@form" oncomplete="" rendered="false">
+							<p:confirm header="Confirmation"
+								message="Are you sure? After API key regeneration, please make sure that application clients that use the API are notified about the change."
+								icon="ui-icon-alert" rendered="false" />
+						</p:commandButton>
+					</h:panelGrid>
+					<h:panelGrid columns="1" cellpadding="4">
+						<p:commandButton value="Update" icon="ui-icon-search" update=""
+							action="#{networkSettingsBean.update}" process="@form"
+							oncomplete="">
+						</p:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:panel>
+		</p:tab>
+
+		<!-- support system settings -->
+		<p:tab title="Customer support" rendered="true">
+			<p:panel header="Zendesk configuration" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="Zendesk url: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.supportSystemUrl}"
+						disabled="false" />
+					<h:outputText styleClass="dialog-mediumFont" value="User: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.supportSystemUserName}"
+						disabled="false" />
+					<h:outputText styleClass="dialog-mediumFont" value="Password: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.supportSystemPassword}"
+						disabled="false" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<!-- Notification settings -->
+		<p:tab title="Google Notifications" rendered="true">
+			<p:panel header="Google Notifications" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont" value="Access Key: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.googleNotificationsAccessKey}"
+						disabled="false" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<!-- custom UI -->
+		<p:tab title="UI Setup" rendered="true">
+			<p:panel header="Banner Setup" toggleable="false" closable="false"
+				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Banner file path: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.bannerFilePath}"
+						disabled="false" />
+					<h:outputText styleClass="dialog-mediumFont" value="Banner style: " />
+					<p:inputText size="120"
+						value="#{networkSettingsBean.realm.bannerStyle}" disabled="false" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<!--  <p:tab title="Application Version" rendered="true">
+			<p:panel header="Application Version Setup" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Enable version check: " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.versionCheck}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Minimum version: " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.versionCode}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Version error message: " />
+					<p:inputText size="160"
+						value="#{networkSettingsBean.realm.versionErrorMessage}" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+-->
+		<p:tab title="Referral programme" rendered="true">
+			<p:panel header="Referral programme" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Enable referral programme: " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.invitationEnabled}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Maximum number of successful invites from a single user: " />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.realm.maxInvitationsLimit}" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Enable referral reward without account activated: " />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.referralRewardWithoutAccountActivated}" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Message to invited user which dont have activated account: " />
+					<p:inputTextarea cols="100" rows="10"
+						value="#{networkSettingsBean.realm.messageReferralRewardWithoutAccountActivatedToInvited}" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Message to inviting user which dont have activated account: " />
+					<p:inputTextarea cols="100" rows="10"
+						value="#{networkSettingsBean.realm.messageReferralRewardWithoutAccountActivatedToInviting}" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Message to inviting user when referral abuse is detected: " />
+					<p:inputTextarea cols="100" rows="10"
+						value="#{networkSettingsBean.realm.messageReferralAbuseDetectedToInviting}" />
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Message to inviting user when exceeded limit: " />
+					<p:inputTextarea cols="100" rows="10"
+						value="#{networkSettingsBean.realm.messageReferralExceededLimitToInviting}" />
+
+
+
+
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+
+
+
+			<br />
+			<br />
+
+			<p:panel header="Referral rewards payouts" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+
+
+				<p:dataTable id="idReferralRewardsTable" var="model" width="1000"
+					style="width:1000px;"
+					value="#{networkSettingsBean.referralRewardTableDataModel}"
+					rowKey="#{model.id}" selectionMode="single">
+
+					<p:column rendered="false" headerText="Id"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.id}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="Name"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.name}" />
+					</p:column>
+					<p:column rendered="true" headerText="First referral threshold"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.referralFirstThreshold}" />
+					</p:column>
+					<p:column rendered="true" headerText="Reward at first threshold"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.referralValueAtFirstThresholdInvite}" />
+					</p:column>
+					<p:column rendered="true" headerText="Second referral threshold"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.referralSecondThreshold}" />
+					</p:column>
+					<p:column rendered="true" headerText="Reward at second threshold"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText
+							value="#{model.referralValueAtSecondThresholdInvite}" />
+					</p:column>
+					<p:column rendered="true" headerText="Total referrals value"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText
+							value="#{networkSettingsBean.countReferralRewardsTotalValue(model)}" />
+					</p:column>
+					<p:column rendered="true" headerText="Max referral count"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.maxReferralCount}" />
+					</p:column>
+					<p:column headerText="" style="width:90px;text-align:left;"
+						styleClass="ui-nodesStatusTableHeader">
+						<p:commandButton value="Setup" icon="ui-icon-search"
+							action="#{networkSettingsBean.setReferralEditModel(model)}"
+							style="margin-right:20px;"
+							oncomplete="widgetEditReferralReward.show()" update="@form"
+							process="" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+
+			<p:dialog id="idWidgetEditReferralReward" width="500"
+				style="width:500px;" header="Edit referral reward"
+				widgetVar="widgetEditReferralReward" resizable="false"
+				showEffect="clip" hideEffect="fold" modal="false"
+				appendToBody="false">
+
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="First threshold" />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.referralEditModel.referralFirstThreshold}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="First threshold value" />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.referralEditModel.referralValueAtFirstThresholdInvite}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Second threshold" />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.referralEditModel.referralSecondThreshold}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Second threshold value" />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.referralEditModel.referralValueAtSecondThresholdInvite}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Max referral count" />
+					<p:inputText size="30"
+						value="#{networkSettingsBean.referralEditModel.maxReferralCount}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton value="Edit" icon="ui-icon-search"
+						action="#{networkSettingsBean.editReferralReward()}" process=""
+						update="@form" oncomplete="" />
+					<p:commandButton value="Close" icon="ui-icon-search" update="@form"
+						process="" oncomplete="widgetEditReferralReward.hide()" />
+
+				</h:panelGrid>
+
+			</p:dialog>
+		</p:tab>
+
+
+		<p:tab title="External Servers Address" rendered="true">
+			<p:panel header="External Servers Address" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<p:dataTable id="idExternalServerSettings" var="model" width="600"
+						value="#{externalServerAddressSettingsBean.externalServerAddressTableDataModelBean}"
+						rowKey="#{model.id}" selectionMode="single"
+						style="width:500px;table-layout: fixed; word-wrap: break-word;">
+
+						<p:column rendered="true" headerText="Id"
+							style="width:50px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.id}" />
+						</p:column>
+						<p:column rendered="true" headerText="Ip Address List"
+							style="width:20px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText escape="false"
+								style="white-space: pre-wrap;word-wrap: break-word; "
+								value="#{model.ipContent}" />
+						</p:column>
+						<p:column rendered="true" headerText="Server type"
+							style="width:50px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<h:outputText value="#{model.externalServerType}" />
+						</p:column>
+						<p:column rendered="true" headerText="Enabled"
+							style="width:50px;text-align:left; font-weight:bold;"
+							styleClass="ui-nodesStatusTableHeader">
+							<p:selectBooleanCheckbox value="#{model.enabled}" disabled="true" />
+						</p:column>
+
+						<p:column headerText="" style="width:90px;text-align:left;"
+							styleClass="ui-nodesStatusTableHeader">
+							<p:commandButton value="Setup" icon="ui-icon-search"
+								action="#{externalServerAddressSettingsBean.setEditModel(model)}"
+								style="margin-right:20px;"
+								oncomplete="widgetEditExternalServerAddress.show()"
+								update="@form" process="" />
+						</p:column>
+
+
+					</p:dataTable>
+					<f:facet name="footer">
+						<div align="left">
+							<p:commandButton value="Create new external server entry"
+								icon="ui-icon-search" style="margin-right:20px;"
+								oncomplete="widgetCreateExternalServerAddress.show()"
+								action="#{externalServerAddressSettingsBean.refresh()}"
+								update="@form" process="" rendered="true" />
+						</div>
+					</f:facet>
+
+					<p:dialog id="idWidgetEditExternalServerAddress" width="500"
+						style="width:500px;" header="Edit video ip address"
+						widgetVar="widgetEditExternalServerAddress" resizable="false"
+						showEffect="clip" hideEffect="fold" modal="false"
+						appendToBody="false">
+						<h:panelGrid columns="2" cellpadding="4">
+
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Ip address list" />
+							<p:inputTextarea rows="20" cols="50"
+								value="#{externalServerAddressSettingsBean.editModel.ipContent}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Server type" />
+
+							<p:selectOneMenu
+								value="#{externalServerAddressSettingsBean.editModel.externalServerType}">
+								<f:selectItems
+									value="#{externalServerAddressSettingsBean.getExternalServerTypes()}" />
+							</p:selectOneMenu>
+							<h:outputText styleClass="dialog-mediumFont" value="Enabled" />
+							<p:selectBooleanCheckbox
+								value="#{externalServerAddressSettingsBean.editModel.enabled}" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="3" cellpadding="4">
+							<p:commandButton value="Edit" icon="ui-icon-search"
+								action="#{externalServerAddressSettingsBean.editIpAddress()}"
+								process="" update="@form" oncomplete="" />
+							<p:commandButton value="Close" icon="ui-icon-search"
+								update="@form" process=""
+								oncomplete="widgetEditExternalServerAddress.hide()" />
+							<p:commandButton value="Delete" icon="ui-icon-search"
+								update="@form"
+								action="#{externalServerAddressSettingsBean.deleteIpAddress()}"
+								process="" oncomplete="widgetEditExternalServerAddress.hide()" />
+						</h:panelGrid>
+
+					</p:dialog>
+					<p:dialog id="idWidgetCreateExternalServerAddress" width="500"
+						style="width:500px;" header="Create external server address"
+						widgetVar="widgetCreateExternalServerAddress" resizable="false"
+						showEffect="clip" hideEffect="fold" modal="false"
+						appendToBody="false">
+						<h:panelGrid columns="2" cellpadding="4">
+
+							<h:outputText styleClass="dialog-mediumFont"
+								value="Ip address list" />
+							<p:inputTextarea rows="20" cols="50"
+								value="#{externalServerAddressSettingsBean.createModel.ipContent}" />
+							<h:outputText styleClass="dialog-mediumFont" value="Server type" />
+							<p:selectOneMenu
+								value="#{externalServerAddressSettingsBean.createModel.externalServerType}">
+								<f:selectItems
+									value="#{externalServerAddressSettingsBean.getExternalServerTypes()}" />
+							</p:selectOneMenu>
+							<h:outputText styleClass="dialog-mediumFont" value="Enabled" />
+							<p:selectBooleanCheckbox
+								value="#{externalServerAddressSettingsBean.createModel.enabled}" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="3" cellpadding="4">
+							<p:commandButton value="Create" icon="ui-icon-search"
+								action="#{externalServerAddressSettingsBean.createIpAddress()}"
+								process="" update="@form" oncomplete="" />
+							<p:commandButton value="Close" icon="ui-icon-search"
+								update="@form" process=""
+								oncomplete="widgetCreateExternalServerAddress.hide()" />
+
+						</h:panelGrid>
+
+					</p:dialog>
+
+
+				</h:panelGrid>
+			</p:panel>
+
+		</p:tab>
+
+		<p:tab title="Mobile Applications" rendered="true">
+			<p:panel header="Mobile application types" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+
+				<p:dataTable id="idMobileApplicationTypes" var="model" width="1000"
+					style="width:1000px;"
+					value="#{networkSettingsBean.mobileApplicationTableDataModelBean}"
+					rowKey="#{model.id}" selectionMode="single">
+
+					<p:column rendered="false" headerText="Id"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.id}" />
+					</p:column>
+					<p:column rendered="true" headerText="Name"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.name}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="Creation time"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.creationTime}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="Version check"
+						style="width:50px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="True" rendered="#{model.versionCheck}" />
+						<h:outputText value="False" rendered="#{!model.versionCheck}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="Minimum version"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.minimumVersion}" />
+					</p:column>
+
+
+					<p:column rendered="true" headerText="Version error message"
+						style="width:250px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.versionErrorMessage}" />
+					</p:column>
+
+					<p:column rendered="true" headerText="GCM Key"
+						style="width:250px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.gcmKey}" />
+					</p:column>
+
+					<p:column rendered="false" headerText="Realm id"
+						style="width:100px;text-align:left; font-weight:bold;"
+						styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{model.realmId}" />
+					</p:column>
+
+
+
+
+					<p:column headerText="" style="width:90px;text-align:left;"
+						styleClass="ui-nodesStatusTableHeader">
+						<p:commandButton value="Setup" icon="ui-icon-search"
+							action="#{networkSettingsBean.setMobileApplicationTypeEditModel(model)}"
+							style="margin-right:20px;"
+							oncomplete="widgetEditApplicationType.show()" update="@form"
+							process="" />
+					</p:column>
+
+
+				</p:dataTable>
+
+
+				<p:dialog id="idWidgetCreateApplicationType" width="500"
+					style="width:500px;" header="Create mobile application type"
+					widgetVar="widgetCreateApplicationType" resizable="false"
+					showEffect="clip" hideEffect="fold" modal="false"
+					appendToBody="false">
+					<h:panelGrid columns="2" cellpadding="4">
+
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Application name:" />
+						<p:inputText size="30"
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.name}" />
+
+						<h:outputText rendered="false" styleClass="dialog-mediumFont"
+							value="Network id:" />
+						<p:selectOneMenu rendered="false" id="realm"
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.realmId}">
+							<f:selectItems value="#{networkSettingsBean.realmList}" />
+						</p:selectOneMenu>
+
+
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Version check:" />
+						<p:selectBooleanCheckbox
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.versionCheck}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Minimum version:" />
+						<p:inputText size="30"
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.minimumVersion}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Version error message:" />
+						<p:inputText size="80"
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.versionErrorMessage}" />
+
+						<h:outputText styleClass="dialog-mediumFont" value="GCM Key:" />
+						<p:inputText size="80"
+							value="#{networkSettingsBean.mobileApplicationTypeCreateModel.gcmKey}" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="3" cellpadding="4">
+						<p:commandButton value="Create" icon="ui-icon-search"
+							action="#{networkSettingsBean.createMobileApplicationType()}"
+							process="" update="@form" oncomplete="" />
+						<p:commandButton value="Close" icon="ui-icon-search"
+							update="@form" process=""
+							oncomplete="widgetCreateApplicationType.hide()" />
+
+					</h:panelGrid>
+
+				</p:dialog>
+
+				<p:dialog id="idWidgetEditApplicationType" width="600"
+					style="width:500px;" header="Edit mobile application type"
+					widgetVar="widgetEditApplicationType" resizable="false"
+					showEffect="clip" hideEffect="fold" modal="false"
+					appendToBody="false">
+					<h:panelGrid columns="2" cellpadding="4">
+
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Application name:" />
+						<p:inputText size="30"
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.name}" />
+						<h:outputText rendered="false" styleClass="dialog-mediumFont"
+							value="Network id:" />
+						<p:selectOneMenu rendered="false" id="realmedit"
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.realmId}">
+							<f:selectItems value="#{networkSettingsBean.realmList}" />
+						</p:selectOneMenu>
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Version check:" />
+						<p:selectBooleanCheckbox
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.versionCheck}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Minimum version:" />
+						<p:inputText size="30"
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.minimumVersion}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Version error message:" />
+						<p:inputText size="70"
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.versionErrorMessage}" />
+						<h:outputText styleClass="dialog-mediumFont" value="GCM Key:" />
+						<p:inputText size="70"
+							value="#{networkSettingsBean.mobileApplicationTypeEditModel.gcmKey}" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="3" cellpadding="4">
+
+						<p:commandButton value="Save" icon="ui-icon-search"
+							action="#{networkSettingsBean.editMobileApplicationType()}"
+							process="" update="@form" oncomplete="" />
+						<p:commandButton value="Delete" icon="ui-icon-search"
+							action="#{networkSettingsBean.deleteMobileApplicationType()}"
+							process="" update="@form" oncomplete="" />
+
+
+						<p:commandButton value="Close" icon="ui-icon-search"
+							update="@form" process=""
+							oncomplete="widgetEditApplicationType.hide()" />
+
+					</h:panelGrid>
+
+				</p:dialog>
+
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Create mobile application type"
+					icon="ui-icon-search" update=""
+					oncomplete="widgetCreateApplicationType.show()">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="API access" rendered="true">
+			<p:panel header="Reporting authentication" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText value="Reporting server login:" />
+					<p:inputText
+						value="#{networkSettingsBean.realm.reportingServerLogin}"
+						size="35" />
+					<h:outputText value="Reporting server password:" />
+					<p:inputText
+						value="#{networkSettingsBean.realm.reportingServerPassword}"
+						size="35" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update"
+					action="#{networkSettingsBean.update}" icon="ui-icon-search"
+					update="" process="@form" oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+
+		<p:tab title="Donky auto respond message" rendered="true">
+			<p:panel header="Donky auto respond message" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText value="Message:" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.realm.donkyAutoRespondMessage}"
+						cols="100" rows="10" />
+
+
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update"
+					action="#{networkSettingsBean.update}" icon="ui-icon-search"
+					update="" process="@form" oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+
+		<p:tab title="AFA Settings" rendered="true">
+			<p:panel header="AFA Settings" toggleable="false" closable="false"
+				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Session checking:" />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.afaConfiguration.AFASessionCheckingEnabled}" />
+					<h:outputText value="Session timeout (in seconds):" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFASessionTimeout}" />
+					<h:outputText value="Session timeout message:" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFASessionTimeoutMessage}"
+						cols="100" rows="10" />
+
+					<h:outputText value="Session reminder time after (in seconds):" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFASessionReminderTime}" />
+					<h:outputText value="Session reminder message:" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFASessionReminderMessage}"
+						cols="100" rows="10" />
+					<h:outputText value="Verified session time(in seconds):" />
+
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFAVerifiedSessionTime}" />
+
+					<h:outputText value="Session timeout reset time(in seconds):" />
+					<p:inputTextarea
+						value="#{networkSettingsBean.afaConfiguration.AFASessionTimeoutResetTime}" />
+
+
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update"
+					action="#{networkSettingsBean.update}" icon="ui-icon-search"
+					update="" process="@form" oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="Quidco/Snapdeal" rendered="true">
+			<p:panel header="Quidco Settings" toggleable="false" closable="false"
+				id="idQuidcoSnapdealPanel" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Quidco percentage commision:" />
+					<p:inputText
+						value="#{networkSettingsBean.realm.quidcoPercentageCommision}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Snapdeal percentage commision:" />
+					<p:inputText
+						value="#{networkSettingsBean.realm.snapdealPercentageCommision}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Quidco timer enabled:" />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.quidcoTimerEnabled}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Snapdeal reports timer enabled:" />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.snapdealReportTimerEnabled}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Snapdeal approved offers timer enabled:" />
+					<p:selectBooleanCheckbox
+						value="#{networkSettingsBean.realm.snapdealApprovedOffersTimerEnabled}" />
+				</h:panelGrid>
+				<h:outputText styleClass="dialog-mediumFont"
+					value="Promote snapdeal categories:" />
+				<h:panelGrid id="idSnapdealGrid" columns="2" cellpadding="4">
+					<p:orderList value="#{networkSettingsBean.snapdealCategories}"
+						var="category" controlsLocation="none" itemLabel="#{category}"
+						itemValue="#{category}" id="idSnapdealOrderList">
+
+						<f:facet name="caption">Category</f:facet>
+						<p:column>
+							<h:outputText styleClass="dialog-mediumFont" value="#{category}" />
+						</p:column>
+
+						<p:column>
+							<p:commandButton icon="ui-icon-close" update="" process="@form"
+								value="Remove"
+								actionListener="#{networkSettingsBean.removeSnapdealCategory}">
+								<f:param name="selectedElement" value="#{category}" />
+							</p:commandButton>
+						</p:column>
+					</p:orderList>
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="4"
+					styleClass="dialog-mediumFont">
+					<h:outputText styleClass="dialog-mediumFont" value="Category name:" />
+					<p:inputText value="#{networkSettingsBean.snapdealCategoryName}" />
+					<p:commandButton value="Add category"
+						action="#{networkSettingsBean.addSnapdealCategory}"
+						update="idSnapdealGrid" process="@all" oncomplete=""
+						icon="ui-icon-search">
+					</p:commandButton>
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="1" cellpadding="4">
+					<p:commandButton value="Update"
+						action="#{networkSettingsBean.updateQuidco}" icon="ui-icon-search"
+						update="idSnapdealGrid" process="@form" oncomplete="">
+					</p:commandButton>
+				</h:panelGrid>
+			</p:panel>
+		</p:tab>
+
+
+
+	</p:tabView>
+
+</h:form>
+</html>
+

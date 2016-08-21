@@ -1,0 +1,92 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form id="idVideoGamificationForm" prependId="false">
+	<p:growl id="idVideoGamificationGrowl" showDetail="true" life="3000" />
+	<p:tabView id="tabGratificationSettings">
+		<p:tab title="Video Gamification Settings" rendered="true">
+			<p:dataTable id="idGamificationVideoTable" var="model" width="700"
+				style="width:700px;"
+				value="#{videoGamificationBean.rewardTypeDataModelBean}"
+				rowKey="#{model.id}" selectionMode="single">
+
+				<p:column rendered="false" headerText="Id"
+					style="width:100px;text-align:left; font-weight:bold;"
+					styleClass="ui-nodesStatusTableHeader">
+					<h:outputText value="#{model.id}" />
+				</p:column>
+
+				<p:column rendered="true" headerText="Reward type"
+					style="width:100px;text-align:left; font-weight:bold;"
+					styleClass="ui-nodesStatusTableHeader">
+					<h:outputText value="#{model.name}" />
+				</p:column>
+
+				<p:column rendered="true" headerText="Video conversion counter"
+					style="width:50px;text-align:left; font-weight:bold;"
+					styleClass="ui-nodesStatusTableHeader">
+					<h:outputText value="#{model.videoCounterVG}" />
+				</p:column>
+
+				<p:column rendered="true" headerText="Install conversion counter"
+					style="width:50px;text-align:left; font-weight:bold;"
+					styleClass="ui-nodesStatusTableHeader">
+					<h:outputText value="#{model.installCounterVG}" />
+				</p:column>
+
+				<p:column rendered="true" headerText="Action"
+					style="width:20px;text-align:left; font-weight:bold;"
+					styleClass="ui-nodesStatusTableHeader">
+					<p:commandButton value="Setup" icon="ui-icon-search"
+						action="#{videoGamificationBean.setEditRewardTypeEntity(model)}"
+						style="margin-right:20px;"
+						oncomplete="widgetEditVideoGamification.show()" update="@form"
+						process="" />
+				</p:column>
+
+			</p:dataTable>
+
+			<p:dialog id="idWidgetEditVideoGamification" width="500"
+				style="width:500px;" header="Edit referral reward"
+				widgetVar="widgetEditVideoGamification" resizable="false"
+				showEffect="clip" hideEffect="fold" modal="false"
+				appendToBody="false">
+
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Video counter VG" />
+					<p:inputText size="30"
+						value="#{videoGamificationBean.editRewardTypeEntity.videoCounterVG}" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" cellpadding="4">
+
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Install counter VG" />
+					<p:inputText size="30"
+						value="#{videoGamificationBean.editRewardTypeEntity.installCounterVG}" />
+
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton value="Edit" icon="ui-icon-search"
+						action="#{videoGamificationBean.processEdit()}" process=""
+						update="@form" oncomplete="" />
+					<p:commandButton value="Close" icon="ui-icon-search" update="@form"
+						process="" oncomplete="widgetEditVideoGamification.hide()" />
+
+				</h:panelGrid>
+
+			</p:dialog>
+
+		</p:tab>
+	</p:tabView>
+</h:form>
+</html>
+

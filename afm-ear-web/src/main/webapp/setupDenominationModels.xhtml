@@ -1,0 +1,448 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+>
+
+	<h:form id="idDenominationModelsForm" prependId="false" >
+	    <p:growl id="idDenominationModelGrowl" showDetail="true" life="3000" />  
+
+		    <p:dataTable id="idDenominationModelTable" var="model" value="#{denominationModelBean.denominationDataModel}"   				    
+ 				    rowKey="#{domain.name}" selectionMode="single" >
+
+		        <p:column rendered="false" headerText="Id" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.id}" />  
+		        </p:column>
+				<p:column headerText="Default model" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+				        <p:selectBooleanCheckbox value="#{model.defaultModel}" disabled="true" />
+		        </p:column>		        
+		        <p:column headerText="Name" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.name}" />  
+		        </p:column>
+		        <p:column headerText="Reward type" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.rewardTypeName}" />  
+		        </p:column>
+   		        <p:column headerText="Source payout currency" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.sourcePayoutCurrencyCode}" />  
+		        </p:column>
+   		        <p:column headerText="Target payout currency" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.targetPayoutCurrencyCode}" />  
+		        </p:column>
+		        <p:column rendered="false" headerText="Country code" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.countryCode}" />  
+		        </p:column>
+		        <p:column headerText="Creation date" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.generationDate.toString()}" />  
+		        </p:column>
+		        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+          				<p:commandButton value="Setup" icon="ui-icon-search"  
+                      	     action="#{denominationModelBean.setEditedDenominationModel(model)}" 
+                      	     style="margin-right:20px;"
+                      	     oncomplete="widgetDenominationModelEdit.show()"
+                      	     update="@form" 
+                      	     process="@this" />  
+		        </p:column>
+		        
+		        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+	    			<p:commandButton value="Export" 
+	    				ajax="false" 
+	    				onclick="PrimeFaces.monitorDownload(start, stop);" 
+	    				icon="ui-icon-arrowthick-1-s" >
+	        			
+	        			<p:fileDownload value="#{denominationExportBean.getFile(model)}" />
+	    			</p:commandButton>
+		        </p:column>
+		        
+ 				<p:column headerText="" style="margin:auto;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+		        </p:column>
+		        
+		        <f:facet name="footer">
+      		        <div align="left">
+          				<p:commandButton value="Create New Denomination Model" icon="ui-icon-search"  
+                      	     style="margin-right:20px;"
+                     	     oncomplete="widgetDenominationModelCreate.show()"
+                       	     action="#{denominationModelBean.clearDenominationTable()}"
+                       	     update="@form" 
+                       	     process="@this"
+                       	     rendered="true" /> 
+                       	<p:commandButton value="Import" 
+                       		onclick="widgetImport.show()" 
+                       		icon="ui-icon-arrowthick-1-n" 
+                       		style="margin-right:20px;" />
+                       	<p:commandButton value="Refresh"
+                       		action="#{denominationModelBean.refresh()}"
+                       		icon="ui-icon-refresh"
+                       		style="margin-right:20px;" />
+					</div>  
+                </f:facet>
+		    </p:dataTable>
+		    
+
+		    
+<!-- edit denomination model -->
+			<p:dialog id="idDenominationModelEditDialog"
+					width="800" 
+					style="width:800px;"
+					header="Edit Denomination Model" widgetVar="widgetDenominationModelEdit" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+ 					    <h:panelGrid id="idDenominationModelEditData" columns="1" cellpadding="4">
+				    <h:panelGrid id="idDenominationModelEditFields" columns="2" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Name: "  />
+			            <p:inputText size="30" value="#{denominationModelBean.editedModel.name}" disabled="true" />
+	   			    	<h:outputText styleClass="dialog-mediumFont" value="Default model globally applied across all offers: " />
+	   			    	<h:panelGrid columns="2" cellpadding="4">
+					        <p:selectBooleanCheckbox value="#{denominationModelBean.editedModel.defaultModel}" disabled="true"  />
+	       					<p:commandButton 
+							   value="Set as default model" icon="ui-icon-search"
+			                   action="#{denominationModelBean.setDenominationModelAsDefault}"
+                        	   update="" 
+							   process="@this"
+                        	   rendered="true" />
+						</h:panelGrid>				        
+				        
+				    	<h:outputText styleClass="dialog-mediumFont" value="Reward name: " />
+			            <p:selectOneMenu value="#{denominationModelBean.editedModel.rewardTypeName}">  
+				            <f:selectItems value="#{denominationModelBean.listRewardTypes}"  
+				            				var="rewardType" 
+				            				itemLabel="#{rewardType.name}" 
+				            				itemValue="#{rewardType.name}" />   
+				        </p:selectOneMenu>
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Source payout currency code: "  />
+				        <p:selectOneMenu value="#{denominationModelBean.editedModel.sourcePayoutCurrencyCode}">  
+				            <f:selectItems value="#{denominationModelBean.listCurrencyCodes}"  
+				            				var="currencyCode" 
+				            				itemLabel="#{currencyCode.code}" 
+				            				itemValue="#{currencyCode.code}" />   
+			            </p:selectOneMenu>
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Destination payout currency code: "  />
+				        <p:selectOneMenu value="#{denominationModelBean.editedModel.targetPayoutCurrencyCode}">  
+				            <f:selectItems value="#{denominationModelBean.listCurrencyCodes}"  
+				            				var="currencyCode" 
+				            				itemLabel="#{currencyCode.code}" 
+				            				itemValue="#{currencyCode.code}" />   
+			            </p:selectOneMenu>
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Country code: " rendered="false" />
+			            <p:inputText render="true" size="30" value="#{denominationModelBean.editedModel.countryCode}" rendered="false" />
+   				    </h:panelGrid>
+				</h:panelGrid>
+
+			    <p:dataTable id="idDenominationModelEditTable" var="denominationModelRow" 
+			    	value="#{denominationModelBean.denominationTableDataModel}"   				    
+  				  	scrollable="true" 
+  				  	scrollHeight="450" 
+  				  	scrollRows="10" 
+  				  	height="150" 
+  				  	rowKey="#{denominationModelRow.name}" 
+  				  	selectionMode="single">
+
+			        <p:column headerText="Source payout value" style="width:120px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.sourceOfferPayoffValue}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.editedModel.sourcePayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column headerText="Target payout value" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.targetOfferPayoffValue}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.editedModel.targetPayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column headerText="Revenue split" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.revenueSpit}" />  
+			        </p:column>
+   			        <p:column headerText="Airtime reward value" style="width:120px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.airtimePayoff}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.editedModel.targetPayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column rendered="false" headerText="Move up" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+        				<p:commandButton value="Position" icon="ui-icon-circle-arrow-n"  
+                    	     action="#{denominationModelBean.moveUpTableRow(denominationModelRow.name)}"
+                    	     oncomplete="" 
+                    	     style="margin-right:20px;" />  
+			        </p:column>
+			        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+           				<p:commandButton value="Edit" icon="ui-icon-circle-search"  
+                       	     action="#{denominationModelBean.editTableRow(denominationModelRow)}"
+                       	     oncomplete="widgetModelRowEdit.show()" 
+                       	     style="margin-right:20px;" />  
+			        </p:column>
+			        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+           				<p:commandButton value="Remove" icon="ui-icon-circle-close"  
+                       	     action="#{denominationModelBean.deleteTableRow(denominationModelRow.name)}"
+                       	     oncomplete="" 
+                       	     style="margin-right:20px;" />  
+			        </p:column>
+			        
+			        <f:facet name="footer">
+       		        	<div align="left">
+           					<p:commandButton value="Add row" icon="ui-icon-plus"  
+                        	     style="margin-right:20px;"
+                        	     oncomplete="widgetModelRowCreate.show()"
+                        	     update="" 
+                        	     process="@this"
+                        	     rendered="true" />  
+						</div>	                        	     
+                        </f:facet>
+			    </p:dataTable>
+  				    
+			    <h:panelGrid columns="4" cellpadding="4">
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                   update=""
+	           	       process=""
+	                   oncomplete="widgetDenominationModelEdit.hide()" />				                    			
+					<p:commandButton 
+					   value="Update" icon="ui-icon-search"
+	                   action="#{denominationModelBean.update}"
+					   process=""
+	                   update=""
+	                   oncomplete="" />
+					<p:commandButton 
+					   value="Create new Denomination Model based on this one" icon="ui-icon-search"
+					   process=""
+	                   update=""
+	                   oncomplete="widgetCreateNewDenominationModel.show()" />
+					<p:commandButton value="Delete" icon="ui-icon-search"
+						update=""  
+	                    action="#{denominationModelBean.delete}"
+               	        process="@form" 
+               	        oncomplete="widgetDenominationModelEdit.hide()" > 
+                   		<p:confirm header="Confirmation" message="Are you sure? This will prevent reward calculation for any transactions that rely on this model?" icon="ui-icon-alert" />
+   	                </p:commandButton>
+				</h:panelGrid>
+		    </p:dialog>  
+		
+<!-- create denomination model -->
+			<p:dialog id="idDenominationModelCreateDialog"
+					width="800" 
+					style="width:800px;"
+					header="Create Denomination Model" widgetVar="widgetDenominationModelCreate" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+ 					    <h:panelGrid id="idDenominationModelCreateData" columns="1" cellpadding="4">
+				    <h:panelGrid columns="2" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />
+			            <p:inputText size="30" value="#{denominationModelBean.createdModel.name}"  />
+	   			    	<h:outputText styleClass="dialog-mediumFont" value="Default model globally applied across all offers: " />
+				        <p:selectBooleanCheckbox value="#{denominationModelBean.createdModel.defaultModel}"  />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Reward name: " />
+			            <p:selectOneMenu value="#{denominationModelBean.createdModel.rewardTypeName}">  
+				            <f:selectItems value="#{denominationModelBean.listRewardTypes}"  
+				            				var="rewardType" 
+				            				itemLabel="#{rewardType.name}" 
+				            				itemValue="#{rewardType.name}" />   
+				        </p:selectOneMenu>
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Country code: " rendered="false" />
+			            <p:inputText render="true" size="30" value="#{denominationModelBean.createdModel.countryCode}" rendered="false" />
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Source payout currency code: "  />
+				        <p:selectOneMenu value="#{denominationModelBean.createdModel.sourcePayoutCurrencyCode}">  
+				            <f:selectItems value="#{denominationModelBean.listCurrencyCodes}"  
+				            				var="currencyCode" 
+				            				itemLabel="#{currencyCode.code}" 
+				            				itemValue="#{currencyCode.code}" />   
+			            </p:selectOneMenu>
+				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Destination payout currency code: "  />
+				        <p:selectOneMenu value="#{denominationModelBean.createdModel.targetPayoutCurrencyCode}">  
+				            <f:selectItems value="#{denominationModelBean.listCurrencyCodes}"  
+				            				var="currencyCode" 
+				            				itemLabel="#{currencyCode.code}" 
+				            				itemValue="#{currencyCode.code}" />   
+			            </p:selectOneMenu>
+   				    </h:panelGrid>
+				</h:panelGrid>
+
+			    <p:dataTable id="idDenominationModelSettingsTable" var="denominationModelRow" value="#{denominationModelBean.denominationTableDataModel}"   				    
+      				  	scrollable="true" 
+	  				  	scrollHeight="450" 
+	  				  	scrollRows="10" 
+	  				  	height="150" 
+						rowKey="#{denominationModelRow.name}" selectionMode="single">
+
+			        <p:column headerText="Source payout value" style="width:120px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.sourceOfferPayoffValue}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.createdModel.sourcePayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column headerText="Target payout value" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.targetOfferPayoffValue}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.createdModel.targetPayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column headerText="Revenue split" style="width:100px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.revenueSpit}" />  
+			        </p:column>
+   			        <p:column headerText="Airtime reward value" style="width:120px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+       						<h:outputText value="#{denominationModelRow.airtimePayoff}" />
+       						<p:spacer width="3" height="10" />
+      						<h:outputText value="#{denominationModelBean.createdModel.targetPayoutCurrencyCode}" />  
+			        </p:column>
+			        <p:column rendered="false" headerText="Move up" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+        				<p:commandButton value="Position" icon="ui-icon-circle-arrow-n"  
+                    	     action="#{denominationModelBean.moveUpTableRow(denominationModelRow.name)}"
+                    	     oncomplete="" 
+                    	     style="margin-right:20px;" />  
+			        </p:column>
+			        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+           				<p:commandButton value="Remove" icon="ui-icon-circle-close"  
+                       	     action="#{denominationModelBean.deleteTableRow(denominationModelRow.name)}"
+                       	     oncomplete="" 
+                       	     style="margin-right:20px;" />  
+			        </p:column>
+			        
+			        <f:facet name="footer">
+       		        	<div align="left">
+           					<p:commandButton value="Add row" icon="ui-icon-plus"  
+                        	     style="margin-right:20px;"
+                        	     oncomplete="widgetModelRowCreate.show()"
+                        	     update="" 
+                        	     process="@this"
+                        	     rendered="true" />  
+						</div>	                        	     
+                        </f:facet>
+			    </p:dataTable>
+  				    
+			    <h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton 
+					   value="Create" icon="ui-icon-search"
+	                   action="#{denominationModelBean.create}"
+					   process=""
+	                   update=""
+	                   oncomplete="" />
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                   update=""
+	           	       process=""
+	                   oncomplete="widgetDenominationModelCreate.hide()" />				                    			
+				</h:panelGrid>
+		    </p:dialog>  
+
+<!-- create new denomination model based on the currently edited one -->
+			<p:dialog header="Create new Denomination Model based on existing one" widgetVar="widgetCreateNewDenominationModel" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+			    <h:panelGrid columns="4" cellpadding="4">
+			    	<h:outputText styleClass="dialog-mediumFont" value="New denomination model name:" />
+		            <p:inputText  size="30" value="#{denominationModelBean.strNewDenominationModelName}" />
+			    </h:panelGrid>
+
+			    <h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton 
+						value="Create" icon="ui-icon-search"
+	                    action="#{denominationModelBean.createNewDenominationBasedOnCurrentlyEditedOne}"
+						process="@form"
+	                    update=""
+	                    oncomplete="widgetCreateNewDenominationModel.hide();" />
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                    update=""
+               	        process=""
+	                    oncomplete="widgetCreateNewDenominationModel.hide();" />				                    			
+				    </h:panelGrid>
+		    </p:dialog>  
+
+
+<!-- create denomination model row entry -->
+			<p:dialog id="idModelRowCreateDialog" 
+					header="Denomination Model Row entry" widgetVar="widgetModelRowCreate" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+			    <h:panelGrid id="idModelRowSetupDialog" columns="1" cellpadding="4">
+				    <h:panelGrid columns="4" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Source payout value" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Target payout value" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Revenue split" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Amount offered in Airtime" />
+			            <p:inputText  size="10" value="#{denominationModelBean.createdDenominationModelRow.sourceOfferPayoffValue}" />
+			            <p:inputText size="10" value="#{denominationModelBean.createdDenominationModelRow.targetOfferPayoffValue}" />
+			            <p:inputText  size="10" value="#{denominationModelBean.createdDenominationModelRow.revenueSpit}" />
+			            <p:inputText  size="10" value="#{denominationModelBean.createdDenominationModelRow.airtimePayoff}" />
+   				    </h:panelGrid>
+				</h:panelGrid>
+
+			    <h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton 
+						value="Create" icon="ui-icon-search"
+	                    action="#{denominationModelBean.createDenominationModelRowEntry}"
+						process="@form"
+	                    update="idModelRowCreateDialog"
+	                    oncomplete="widgetModelRowCreate.hide()" />
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                    update=""
+               	        process=""
+	                    oncomplete="widgetModelRowCreate.hide()" />				                    			
+				    </h:panelGrid>
+		    </p:dialog>  
+
+<!-- edit denomination model row entry -->
+			<p:dialog id="idModelRowEditDialog" 
+					header="Edit Denomination Model Row" widgetVar="widgetModelRowEdit" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+			    <h:panelGrid id="idModelRowEditGrid" columns="1" cellpadding="4">
+				    <h:panelGrid columns="4" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Source payout value" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Target payout value" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Revenue split" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Amount offered in Airtime" />
+			            <p:inputText  size="10" value="#{denominationModelBean.editedDenominationModelRow.sourceOfferPayoffValue}" />
+			            <p:inputText size="10" value="#{denominationModelBean.editedDenominationModelRow.targetOfferPayoffValue}" />
+			            <p:inputText  size="10" value="#{denominationModelBean.editedDenominationModelRow.revenueSpit}" />
+			            <p:inputText  size="10" value="#{denominationModelBean.editedDenominationModelRow.airtimePayoff}" />
+   				    </h:panelGrid>
+				</h:panelGrid>
+
+			    <h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton 
+						value="Update" icon="ui-icon-search"
+						process="@form"
+	                    update="idModelRowEditDialog,idDenominationModelEditTable"
+	                    oncomplete="widgetModelRowEdit.hide()" />
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                    update=""
+               	        process=""
+	                    oncomplete="widgetModelRowEdit.hide()" />				                    			
+				    </h:panelGrid>
+		    </p:dialog>  
+		
+		<p:remoteCommand name="refreshCommand" 
+			actionListener="#{denominationModelBean.refresh()}" />
+	</h:form>
+	
+	<p:dialog header="Import denomination model" 
+		widgetVar="widgetImport" 
+		modal="false" 
+		appendToBody="false" 
+		dynamic="true"
+		width="800"
+		resizable="false"
+		showEffect="clip"
+		hideEffect="fold" >
+
+		<h:panelGrid columns="1">
+			<h:form prependId="false" enctype="multipart/form-data" >
+				<p:fileUpload id="idFileUpload"
+					fileUploadListener="#{denominationExportBean.importModel}" 
+					fileLimit="1" 
+					sizeLimit="50000"
+					allowTypes="/(\.|\/)(txt)$/" 
+					uploadLabel="Import"
+					process=""
+					update="idFileUpload" />
+			</h:form>
+			<p:commandButton value="Close" 
+				onclick="widgetImport.hide()"
+					icon="ui-icon-close" />
+		</h:panelGrid>	
+	</p:dialog>
+	
+	
+	<script type="text/javascript">
+		function start() {
+
+		}
+	
+		function stop() {
+
+		}
+	</script>
+	
+</html>
+

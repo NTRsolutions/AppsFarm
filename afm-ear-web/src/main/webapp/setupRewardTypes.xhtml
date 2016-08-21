@@ -1,0 +1,250 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form prependId="false">
+	<p:growl id="idSetupRewardTypesGrowl" showDetail="true" life="3000" />
+
+	<p:dataTable id="idRewarTypeTable" var="rewardType"
+		value="#{offerRewardTypesBean.rewardTypeDataModelBean}"
+		rowKey="#{rewardType.id}" selectionMode="single">
+
+		<p:column headerText="Name"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{rewardType.name}" />
+		</p:column>
+		<p:column headerText="Application type"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{rewardType.applicationType}" />
+		</p:column>
+		<p:column headerText="Minimum payout threshold (in source currency)"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{rewardType.minimalOfferPayoutThresholdInSourceCurrency}" />
+		</p:column>
+		<p:column
+			headerText="Minimum instant reward threshold (in target currency)"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText
+				value="#{rewardType.minimalInstantRewardThresholdInTargetCurrency}" />
+		</p:column>
+		<p:column headerText="Genearation time"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{rewardType.generationDate.toString()}" />
+		</p:column>
+		<p:column headerText="" style="width:90px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Setup" icon="ui-icon-search"
+				action="#{offerRewardTypesBean.setEditedRewardType(rewardType)}"
+				style="margin-right:20px;"
+				oncomplete="widgetRewardTypeEditDialog.show()" update="" process="" />
+		</p:column>
+
+		<p:column headerText="" style="width:90px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Delete" icon="ui-icon-search"
+				action="#{offerRewardTypesBean.deleteRewardType(rewardType)}"
+				style="margin-right:20px;" oncomplete="" update="@form"
+				process="@this">
+				<p:confirm header="Confirmation"
+					message="Are you sure? Deleting selected reward type will automatically discard processing of all offers that belong to this configuration?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+		</p:column>
+
+		<f:facet name="footer">
+			<div align="left">
+				<p:commandButton value="Add new reward type" icon="ui-icon-search"
+					style="margin-right:20px;"
+					oncomplete="widgetRewardTypeAddDialog.show()" rendered="true" />
+			</div>
+		</f:facet>
+	</p:dataTable>
+
+
+	<!-- add currency element -->
+	<p:dialog header="Add reward type"
+		widgetVar="widgetRewardTypeAddDialog" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Reward type name: " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.createdRewardType.name}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Minimum offer payout threshold (in source currency): " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.createdRewardType.minimalOfferPayoutThresholdInSourceCurrency}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Minimum instant reward threshold (in target currency): " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.createdRewardType.minimalInstantRewardThresholdInTargetCurrency}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Application type: " />
+			<p:selectOneMenu id="realmedit"
+				value="#{offerRewardTypesBean.createdRewardType.applicationType}">
+				<f:selectItems value="#{offerRewardTypesBean.applicationTypeList}" />
+			</p:selectOneMenu>
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Add" icon="ui-icon-search"
+				action="#{offerRewardTypesBean.addRewardType}" update="" process=""
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetRewardTypeAddDialog.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<!-- edit currency element -->
+	<p:dialog header="Edit selected reward type"
+		widgetVar="widgetRewardTypeEditDialog" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+
+		<h:panelGrid id="idEditRewardType" columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Reward type name: " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.name}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Minimum offer payout threshold (in source currency): " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.minimalOfferPayoutThresholdInSourceCurrency}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Minimum instant reward threshold (in target currency): " />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.minimalInstantRewardThresholdInTargetCurrency}" />
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Application type: " />
+			<p:selectOneMenu id="realmedit2"
+				value="#{offerRewardTypesBean.editedRewardType.applicationType}">
+				<f:selectItems value="#{offerRewardTypesBean.applicationTypeList}" />
+			</p:selectOneMenu>
+
+			<h:outputText styleClass="dialog-mediumFont" value="Wall status:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.wallStatus}" />
+
+			<h:outputText styleClass="dialog-mediumFont" value="Video status:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.videoStatus}" />
+
+
+			<h:outputText styleClass="dialog-mediumFont" value="Wallet status:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.walletStatus}" />
+
+			<h:outputText styleClass="dialog-mediumFont" value="Refer status:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.referStatus}" />
+
+			<h:outputText styleClass="dialog-mediumFont" value="Spinner status:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.spinnerStatus}" />
+				
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Wall status message:" />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.wallStatusMessage}" />
+				
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Wallet status message:" />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.walletStatusMessage}" />
+				
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Video status message:" />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.videoStatusMessage}" />
+				
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Refer status message:" />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.referStatusMessage}" />	
+				
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Spinner status message:" />
+			<p:inputText size="35"
+				value="#{offerRewardTypesBean.editedRewardType.spinnerStatusMessage}" />
+
+		</h:panelGrid>
+
+		<p:dataTable id="idImageBannerTable" var="imageBanner"
+			value="#{offerRewardTypesBean.imageBannerDataModelBean}"
+			rowKey="#{imageBanner.id}" selectionMode="single">
+
+			<p:column headerText="Image URL"
+				style="width:140px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{imageBanner.imageBannerURL}" />
+			</p:column>
+
+			<p:column headerText="Image Action"
+				style="width:140px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{imageBanner.imageBannerAction}" />
+			</p:column>
+			<p:column headerText="Action" style="width:90px;text-align:left;"
+				styleClass="ui-nodesStatusTableHeader">
+				<p:commandButton value="Delete" icon="ui-icon-remove"
+					action="#{offerRewardTypesBean.deleteImageBanner(imageBanner)}"
+					style="margin-right:20px;" oncomplete="">
+					<p:confirm header="Confirmation"
+						message="Are you sure? Deleting selected image banner will automatically discard processing of all offers that belong to this configuration?"
+						icon="ui-icon-alert" />
+				</p:commandButton>
+			</p:column>
+
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4">
+			<p:commandButton value="Add image banner" icon="ui-icon-search"
+				update="" process="" oncomplete="widgetAddImageBannerDialog.show()" />
+		</h:panelGrid>
+
+
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Save" icon="ui-icon-search"
+				action="#{offerRewardTypesBean.updateRewardType}" update=""
+				process="" oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update="@form"
+				process="@this" oncomplete="widgetRewardTypeEditDialog.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog header="Add image banner" id="idWidgetAddImageBannerDialog"
+		widgetVar="widgetAddImageBannerDialog" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Image banner URL: " />
+			<p:inputText size="35" value="#{offerRewardTypesBean.imageBannerURL}" />
+			<h:outputText styleClass="dialog-mediumFont" value="Action type: " />
+			<p:selectOneMenu value="#{offerRewardTypesBean.imageBannerAction}">
+				<f:selectItems value="#{offerRewardTypesBean.bannerActionList}" />
+			</p:selectOneMenu>
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Image banner action URL: " />
+			<p:inputText size="35" value="#{offerRewardTypesBean.actionURL}" />
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Create" icon="ui-icon-search"
+				action="#{offerRewardTypesBean.createImageBanner}" process=""
+				update="" oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-search" update=""
+				process="" oncomplete="widgetAddImageBannerDialog.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+
+</h:form>
+
+</html>

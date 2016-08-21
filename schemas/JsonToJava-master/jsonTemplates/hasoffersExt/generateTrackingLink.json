@@ -1,0 +1,28 @@
+{
+  "request": {
+    "Target": "Affiliate_Offer",
+    "Format": "jsonp",
+    "Service": "HasOffers",
+    "Version": "2",
+    "NetworkId": "apphunter",
+    "Method": "generateTrackingLink",
+    "api_key": "2e0c0c9c08b3c0e864fd9bafda116ce5eb295e374ea92f108875ccbe62198dda",
+    "offer_id": "490",
+    "callback": "angular.callbacks._1",
+    "__lc_visitor_id_1040387": "S1422022892.20676f7ace",
+    "_ga": "GA1.2.1826197901.1422023544",
+    "_gat": "1"
+  },
+  "response": {
+    "status": 1,
+    "httpStatus": 200,
+    "data": {
+      "affiliate_id": "1030",
+      "offer_id": 490,
+      "click_url": "http://apphunter.go2cloud.org/aff_c?offer_id=490&aff_id=1030",
+      "impression_pixel": "<img src=\"http://apphunter.go2cloud.org/aff_i?offer_id=490&aff_id=1030\" width=\"1\" height=\"1\" />"
+    },
+    "errors": [],
+    "errorMessage": null
+  }
+}

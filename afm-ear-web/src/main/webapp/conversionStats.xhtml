@@ -1,0 +1,160 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+>
+
+<h:outputScript name="jqplot/jqplot.canvasAxisTickRenderer.js" />
+<h:outputScript name="jqplot/jqplot.canvasAxisTickRenderer.min.js" />
+<h:outputScript name="jqplot/jqplot.dateAxisRenderer.js" />
+<h:outputScript name="jqplot/jqplot.dateAxisRenderer.min.js" />
+
+	<h:form prependId="false" >
+	    <p:growl id="idConversionStatsGrowl" showDetail="true" life="3000" />  
+	        <h:panelGrid columns="1" cellpadding="4">
+			<p:lineChart  id="idProfitStatsChart" value="#{conversionStatsBean.chartProfit}"
+				lazy="true"
+		     	widgetVar="widgetProfitChart" title="#{conversionStatsBean.revenueStatsTitle}"  
+		     	style="height:220px;width:800px; margin-top:20px"
+		     	xaxisAngle="90"
+		     	extender="extenderFunctionMem" 
+		     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+		     	showMarkers="true" 
+		     	zoom="true" autoScale="true">
+	     		<script>
+				   function extenderFunctionMem() {
+					   this.cfg.seriesDefaults = {
+							   shadowDepth: 1,
+							   showMarker: true,
+					            rendererOptions : {
+					            	  smooth: true,
+					                  animation: {
+					                      show: false
+					                  }
+					            }								            
+					   };
+					   this.cfg.axes = {
+						        xaxis : {
+						            renderer : $.jqplot.DateAxisRenderer,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						            tickOptions : { 
+						                fontSize:'10pt',
+						                fontFamily:'Tahoma',
+						                formatString: '%H:%M', 
+						                angle:-90
+						            }
+						        },
+						        yaxis : {
+						        	min: 0,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						        	label: "",
+						        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+						        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+					                tickOptions: {
+						                fontSize:'10pt', 
+						                fontFamily:'Tahoma'
+					                }
+						        }               
+						    };
+						    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+					}
+				</script>
+	     	</p:lineChart>
+			<p:lineChart  id="idConversionStatsChart" value="#{conversionStatsBean.chartConversions}"
+				lazy="true"   
+		     	widgetVar="widgetConversionsChart" title="Conversions"  
+		     	style="height:220px;width:800px; margin-top:20px"
+		     	xaxisAngle="90"
+		     	extender="extenderFunctionGC" 
+		     	xaxisLabel="" yaxisLabel="Data point values" legendPosition="nw" animate="false"
+		     	showMarkers="true" 
+		     	zoom="true" autoScale="true">
+	     		<script>
+				   function extenderFunctionGC() {
+					   this.cfg.seriesDefaults = {
+							   shadowDepth: 1,
+							   showMarker: true,
+					            rendererOptions : {
+					            	  smooth: true,
+					                  animation: {
+					                      show: false
+					                  }
+					            }								            
+					   };
+					   this.cfg.axes = {
+						        xaxis : {
+						            renderer : $.jqplot.DateAxisRenderer,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						            tickOptions : { 
+						                fontSize:'10pt',
+						                fontFamily:'Tahoma',
+						                formatString: '%H:%M', 
+						                angle:-90
+						            }
+						        },
+						        yaxis : {
+						        	min: 0,
+						            rendererOptions : {
+						                tickRenderer:$.jqplot.CanvasAxisTickRenderer
+						            },
+						        	label: "",
+						        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+						        	tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+					                tickOptions: {
+						                fontSize:'10pt', 
+						                fontFamily:'Tahoma'
+					                }
+						        }               
+						    };
+						    this.cfg.axes.xaxis.ticks = this.cfg.categories;
+					}
+				</script>
+	     	</p:lineChart>
+		    </h:panelGrid>
+	     	<h:panelGrid columns="8" cellpadding="4">
+	    		<p:commandButton value="Refresh" icon="ui-icon-search" style="vertical-align:text-top;"  
+			        action="#{conversionStatsBean.refreshJavaStats}"
+			        ajax="true"
+			        update="idProfitStatsChart, idConversionStatsChart"
+			        process="@form"
+			        oncomplete="" />
+				<p:commandButton type="button" value="Reset zoom" icon="ui-icon-cancel" onclick="widgetProfitChart.resetZoom(),widgetConversionsChart.resetZoom()"/>  
+  						<p:commandButton value="Last hour" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('1h')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 6h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('6h')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />
+	  						<p:commandButton value="Last 12h" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('12h')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last day" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('1d')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last week" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('7d')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />			                    
+	  						<p:commandButton value="Last month" icon="ui-icon-search" style="vertical-align: top;"  
+                    action="#{conversionStatsBean.generateJavaChart('1m')}"
+                    update="idProfitStatsChart,idConversionStatsChart"
+                    	        process="@form" />			                    
+	     	</h:panelGrid>
+				
+	</h:form>
+	
+</html>
+

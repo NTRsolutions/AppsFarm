@@ -1,0 +1,116 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+>
+
+	<h:form prependId="false" >
+	    <p:growl id="idGeneratedOffersGrowl" showDetail="true" life="3000" />  
+
+		    <p:dataTable id="idOffersTable"
+		     		sortOrder="DESCENDING"
+		    		widgetVar="widgetOffersTable"
+		    		var="offer"
+		    		value="#{generatedOffersBean.lazyOffersTableModel}" 
+		    		lazy="true"
+   				    paginator="true"
+			        paginatorPosition="top"
+			        rows="10"
+					currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+           			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+           			rowsPerPageTemplate="1,10,30,50,50,100"			        
+ 				    resizableColumns="true" >
+		        
+       			 	<p:ajax event="page" update="" onstart="" oncomplete="" listener="#{generatedOffersBean.pageUpdate}" />
+
+   			        <p:column prependId="false" headerText="Id" style="width:140px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.id}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Source Id" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.sourceId}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Title" style="width:220px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.title}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Provider" style="width:80px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.adProviderCodeName}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Country" style="width:80px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.supportedCountryCodes.toString()}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Device" style="width:80px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.supportedTargetDevices.toString()}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Reward type" style="width:80px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.rewardType}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Original Payout" style="width:60px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.payout} #{offer.currency}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Payout" style="width:60px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.payoutInTargetCurrency} #{offer.rewardCurrency}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Reward" style="width:60px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.rewardValue} #{offer.rewardCurrency}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="Reward type" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader">
+						<h:outputText value="#{offer.rewardType}" />  
+			        </p:column>
+   			        <p:column prependId="false" headerText="" style="width:120px;text-align: left;" styleClass="ui-nodesStatusTableHeader" rendered="false">
+						<p:commandButton value="Details" icon="ui-icon-search" style="vertical-align:text-top;"  
+			                   action="#{generatedOffersBean.viewDetails(offer)}"
+			                   update=""
+			          	       process="@form"
+			                   oncomplete="widgetShowOfferDetails.show()" />
+			        </p:column>
+		            <f:facet name="footer" >
+						<p:commandButton value="Refresh list" icon="ui-icon-search" style="vertical-align:text-top;"  
+			                   action="#{generatedOffersBean.refresh}"
+			                    update=""
+			          	        process="@form"
+			                   oncomplete="" />
+		        	</f:facet>  
+    		</p:dataTable>
+		
+<!-- assign custom denomination model to offer -->
+			<p:dialog id="idDialogOfferSetup" header="Assign Customer Denomination Model" widgetVar="widgetShowOfferDetails" 
+					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false"  >
+
+			    <h:panelGrid id="idDialogCustomDenominationModelAssignment" columns="1" cellpadding="4" 
+			    	rendered="#{generatedOffersBean.renderDialogDenominationModelAssignment}">
+				    <h:panelGrid columns="2" cellpadding="4">
+				    	<h:outputText styleClass="dialog-mediumFont" value="Offer title: " />
+				    	<h:outputText styleClass="dialog-mediumFont" value="#{generatedOffersBean.selectedOfferForCustomDenominationModel.title}" />
+				    	<h:outputText styleClass="dialog-mediumFont" value="Offer provider: " />
+				    	<h:outputText styleClass="dialog-mediumFont" value="#{generatedOffersBean.selectedOfferForCustomDenominationModel.adProviderCodeName}" />
+   				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Select denomination model: "  />
+				        <p:selectOneMenu value="#{generatedOffersBean.idSelectedDenominationModel}" >  
+				            <f:selectItems value="#{generatedOffersBean.listDenominationModels}"  
+				            				var="denominationModel" 
+				            				itemLabel="#{denominationModel.name})" 
+				            				itemValue="#{denominationModel.id}" />   
+				        </p:selectOneMenu>
+   				    </h:panelGrid>
+				</h:panelGrid>
+
+			    <h:panelGrid columns="3" cellpadding="4">
+					<p:commandButton 
+						value="Assign" icon="ui-icon-search"
+	                    action="#{generatedOffersBean.assignCustomDenominationModel}"
+						process="@form"
+	                    update=""
+	                    oncomplete="widgetShowOfferDetails.hide()" />
+					<p:commandButton value="Close" icon="ui-icon-search"  
+	                    update=""
+               	        process=""
+	                    oncomplete="widgetShowOfferDetails.hide()" />				                    			
+				    </h:panelGrid>
+		    </p:dialog>  
+		
+	</h:form>
+	
+</html>
+

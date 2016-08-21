@@ -1,0 +1,42 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false">
+
+	<p:growl id="idSpinnerRewardsStatsGrowl" showDetail="true" life="3000" />
+	<p:tabView id="tabReportStats">
+		<p:tab id="idReportTab" title="Generate report">
+			<h:panelGrid columns="10" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetime"
+					value="#{spinnerRewardsBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetime" value="#{spinnerRewardsBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="for reward type" />
+				<p:selectOneMenu value="#{spinnerRewardsBean.selectedRewardType}">
+					<f:selectItems
+						value="#{spinnerRewardsBean.rewardTypeSelectItemList}" />
+				</p:selectOneMenu>
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{spinnerRewardsBean.generateReport()}" update="@this"
+					oncomplete="" />
+				<br />
+				<br />
+			</h:panelGrid>
+			<h:panelGrid columns="1" cellpadding="4">
+				<h:outputText id="idSpinnerReportResult"
+					styleClass="dialog-mediumFont"
+					value="#{spinnerRewardsBean.spinnerReportResult}" escape="false" />
+			</h:panelGrid>
+		</p:tab>
+	</p:tabView>
+</h:form>
+
+</html>

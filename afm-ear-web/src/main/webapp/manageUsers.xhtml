@@ -1,0 +1,229 @@
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:a4j="http://richfaces.org/a4j"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
+	
+	<p:layout style="width:100%;height:90%" >
+		    <p:layoutUnit position="center" styleClass="layoutUnit">
+		    
+			<p:growl id="idManageUsersGrowl" showDetail="true"/>
+					    
+		    	<h:form prependId="false">
+   				    <p:dataTable id="idUsersTable" var="user" value="#{usersManagementBean.listUsers}"   				    
+   				    style="height:94%" styleClass="ui-nodesStatusTable" resizableColumns="true" >
+  			        	<p:column headerText="" style="width:50px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				            <p:commandButton value="Edit" 
+				            				 action="#{usersManagementBean.editUser(user)}"
+				            				 update="@form" 
+                        	     			 process="@this" 
+				            		         oncomplete="widgetEditUserDialog.show()" />
+				        </p:column>
+				        <p:column headerText="Name" style="width:100px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				            <h:outputText value="#{user.name}" />
+				        </p:column>
+				        <p:column headerText="Login" style="width:100px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				            <h:outputText value="#{user.login}" />
+				        </p:column>
+				        <p:column headerText="E-mail" style="width:120px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				            <h:outputText value="#{user.email}" />
+				        </p:column>
+   				        <p:column headerText="Realm" style="width:120px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
+				            <h:outputText value="#{user.realm.name}" />
+				        </p:column>
+	        	        <p:column headerText="Roles" style="width:100%;text-align:left;" styleClass="truncate">
+				           <h:outputText id="idUserRoles" value="#{user.rolesString}"  />
+				           <pe:tooltip for="idUserRoles" value="#{user.rolesString}"/> 
+				       </p:column>
+				        
+				         <f:facet name="footer">
+							<p:commandButton value="Add new realm" icon="ui-icon-search" style="vertical-align:text-top;"
+				                   action="#{usersManagementBean.initDefaultUsers()}"
+	                        	   update="@form" 
+	                        	   process="@this"
+	                        	   rendered="#{usersManagementBean.renderRealmSetup}"
+	                        	   oncomplete="widgetCreateRealmDialog.show()" />
+							<p:commandButton value="Add new user" icon="ui-icon-search" style="vertical-align:text-top;"
+								   disabled="#{usersManagementBean.disableButtonAddNewUser}"  
+				                   action="#{usersManagementBean.initDefaultUsers()}"
+	                        	   update="@form" 
+	                        	   process="@this"
+	                        	   rendered="true"
+	                        	   oncomplete="widgetCreateUserDialog.show()" />
+							<p:commandButton value="Display all users" icon="ui-icon-search" style="vertical-align:text-top;"  
+				                   action="#{usersManagementBean.refresh}"
+	                        	   update="@form" 
+	                        	   process="@this"
+	                        	   oncomplete="" />
+			        	</f:facet>  
+				    </p:dataTable>
+				    
+<!-- edit user dialog -->
+  					<p:dialog id="idEditUserDialog" 
+							header="Edit #{usersManagementBean.editedUser.name}" 
+							widgetVar="widgetEditUserDialog" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idEditUserData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+						    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.editedUser.name}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="E-mail: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.editedUser.email}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Login: " />  
+						    	<h:outputText styleClass="dialog-mediumFont" value="#{usersManagementBean.editedUser.login}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Password: " />
+			            		<p:commandButton value="Change" oncomplete="widgetChangePasswordDialog.show()" />						    	  
+						    	<h:outputText styleClass="dialog-mediumFont" value="Realm: " 
+						    		rendered="#{usersManagementBean.renderRealmSetup}" />
+						         <p:selectOneMenu value="#{usersManagementBean.editedUserRealmName}" 
+						         		rendered="#{usersManagementBean.renderRealmSetup}" >  
+						            <f:selectItems value="#{usersManagementBean.listRealms}" 
+						            				var="realm" 
+						            				itemLabel="#{realm.name}" 
+						            				itemValue="#{realm.name}"/>   
+						        </p:selectOneMenu>    
+						    	<h:outputText styleClass="dialog-mediumFont" value="User role: " />
+						         <p:selectOneMenu value="#{usersManagementBean.editedUserRoleName}">  
+						            <f:selectItems value="#{usersManagementBean.listCreatedUserRoles}" 
+						            				var="role" 
+						            				itemLabel="#{role.name}" 
+						            				itemValue="#{role.name}"/>   
+						        </p:selectOneMenu>    
+	   					    </h:panelGrid>
+	   					    
+	   					    <h:panelGrid columns="3" cellpadding="4">
+	   	  						<p:commandButton value="Update" icon="ui-icon-search"  
+					                    action="#{usersManagementBean.updateUser}"
+			            				update="idEditUserData" 
+                        	     		process="@form" />
+	   	  						<p:commandButton value="Delete" icon="ui-icon-search"
+	   	  							    disabled="#{usersManagementBean.disableButtonDeleteUser}"  
+					                    action="#{usersManagementBean.deleteUser}"
+					                    update="idEditUserData"
+					                    process="@form"
+		                       	        oncomplete="widgetEditUserDialog.hide()" >
+               	                   		<p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />  
+					            </p:commandButton>
+	   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+					                    oncomplete="widgetEditUserDialog.hide()" />
+	   					    </h:panelGrid>
+   					    
+   					    </h:panelGrid>
+				    </p:dialog>  
+			
+<!-- change password dialog -->
+  					<p:dialog id="idChangePasswordDialog" 
+							header="Change password for user #{usersManagementBean.editedUser.name}" 
+							widgetVar="widgetChangePasswordDialog" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+
+   					    <h:panelGrid id="idChangePasswordData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+						    	<h:outputText styleClass="dialog-mediumFont" value="Current password: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.passwordOld}" type ="password" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="New password: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.passwordNew1}" type ="password" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Retype new password: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.passwordNew2}" type ="password" />
+	   					    </h:panelGrid>
+	   					    
+	   					    <h:panelGrid columns="3" cellpadding="4">
+	   	  						<p:commandButton value="Update password" icon="ui-icon-search"
+	   	  						        action="#{usersManagementBean.updatePassword}"
+					                    update="idChangePasswordData"
+		                       	        process="@form"
+					                    oncomplete="" />
+	   	  						<p:commandButton value="Close" icon="ui-icon-search"
+	   	  								update="idChangePasswordData"  
+					                    oncomplete="widgetChangePasswordDialog.hide()" />
+	   					    </h:panelGrid>
+   					    
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+<!-- create user dialog -->
+  					<p:dialog id="idCreateUserDialog" 
+							header="Add new user" 
+							widgetVar="widgetCreateUserDialog" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idCreateUserData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Login: " />  
+						    	<h:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.createdUser.login}" />
+								<h:outputText styleClass="dialog-mediumFont" value="Password: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.passwordCreate1}" type ="password" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Retype password: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.passwordCreate2}" type ="password" />
+	   					    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.createdUser.name}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="E-mail: " />  
+	   				            <p:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.createdUser.email}" />
+						    	<h:outputText styleClass="dialog-mediumFont" value="Realm: " 
+						    		rendered="#{usersManagementBean.renderRealmSetup}" />
+						         <p:selectOneMenu value="#{usersManagementBean.createdUserRealmName}" 
+						         		rendered="#{usersManagementBean.renderRealmSetup}" >  
+						            <f:selectItems value="#{usersManagementBean.listRealms}" 
+						            				var="realm" 
+						            				itemLabel="#{realm.name}" 
+						            				itemValue="#{realm.name}"/>   
+						        </p:selectOneMenu>    
+						    	<h:outputText styleClass="dialog-mediumFont" value="User role: " />
+						         <p:selectOneMenu value="#{usersManagementBean.createdUserRoleName}">  
+						            <f:selectItems value="#{usersManagementBean.listCreatedUserRoles}" 
+						            				var="role" 
+						            				itemLabel="#{role.name}" 
+						            				itemValue="#{role.name}"/>   
+						        </p:selectOneMenu>    
+	   					    </h:panelGrid>
+	   					    
+	   					    <h:panelGrid columns="3" cellpadding="4">
+	   	  						<p:commandButton value="Update" icon="ui-icon-search"  
+					                    action="#{usersManagementBean.saveUser}"
+					                    update="idCreateUserData"
+		                       	        process="@form" />
+	   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+					                    oncomplete="widgetCreateUserDialog.hide()" />
+	   					    </h:panelGrid>
+   					    
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+<!-- create realm dialog -->
+  					<p:dialog id="idCreateRealmDialog" 
+							header="Add new realm" 
+							widgetVar="widgetCreateRealmDialog" 
+							resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
+							
+   					    <h:panelGrid id="idCreateRealmData" columns="1" cellpadding="4">
+	   					    <h:panelGrid columns="2" cellpadding="4">
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />  
+						    	<h:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.createdRealm.name}" />
+   						    	<h:outputText styleClass="dialog-mediumFont" value="Description: " />  
+						    	<h:inputText style="width: 100% !important;" autoResize="false" value="#{usersManagementBean.createdRealm.description}" />
+	   					    </h:panelGrid>
+	   					    
+	   					    <h:panelGrid columns="3" cellpadding="4">
+	   	  						<p:commandButton value="Update" icon="ui-icon-search"  
+					                    action="#{usersManagementBean.saveRealm}"
+					                    update="idCreateRealmData"
+		                       	        process="@form" />
+	   	  						<p:commandButton value="Close" icon="ui-icon-search"  
+					                    oncomplete="widgetCreateRealmDialog.hide()" />
+	   					    </h:panelGrid>
+   					    
+   					    </h:panelGrid>
+				    </p:dialog>  
+
+				    
+				</h:form>
+		    </p:layoutUnit>
+		</p:layout>
+                    
+</html>
+

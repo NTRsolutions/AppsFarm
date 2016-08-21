@@ -1,0 +1,62 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:form>
+
+	<p:panel header="Reward User" toggleable="false" closable="false"
+		toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+		styleClass="single-node-stats-performance-panel">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Phone number: " />
+			<p:inputText for="phoneNumber" value="#{rewardUserBean.phoneNumber}"
+				size="30" />
+
+			<p:outputLabel for="currency" value="Currency:" />
+			<p:selectOneMenu id="currency" value="#{rewardUserBean.currency}"
+				style="width:125px">
+
+				<f:selectItem itemLabel="INR" itemValue="INR" />
+				<f:selectItem itemLabel="KSH" itemValue="KSH" />
+				<f:selectItem itemLabel="ZAR" itemValue="ZAR" />
+				<f:selectItem itemLabel="GBP" itemValue="GBP" />
+				<f:selectItem itemLabel="AUS" itemValue="AUS" />
+			</p:selectOneMenu>
+			<p:outputLabel for="phoneExtension" value="Phone Extension:" />
+			<p:selectOneMenu id="phoneExtension"
+				value="#{rewardUserBean.phoneExtension}" style="width:125px">
+
+				<f:selectItem itemLabel="ZA (27)" itemValue="27" />
+				<f:selectItem itemLabel="IN (91)" itemValue="91" />
+				<f:selectItem itemLabel="KE (254)" itemValue="254" />
+				<f:selectItem itemLabel="GB (44)" itemValue="44" />
+				<f:selectItem itemLabel="AU (61)" itemValue="61" />
+			</p:selectOneMenu>
+
+
+			<p:outputLabel for="rewardType" value="Reward type:" />
+			<p:selectOneMenu id="rewardType" value="#{rewardUserBean.type}"
+				style="width:125px">
+
+				<f:selectItem itemLabel="Instant reward" itemValue="instant" />
+				<f:selectItem itemLabel="Wallet reward" itemValue="wallet" />
+
+			</p:selectOneMenu>
+
+			<h:outputText styleClass="dialog-mediumFont" value="Value: " />
+			<p:inputText size="30" value="#{rewardUserBean.rewardValue}" />
+			<p:commandButton value="Submit"
+				actionListener="#{rewardUserBean.reward}" />
+
+
+
+		</h:panelGrid>
+
+	</p:panel>
+
+</h:form>
+
+</html>
+

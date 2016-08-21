@@ -1,0 +1,159 @@
+<html lang="en" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false" >
+	<p:growl id="idWalletTransactionGrowl" showDetail="true" life="3000" /> 
+
+	<p:accordionPanel multiple="true" activeIndex="0,1"  >
+		<p:tab title="Columns"  >
+		    <p:panelGrid cellpadding="4" style="border:none !important; background:white;">
+		    	<p:row>
+		    		<p:column>
+			        	<p:selectBooleanCheckbox value="#{walletTransactionsBean.renderPayoutDescription}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="Payout Description" styleClass="dialog-mediumFont" />				        	
+			        </p:column>
+			        <p:column>
+				        <p:selectBooleanCheckbox value="#{walletTransactionsBean.renderPayoutValue}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="Payout Value" styleClass="dialog-mediumFont" />
+			        </p:column>
+					<p:column>				        
+				        <p:selectBooleanCheckbox value="#{walletTransactionsBean.renderPayoutCurrencyCode}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="Payout Currency Code" styleClass="dialog-mediumFont" />
+			        </p:column>
+					<p:column>				        
+				        <p:selectBooleanCheckbox value="#{walletTransactionsBean.renderStatus}" />
+			        	<p:spacer  width="5" height="10" /> 
+						<h:outputText value="Status" styleClass="dialog-mediumFont" />
+			        </p:column>
+		    	</p:row>
+		    	<p:row>
+		    		<p:column>
+			        	<p:selectBooleanCheckbox value="#{walletTransactionsBean.renderInternalTransactionId}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="Transaction ID" styleClass="dialog-mediumFont" />				        	
+			        </p:column>
+			        <p:column>
+				        <p:selectBooleanCheckbox value="#{walletTransactionsBean.renderUserId}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="User ID" styleClass="dialog-mediumFont" />
+			        </p:column>
+					<p:column>				        
+				        <p:selectBooleanCheckbox value="#{walletTransactionsBean.renderTimestamp}" />
+			        	<p:spacer width="5" height="10" /> 
+						<h:outputText value="Timestamp" styleClass="dialog-mediumFont" />
+			        </p:column>
+		    	</p:row>
+			</p:panelGrid>
+		</p:tab>
+		<p:tab title="Criteria" id="idCriteria">
+			<h:panelGrid columns="8"  cellpadding="4">
+		    	<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+	            <p:calendar id="startdatetime" value="#{walletTransactionsBean.startDate}" pattern="dd/MM/yyyy HH:mm:ss" size="22"/>
+	            <h:outputText styleClass="dialog-mediumFont" value="to" />
+	            <p:calendar id="enddatetime" value="#{walletTransactionsBean.endDate}" pattern="dd/MM/yyyy HH:mm:ss" size="22"/>
+	            <h:outputText styleClass="dialog-mediumFont" value="for" />
+	            <p:selectOneMenu value="#{walletTransactionsBean.filterType}" style="width:150px">
+	            	<f:selectItem itemLabel="All" itemValue="All" />
+	            	<f:selectItem itemLabel="Internal transaction ID" itemValue="internalTransactionId"/>
+	            	<f:selectItem itemLabel="User ID" itemValue="userId" />
+	            	<f:selectItem itemLabel="Status" itemValue="status" />
+	            	<f:selectItem itemLabel="Payout Currency Code" itemValue="payoutCurrencyCode" />
+	            </p:selectOneMenu>
+	            <p:inputText id="idFilterValueField" value="#{walletTransactionsBean.filterValue}" style="width:250px"/>
+				<p:commandButton value="Run report" icon="ui-icon-search" style="vertical-align:text-top;"  
+	            	action="#{walletTransactionsBean.refresh()}"
+	                update=""
+	          	    process="@form"
+	                oncomplete="" />
+			</h:panelGrid>
+		</p:tab>
+	</p:accordionPanel>
+
+
+	<p:dataTable id="idWalletTransactionTable" 
+		sortBy="#{transaction.timestamp}"
+		sortOrder="DESCENDING" 
+		widgetVar="widgetWalletTransactionTable" 
+		var="transaction"
+		value="#{walletTransactionsBean.lazyModel}" 
+		lazy="true" 
+		paginator="true"
+		paginatorPosition="top" 
+		rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,20,30,50,100" 
+		resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{walletTransactionsBean.pageUpdate}" />
+
+		<p:column rendered="#{walletTransactionsBean.renderId}"
+			prependId="false" headerText="Id" sortBy="id"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.id}" />
+		</p:column>
+		<p:column 
+			prependId="false" headerText="Type" sortBy="type"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.type}" />
+		</p:column>
+		<p:column 
+			prependId="false" headerText="Reward name" sortBy="rewardName"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.rewardName}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderPayoutValue}"
+			prependId="false" headerText="Payout Value" sortBy="payoutValue"
+			footerText="#{walletTransactionsBean.payoutSum}"
+			style="width:30px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.payoutValue} #{transaction.payoutCurrencyCode}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderUserId}"
+			prependId="false" headerText="User ID" sortBy="userId"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.userId}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderInternalTransactionId}"
+			prependId="false" headerText="Transaction ID" sortBy="internalTransactionId"
+			style="width:150px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.internalTransactionId}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderStatus}"
+			prependId="false" headerText="Status" sortBy="status"
+			style="width:50px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.status}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderTimestamp}"
+			prependId="false" headerText="Timestamp" sortBy="timestamp"
+			style="width:60px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.timestamp}" />
+		</p:column>
+		<p:column rendered="#{walletTransactionsBean.renderPayoutDescription}"
+			prependId="false" headerText="Payout Description" sortBy="payoutDescription"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{transaction.payoutDescription}" />
+		</p:column>
+	</p:dataTable>
+
+</h:form>
+
+</html>

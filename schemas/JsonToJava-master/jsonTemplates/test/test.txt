@@ -1,0 +1,431 @@
+{
+  "id": "f2390f32d0aca63cb9ed042d25a312e382de1e3d",
+  "compositeOfferWallName": " MultiOffer1",
+  "generationTime": "2015-03-19 19:53:14.464",
+  "offerWalls": [
+    {
+      "id": "2f730057abaf0e2e9e5ab76dd70a027663ff646d",
+      "offerWallName": "s",
+      "adProviderCodeName": "SUPERSONIC",
+      "generationTime": "2015-03-19 19:53:15.088",
+      "offers": [
+        {
+          "id": "00a9acef806b05c024662b2623ec914c32836d5a",
+          "internalNetworkId": 4,
+          "sourceId": "562613",
+          "title": "Jungle Heat - Android - WW (not RU) - paid - New",
+          "description": "Jungle Heat is a free cross-platform war game, which you can play on any device or social network.",
+          "adProviderCodeName": "SUPERSONIC",
+          "url": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-445259-562613-952bbe29&applicationUserId=[USER_ID]&deviceOs=Android",
+          "previewUrl": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-445259-562613-952bbe29&applicationUserId=[USER_ID]&deviceOs=Android",
+          "callToAction": "USD awarded when you install the app and make an in-app purchase. Offer reports on a 15 minute delay.",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://supersonicads-a.akamaihd.net/banners/c_445259_18807_5.png",
+            "Image-3": "http://s.ssacdn.com/banners/449617.29.21734.png",
+            "Image-2": "http://supersonicads-a.akamaihd.net/banners/c_445259_19385_21.png",
+            "Image-5": "http://s.ssacdn.com/banners/449617.37.21570.png",
+            "Image-4": "http://s.ssacdn.com/banners/449617.36.35185.png",
+            "Image-7": "http://supersonicads-a.akamaihd.net/banners/c_445259_0_0_1219_45.jpeg",
+            "Image-11": "http://supersonicads-a.akamaihd.net/banners/c_409969_0_2_48544_49.jpeg",
+            "Image-6": "http://supersonicads-a.akamaihd.net/banners/c_409969_0_0_29994_44.jpeg",
+            "Image-10": "http://supersonicads-a.akamaihd.net/banners/c_445259_2_0_73282_48.jpeg",
+            "Image-9": "http://supersonicads-a.akamaihd.net/banners/c_409969_0_1_71475_47.jpeg",
+            "Image-8": "http://supersonicads-a.akamaihd.net/banners/c_445259_1_0_35033_46.jpeg"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 4.76,
+          "payoutInTargetCurrency": 435.79,
+          "rewardCurrency": "KSH",
+          "rewardValue": 140.0,
+          "revenueSplitValue": 145.26,
+          "profitValue": 295.79,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "3570e9d61dd9da9b2832b37c2c33ebec74a075c0",
+          "internalNetworkId": 4,
+          "sourceId": "562501",
+          "title": "Evolution: Battle for Utopia - Android - WW (not RU) - paid - New",
+          "description": "Prepare to become the master of the black desert, commander!",
+          "adProviderCodeName": "SUPERSONIC",
+          "url": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-445205-562501-07bef9c9&applicationUserId=[USER_ID]&deviceOs=Android",
+          "previewUrl": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-445205-562501-07bef9c9&applicationUserId=[USER_ID]&deviceOs=Android",
+          "callToAction": "USD awarded when you install the app and make an in-app purchase. Offer reports on a 15 minute delay.",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://supersonicads-a.akamaihd.net/banners/521049.5.35435.jpg",
+            "Image-3": "http://s.ssacdn.com/banners/449615.29.75490.png",
+            "Image-2": "http://supersonicads-a.akamaihd.net/banners/521049.21.76457.jpg",
+            "Image-5": "http://s.ssacdn.com/banners/449615.37.75253.png",
+            "Image-4": "http://s.ssacdn.com/banners/449615.36.27781.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 4.76,
+          "payoutInTargetCurrency": 435.79,
+          "rewardCurrency": "KSH",
+          "rewardValue": 140.0,
+          "revenueSplitValue": 145.26,
+          "profitValue": 295.79,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "612351f842ffa6d3b32c989c6727d5d38460a708",
+          "internalNetworkId": 4,
+          "sourceId": "560561",
+          "title": "AudioBoo_AndPH_GBR_MED_OFW_0",
+          "description": "We provide you with the ultimate in spoken-word audio, and now we’ve updated our app to make it better.",
+          "adProviderCodeName": "SUPERSONIC",
+          "url": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-443537-560561-12c63da0&applicationUserId=[USER_ID]&deviceOs=Android",
+          "previewUrl": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-443537-560561-12c63da0&applicationUserId=[USER_ID]&deviceOs=Android",
+          "callToAction": "USD awarded when you install and open the application on your Android device. Offer reports on a 15 minute delay.",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://supersonicads-a.akamaihd.net/banners/c_560561_45402_5.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.12,
+          "payoutInTargetCurrency": 9.17,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 4.17,
+          "profitValue": 4.17,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "c290eb86f6f0fb144e2c1e055f6b34cbc09024e4",
+          "internalNetworkId": 4,
+          "sourceId": "389348",
+          "title": "Bingo by IGG - Android - US, UK, CA, AU, NZ, SG",
+          "description": "Bingo by IGG combines HD graphics, tons of Collectibles and fun-packed Bingo action!",
+          "adProviderCodeName": "SUPERSONIC",
+          "url": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-309570-389348-894a6078&applicationUserId=[USER_ID]&deviceOs=Android",
+          "previewUrl": "http://www.supersonicads.com/delivery/click.php?offerTag=33354-309570-389348-894a6078&applicationUserId=[USER_ID]&deviceOs=Android",
+          "callToAction": "USD awarded when you install and open the application on your Android device. Offer reports on a 15 minute delay.",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://s.ssacdn.com/banners/389348.5.86406.jpg"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.12,
+          "payoutInTargetCurrency": 9.17,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 4.17,
+          "profitValue": 4.17,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a0d1a9f07e78e0a8b9e86a68033da5078095188a",
+      "offerWallName": "aa ",
+      "adProviderCodeName": "AARKI",
+      "generationTime": "2015-03-19 19:53:20.72",
+      "offers": [
+        {
+          "id": "d9bb055aa65f95a073193da3d33d98fbe8337a04",
+          "internalNetworkId": 4,
+          "sourceId": "ofb1c2496efbba6697",
+          "title": "Westbound: Gold Rush",
+          "description": "The Gold Rush is here. Strike it rich on the Frontier!",
+          "adProviderCodeName": "AARKI",
+          "url": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=DA0D7FF45D611DABOU",
+          "previewUrl": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=DA0D7FF45D611DABOU",
+          "callToAction": "Install, open app, & complete level 2 to earn credits.",
+          "trackingRequirements": [
+            "advertising_id",
+            "device_id",
+            "phone_id"
+          ],
+          "image": {
+            "Image-1": "http://images.aarki.net/f38562f0f2caf23e.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.5,
+          "payoutInTargetCurrency": 45.87,
+          "rewardCurrency": "KSH",
+          "rewardValue": 10.0,
+          "revenueSplitValue": 15.29,
+          "profitValue": 35.87,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "2b85b30a86c6231ed5ef5921d3a0e94ea928a828",
+          "internalNetworkId": 4,
+          "sourceId": "of656bb8796cf484bf",
+          "title": "Westbound: Pioneer Adventure",
+          "description": "Explore the mysteries and exotic romances of the West as you discover the treasures of the Hidden Canyon!",
+          "adProviderCodeName": "AARKI",
+          "url": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=2AAA49A1D743DC19OU",
+          "previewUrl": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=2AAA49A1D743DC19OU",
+          "callToAction": "Install & play through level 3 to earn credits.",
+          "trackingRequirements": [
+            "advertising_id",
+            "device_id",
+            "phone_id"
+          ],
+          "image": {
+            "Image-1": "http://images.aarki.net/21e680c0d251cb27.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.41,
+          "payoutInTargetCurrency": 36.7,
+          "rewardCurrency": "KSH",
+          "rewardValue": 10.0,
+          "revenueSplitValue": 12.23,
+          "profitValue": 26.7,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "9c7a429b19fdafa5a253cb2f4f12333da7656a08",
+          "internalNetworkId": 4,
+          "sourceId": "ofb3e16c80a0ca9d01",
+          "title": "Battle Camp",
+          "description": "Train a fierce monster team and form a Troop with fellow Rangers. For Android 4.0+ users only.",
+          "adProviderCodeName": "AARKI",
+          "url": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=7E4BDE738DC505BEOU",
+          "previewUrl": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=7E4BDE738DC505BEOU",
+          "callToAction": "Install, open app & complete level 2 to earn credits.",
+          "trackingRequirements": [
+            "advertising_id",
+            "device_id"
+          ],
+          "image": {
+            "Image-1": "http://images.aarki.net/6944922428fefbcd.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.33,
+          "payoutInTargetCurrency": 27.52,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 9.17,
+          "profitValue": 22.52,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "0ba963271ca26af0ad4f05ef3e733a3e0ecfe2f5",
+          "internalNetworkId": 4,
+          "sourceId": "ofa913d2b4e4e6ab50",
+          "title": "Game of War - Fire Age",
+          "description": "Conquer your foes and become king in the most epic real-time MMORPG to ever be in the Google Play Store!",
+          "adProviderCodeName": "AARKI",
+          "url": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=B66DAF62F21CDDA8OU",
+          "previewUrl": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=B66DAF62F21CDDA8OU",
+          "callToAction": "Install & open app to earn credits.",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://images.aarki.net/57a6c7572237152c.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.14,
+          "payoutInTargetCurrency": 9.17,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 4.17,
+          "profitValue": 4.17,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        },
+        {
+          "id": "ee893d5ea93ceae4ac690ae05a9afe3c0a211b4d",
+          "internalNetworkId": 4,
+          "sourceId": "ofe7c9a751a1d3cb9c",
+          "title": "Prize Claw 2",
+          "description": "Most exciting toy-grabbing arcade game ever! Awesome powers and effects, including lightning, explosions, and tornadoes!",
+          "adProviderCodeName": "AARKI",
+          "url": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=34B46A00BC8EE5C0OU",
+          "previewUrl": "http://ar.aarki.net/rd?src=7F259DCEEFA6CC4DAA&ofr=34B46A00BC8EE5C0OU",
+          "callToAction": "Install & open app to earn credits.",
+          "trackingRequirements": [
+            "advertising_id",
+            "device_id",
+            "phone_id"
+          ],
+          "image": {
+            "Image-1": "http://images.aarki.net/518f3646d3a857f2.png"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.08,
+          "payoutInTargetCurrency": 7.34,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 2.34,
+          "profitValue": 2.34,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "android"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5f902415ad99db773cfc7e301bcadbf0af1059b7",
+      "offerWallName": "h",
+      "adProviderCodeName": "HASOFFERS",
+      "generationTime": "2015-03-19 19:53:21.656",
+      "offers": [
+        {
+          "id": "c632c05e096ef23250c34c47d6be2965ed6f87cc",
+          "internalNetworkId": 4,
+          "sourceId": "240",
+          "title": "Videostripe",
+          "description": "",
+          "adProviderCodeName": "HASOFFERS",
+          "url": "http://api.adlure.net/partner/click/2f106711e63bb2763d18525100fb4c9be9278319/58/?PID=21013&F=&cus_subid={affiliate_id}&PCTX={transaction_id}",
+          "previewUrl": "https://videostripe.com/statics/landing?locale=en",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "https://media.go2speed.org/brand/files/bluepodmedia/240/download.jpg",
+            "Image-2": "https://media.go2speed.org/brand/files/bluepodmedia/240/thumbnails_100/download.jpg"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 13.0,
+          "payoutInTargetCurrency": 1192.7,
+          "rewardCurrency": "KSH",
+          "rewardValue": 390.0,
+          "revenueSplitValue": 397.57,
+          "profitValue": 802.7,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [],
+          "supportedTargetDevices": []
+        },
+        {
+          "id": "a41fc8df40278999f6abf8fdbcfdf15c2cb5ccd9",
+          "internalNetworkId": 4,
+          "sourceId": "134",
+          "title": "Castle Clash",
+          "description": "Top 10 Game in US and many others!\r\n#1 Strategy Game on Android!",
+          "adProviderCodeName": "HASOFFERS",
+          "url": "http://tracking.artofclick.com/SHCLkU?source={affiliate_id}&aff_sub3={transaction_id}",
+          "previewUrl": "https://play.google.com/store/apps/details?id=com.igg.castleclash",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "https://media.go2speed.org/brand/files/bluepodmedia/134/cc.jpg",
+            "Image-2": "https://media.go2speed.org/brand/files/bluepodmedia/134/thumbnails_100/cc.jpg"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.1,
+          "payoutInTargetCurrency": 9.17,
+          "rewardCurrency": "KSH",
+          "rewardValue": 5.0,
+          "revenueSplitValue": 4.17,
+          "profitValue": 4.17,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [],
+          "supportedTargetDevices": []
+        }
+      ]
+    },
+    {
+      "id": "79306190aa7cb62d31c9e7eead3b45d29ea86435",
+      "offerWallName": "m",
+      "adProviderCodeName": "MINIMOB",
+      "generationTime": "2015-03-19 19:53:25.057",
+      "offers": [
+        {
+          "id": "791d0d2e34880199de8f2af682969dfb0d17b861",
+          "internalNetworkId": 4,
+          "sourceId": "c9c7",
+          "title": "Wowcher",
+          "description": "Download our free app now and enjoy amazing local deals everyday on your mobile. Find local deals on the Wowcher app and get savings of up to 80%. Wowcher is simple and straightforward. You buy a discount voucher at a fixed price and enjoy all the benefits listed in the deal â€“ usually between 50 -80% off the normal price.  Sign up to our daily emails and be the first to hear about great local, shopping or travel deals straight to your inbox. Wowcher we hear you say, that really is convenient. Forget endless scrolling. Our new search enables you to find exactly what youâ€™re looking for. Type in anything you fancy: blow dry, facial, massage, yoga, etc. - and voila! Loads of great bargain deals with just one click. Once a deal expires, you can redeem it with the merchant or with Wowcher Wallet credit. Some deals may require advanced booking â€“ simply call the merchant and give your voucher code. Many deals are available to redeem right now. No need to wait until the deals end. Just enjoy great deals by redeeming your voucher codes right here and now. \nCAMPAIGN REQUIREMENTS:\nALLOWED\nIncent\nPreset Rule \nOperating Systems\nAndroid \nUnited Kingdom\nNOT ALLOWED\nAdult\nSMS traffic",
+          "adProviderCodeName": "MINIMOB",
+          "url": "http://clicks.minimob.com/tracking/click?clickid={aff_sub2}&trafficsource=1373664154&offerid=51655&aff_sub2={aff_sub2}",
+          "previewUrl": "https://play.google.com/store/apps/details?hl=en&id=com.anmedia.wowcher.ui",
+          "trackingRequirements": [],
+          "image": {
+            "Image-1": "http://cdn.minimob.com/creative/f233d5bc-a6b0-463d-8d03-e53118848a90.jpg"
+          },
+          "rating": 0.0,
+          "currency": "USD",
+          "payout": 0.5,
+          "payoutInTargetCurrency": 45.87,
+          "rewardCurrency": "KSH",
+          "rewardValue": 10.0,
+          "revenueSplitValue": 15.29,
+          "profitValue": 35.87,
+          "rewardType": "AirRewardz-Kenya",
+          "incentivised": true,
+          "supportedCountryCodes": [
+            "GB"
+          ],
+          "supportedTargetDevices": [
+            "Android"
+          ]
+        }
+      ]
+    }
+  ]
+}
