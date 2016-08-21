@@ -92,7 +92,6 @@ Access the application
 
 The application will be running at the following URL: <http://localhost:8080/afm>.
 
-
 Pulling existing ear repo from github onto local eclipse (when we want to work on this project using github repo)
 ---------------------
 
