@@ -95,6 +95,7 @@ The application will be running at the following URL: <http://localhost:8080/afm
 Pulling existing ear repo from github onto local eclipse (when we want to work on this project using github repo)
 ---------------------
 
+
 1. Tut: https://alextheedom.wordpress.com/cloud/java-ee-project-from-remote-git-repository/
 2. in git view select clone repository
 3. select repo from uri
