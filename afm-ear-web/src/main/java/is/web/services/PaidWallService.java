@@ -378,6 +378,7 @@ public class PaidWallService {
 				//filter offer wall and remove offers that are already converted by user
     			offerWallContent = filterOutAlreadyConvertedByUserApps(appUser, offerWall);
 
+    			
     			//count how many offers are returned
     			int returnedOffers = 0;
     			for(int i=0;i<offerWallContent.getOfferWalls().size();i++){
