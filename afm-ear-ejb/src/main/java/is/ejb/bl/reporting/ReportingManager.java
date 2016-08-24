@@ -116,6 +116,8 @@ import javax.inject.Inject;
 
 @Stateless
 public class ReportingManager {
+	
+	public static final String DEFAULT_CLUSTER_NAME = "airrewardz";
 
 	private SpinnerManager spinnerManager;
 	private DAOUserEvent daoUserEvent;

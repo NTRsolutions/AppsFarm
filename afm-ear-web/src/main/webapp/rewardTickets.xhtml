@@ -1,0 +1,246 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form prependId="false">
+	<p:growl id="idRewardTicketsGrowl" showDetail="true" life="3000" />
+
+	<p:accordionPanel multiple="true" activeIndex="1">
+		<p:tab title="Columns">
+			<p:panelGrid cellpadding="4"
+				style="border:none !important; background:white;">
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Identification information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderIdColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Ticket Id"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderUserIdColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="User Id" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{rewardTicketsBean.renderUserEmailColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Email" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText value="Reward information:"
+							style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderRewardNameColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Name" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderCreditPointsColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Credit Points" styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="5">
+						<h:outputText style="font-size: 14px !important;"
+							styleClass="dialog-mediumFont"
+							value="Processing information:" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderRequestDateColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Request Date" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderProcessingDateColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Processing Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderCloseDateColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Close Date"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderStatusColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Status"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column></p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderCommentColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Comment"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderTicketOwnerColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Ticket Owner"
+							styleClass="dialog-mediumFont" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:tab>
+		<p:tab title="Filters" id="idRewardTicketsFilters">
+			<h:panelGrid columns="10" cellpadding="4">
+				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
+				<p:calendar id="startdatetime" value="#{rewardTicketsBean.startDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="to" />
+				<p:calendar id="enddatetime" value="#{rewardTicketsBean.endDate}"
+					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
+				<h:outputText styleClass="dialog-mediumFont" value="for reward" />
+				<p:selectOneMenu value="#{rewardTicketsBean.filterRewardName}" style="width:120px">
+					<f:selectItems value="#{rewardTicketsBean.rewardNames}" />
+				</p:selectOneMenu>
+				<h:outputText styleClass="dialog-mediumFont" value="and for" />
+				<p:selectOneMenu value="#{rewardTicketsBean.filterType}"
+					style="width:150px">
+					<f:selectItem itemLabel="All" itemValue="All" />
+					<f:selectItem itemLabel="User ID" itemValue="userId" />
+					<f:selectItem itemLabel="Email" itemValue="email" />
+					<f:selectItem itemLabel="Status" itemValue="status" />
+					<f:selectItem itemLabel="Ticket Owner" itemValue="ticketOwner" />
+				</p:selectOneMenu>
+				<p:inputText id="idFilterValueField"
+					value="#{rewardTicketsBean.filterValue}" style="width:250px" />
+				<p:commandButton value="Run report" icon="ui-icon-search"
+					style="vertical-align:text-top;"
+					action="#{rewardTicketsBean.refresh()}" update="" process="@form"
+					oncomplete="" />
+			</h:panelGrid>
+
+		</p:tab>
+	</p:accordionPanel>
+	<p:dataTable id="idRewardTicketsTable" sortBy="#{event.requestDate}"
+		sortOrder="DESCENDING" widgetVar="widgetUserEventsTable" var="event"
+		value="#{rewardTicketsBean.rewardTicketsLazy}" lazy="true" paginator="true"
+		paginatorPosition="top" rows="10"
+		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,20,30,50,100" resizableColumns="true">
+
+		<p:ajax event="page" update="" onstart="" oncomplete=""
+			listener="#{rewardTicketsBean.pageUpdate}" />
+
+		
+		<p:column rendered="#{rewardTicketsBean.renderIdColumn}"
+			prependId="false" headerText="Id" sortBy="id"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.id}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderUserIdColumn}" 
+			prependId="false" headerText="User ID" sortBy="userId"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.userId}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderUserEmailColumn}"
+			prependId="false" headerText="User Email"
+			sortBy="email" style="width:100px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.email}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderRewardNameColumn}"
+			prependId="false" headerText="Reward Name" sortBy="rewardName"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.rewardName}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderCreditPointsColumn}"
+			prependId="false"
+			footerText="#{rewardTicketsBean.sumCreditPoints}"
+			headerText="Credit Points" sortBy="creditPoints"
+			style="width:120px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.creditPoints}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderRequestDateColumn}"
+			prependId="false" headerText="Request Date" sortBy="requestDate"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.requestDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderProcessingDateColumn}"
+			prependId="false" headerText="Processing Date" sortBy="processingDate"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.processingDate.toString()}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderCloseDateColumn}"
+			prependId="false" headerText="Close Date" sortBy="closeDate"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.closeDate.toString()}" />
+		</p:column>
+		<p:column
+			rendered="#{rewardTicketsBean.renderStatusColumn}"
+			prependId="false" headerText="Status" sortBy="status"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.status}" />
+		</p:column>
+		<p:column
+			rendered="#{rewardTicketsBean.renderCommentColumn}"
+			prependId="false" headerText="Comment" sortBy="comment"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.comment}" />
+		</p:column>
+		<p:column
+			rendered="#{rewardTicketsBean.renderTicketOwnerColumn}"
+			prependId="false" headerText="Ticket Owner" sortBy="ticketOwner"
+			style="width:80px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{event.ticketOwner}" />
+		</p:column>
+
+		<f:facet name="footer">
+			<h:outputText value="#{rewardTicketsBean.sumTotalRows}" />
+		</f:facet>
+	</p:dataTable>
+
+</h:form>
+
+</html>
+
