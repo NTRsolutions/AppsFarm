@@ -53,6 +53,9 @@ public class SentinelTabs {
 	//eventBrowser.xhtml
 	public static String TAB_EVENT_BROWSER = "tabEventBrowser";
 	
+	//rewardTickets.xhtml
+	public static String TAB_REWARD_TICKETS = "tabRewardTickets";
+	
 	//walletTransactions.xhtml
 	public static String TAB_WALLET_TRANSACTION = "tabWalletTransactions"; 
 
