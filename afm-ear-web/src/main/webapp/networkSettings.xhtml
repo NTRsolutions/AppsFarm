@@ -11,7 +11,7 @@
 	<p:tabView id="tabNetworkSettings">
 		<!-- web services - tracking settings -->
 		<p:tab title="General Settings" rendered="true">
-			<p:panel header="Mode request queueing" toggleable="false"
+			<p:panel header="Mode request queueing" toggleable="false" rendered="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
 				styleClass="single-node-stats-performance-panel">
@@ -153,7 +153,7 @@
 		</p:tab>
 
 
-		<p:tab title="Reward Provider Settings" rendered="true">
+		<p:tab title="Reward Provider Settings" rendered="false">
 			<p:panel header="Mode integration" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -176,6 +176,70 @@
 					oncomplete="">
 				</p:commandButton>
 			</h:panelGrid>
+		</p:tab>
+
+		<!-- mail sender settings -->
+		<p:tab title="Mail Server Settings" rendered="true">
+			<p:panel header="Sytem Email Account Settings" toggleable="false"
+				closable="false" toggleSpeed="500" closeSpeed="500"
+				style="margin-top:0px;width:99%"
+				styleClass="single-node-stats-performance-panel">
+				<h:outputText styleClass="dialog-mediumFont"
+					value="Status and alert reports will be sent via below configured account." />
+				<h:panelGrid id="idEmailAccountSetupDataGrid" columns="2"
+					cellpadding="4">
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Mail From Address: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailFromAddress}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server User Name: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailAccountUserName}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server User Password: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.mailAccountPassword}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP host: " />
+					<p:inputText size="50"
+						value="#{networkSettingsBean.monitoringSetup.smtpHost}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP auth: " />
+					<p:selectOneMenu
+						value="#{networkSettingsBean.monitoringSetup.smtpAuth}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP TLS: " />
+					<p:selectOneMenu
+						value="#{networkSettingsBean.monitoringSetup.smtpTTLS}">
+						<f:selectItem itemLabel="TRUE" itemValue="true" />
+						<f:selectItem itemLabel="FALSE" itemValue="false" />
+					</p:selectOneMenu>
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMTP port: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpPort}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server connection timeout: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpConnectionTimeout}" />
+					<h:outputText styleClass="dialog-mediumFont"
+						value="Server SMPT timeout: " />
+					<p:inputText size="8"
+						value="#{networkSettingsBean.monitoringSetup.smtpTimeout}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search" update=""
+					action="#{networkSettingsBean.update}" process="@form"
+					oncomplete="">
+				</p:commandButton>
+			</h:panelGrid>
+
 		</p:tab>
 
 		<p:tab title="CRF Settings" rendered="true">
@@ -271,69 +335,6 @@
 
 		</p:tab>
 
-		<!-- mail sender settings -->
-		<p:tab title="Mail Server Settings" rendered="true">
-			<p:panel header="Sytem Email Account Settings" toggleable="false"
-				closable="false" toggleSpeed="500" closeSpeed="500"
-				style="margin-top:0px;width:99%"
-				styleClass="single-node-stats-performance-panel">
-				<h:outputText styleClass="dialog-mediumFont"
-					value="Status and alert reports will be sent via below configured account." />
-				<h:panelGrid id="idEmailAccountSetupDataGrid" columns="2"
-					cellpadding="4">
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Mail From Address: " />
-					<p:inputText size="50"
-						value="#{networkSettingsBean.monitoringSetup.mailFromAddress}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server User Name: " />
-					<p:inputText size="50"
-						value="#{networkSettingsBean.monitoringSetup.mailAccountUserName}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server User Password: " />
-					<p:inputText size="50"
-						value="#{networkSettingsBean.monitoringSetup.mailAccountPassword}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server SMTP host: " />
-					<p:inputText size="50"
-						value="#{networkSettingsBean.monitoringSetup.smtpHost}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server SMTP auth: " />
-					<p:selectOneMenu
-						value="#{networkSettingsBean.monitoringSetup.smtpAuth}">
-						<f:selectItem itemLabel="TRUE" itemValue="true" />
-						<f:selectItem itemLabel="FALSE" itemValue="false" />
-					</p:selectOneMenu>
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server SMTP TLS: " />
-					<p:selectOneMenu
-						value="#{networkSettingsBean.monitoringSetup.smtpTTLS}">
-						<f:selectItem itemLabel="TRUE" itemValue="true" />
-						<f:selectItem itemLabel="FALSE" itemValue="false" />
-					</p:selectOneMenu>
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server SMTP port: " />
-					<p:inputText size="8"
-						value="#{networkSettingsBean.monitoringSetup.smtpPort}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server connection timeout: " />
-					<p:inputText size="8"
-						value="#{networkSettingsBean.monitoringSetup.smtpConnectionTimeout}" />
-					<h:outputText styleClass="dialog-mediumFont"
-						value="Server SMPT timeout: " />
-					<p:inputText size="8"
-						value="#{networkSettingsBean.monitoringSetup.smtpTimeout}" />
-				</h:panelGrid>
-			</p:panel>
-
-			<h:panelGrid columns="1" cellpadding="4">
-				<p:commandButton value="Update" icon="ui-icon-search" update=""
-					action="#{networkSettingsBean.update}" process="@form"
-					oncomplete="">
-				</p:commandButton>
-			</h:panelGrid>
-
-		</p:tab>
 
 		<!-- monitoring settings -->
 		<p:tab title="Monitoring Settings" rendered="true">
@@ -382,7 +383,7 @@
 		</p:tab>
 
 		<!-- server settings -->
-		<p:tab title="API Key" rendered="true">
+		<p:tab title="API Key" rendered="false">
 			<p:panel render="false" header="Network API key" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -416,7 +417,7 @@
 		</p:tab>
 
 		<!-- support system settings -->
-		<p:tab title="Customer support" rendered="true">
+		<p:tab title="Customer support" rendered="false">
 			<p:panel header="Zendesk configuration" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -445,7 +446,7 @@
 		</p:tab>
 
 		<!-- Notification settings -->
-		<p:tab title="Google Notifications" rendered="true">
+		<p:tab title="Google Notifications" rendered="false">
 			<p:panel header="Google Notifications" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -466,7 +467,7 @@
 		</p:tab>
 
 		<!-- custom UI -->
-		<p:tab title="UI Setup" rendered="true">
+		<p:tab title="UI Setup" rendered="false">
 			<p:panel header="Banner Setup" toggleable="false" closable="false"
 				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
 				styleClass="single-node-stats-performance-panel">
@@ -517,7 +518,7 @@
 			</h:panelGrid>
 		</p:tab>
 -->
-		<p:tab title="Referral programme" rendered="true">
+		<p:tab title="Referral programme" rendered="false">
 			<p:panel header="Referral programme" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -1022,7 +1023,7 @@
 			</h:panelGrid>
 		</p:tab>
 
-		<p:tab title="API access" rendered="true">
+		<p:tab title="API access" rendered="false">
 			<p:panel header="Reporting authentication" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -1048,7 +1049,7 @@
 		</p:tab>
 
 
-		<p:tab title="Donky auto respond message" rendered="true">
+		<p:tab title="Donky auto respond message" rendered="false">
 			<p:panel header="Donky auto respond message" toggleable="false"
 				closable="false" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"
@@ -1072,7 +1073,7 @@
 		</p:tab>
 
 
-		<p:tab title="AFA Settings" rendered="true">
+		<p:tab title="AFA Settings" rendered="false">
 			<p:panel header="AFA Settings" toggleable="false" closable="false"
 				toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
 				styleClass="single-node-stats-performance-panel">
@@ -1118,7 +1119,7 @@
 			</h:panelGrid>
 		</p:tab>
 
-		<p:tab title="Quidco/Snapdeal" rendered="true">
+		<p:tab title="Quidco/Snapdeal" rendered="false">
 			<p:panel header="Quidco Settings" toggleable="false" closable="false"
 				id="idQuidcoSnapdealPanel" toggleSpeed="500" closeSpeed="500"
 				style="margin-top:0px;width:99%"

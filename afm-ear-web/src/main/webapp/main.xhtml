@@ -106,7 +106,7 @@
 						<p:submenu label="Advertising" rendered="#{acccessFilterBean.renderConfiguration}" expanded="true" >
 							<p:menuitem value="Live offers" actionListener="#{sentinelMenuBean.loadTab('tabGeneratedOffers')}" ajax="false"  expanded="true" />  
 							<p:menuitem value="Blocked offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false"  />
-							<p:menuitem value="Offers" actionListener="#{sentinelMenuBean.loadTab('tabOfferWalls')}" ajax="false"  />
+							<p:menuitem value="Walls" actionListener="#{sentinelMenuBean.loadTab('tabOfferWalls')}" ajax="false"  />
 							<p:menuitem value="Feeds" actionListener="#{sentinelMenuBean.loadTab('tabAdProviders')}" ajax="false"  expanded="true" />  
 							<p:menuitem value="Filters" actionListener="#{sentinelMenuBean.loadTab('tabOfferFilters')}" ajax="false"  />
 							<p:menuitem value="Custom Rewarded Offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false" rendered="false" />
@@ -153,8 +153,8 @@
 							<p:menuitem value="General" actionListener="#{sentinelMenuBean.loadTab('tabNetworkSettings')}" ajax="false" />
 							<p:menuitem value="Accounts" actionListener="#{sentinelMenuBean.loadTab('tabManageUsers')}" ajax="false"  />
 							<p:menuitem value="Wallet" actionListener="#{sentinelMenuBean.loadTab('tabWalletSettings')}" ajax="false" />
-						    <p:menuitem value="Video gamification" actionListener="#{sentinelMenuBean.loadTab('tabVideoGamificationSettings')}" ajax="false" />
-						    <p:menuitem value="Spinner gamification" actionListener="#{sentinelMenuBean.loadTab('tabSpinnerGamificationSettings')}" ajax="false" />
+						    <p:menuitem rendered="false" value="Video gamification" actionListener="#{sentinelMenuBean.loadTab('tabVideoGamificationSettings')}" ajax="false" />
+						    <p:menuitem rendered="false" value="Spinner gamification" actionListener="#{sentinelMenuBean.loadTab('tabSpinnerGamificationSettings')}" ajax="false" />
 						</p:submenu>
 
 						<p:submenu label="License" rendered="#{acccessFilterBean.renderLicese}" >

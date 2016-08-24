@@ -338,10 +338,10 @@ public class DisplayAppUsersBean implements Serializable {
 	public int loadUserAvailableSpins() {
 		int userSpins = 0;
 		try {
-			SpinnerDataEntity spinnerDataEntity = daoSpinnerData.findByUserId(this.currentlyViewedUser.getId());
-			if (spinnerDataEntity != null) {
-				userSpins = spinnerDataEntity.getAvailableUses();
-			}
+			//SpinnerDataEntity spinnerDataEntity = daoSpinnerData.findByUserId(this.currentlyViewedUser.getId());
+			//if (spinnerDataEntity != null) {
+			//	userSpins = spinnerDataEntity.getAvailableUses();
+			//}
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -352,10 +352,10 @@ public class DisplayAppUsersBean implements Serializable {
 	public String loadUserLastDailyBonusTime(){
 		String lastBonusTime = "";
 		try{
-			SpinnerDataEntity spinnerDataEntity = daoSpinnerData.findByUserId(this.currentlyViewedUser.getId());
-			if (spinnerDataEntity != null) {
-				lastBonusTime = spinnerDataEntity.getLastDailyBonus().toString();
-			}
+			//SpinnerDataEntity spinnerDataEntity = daoSpinnerData.findByUserId(this.currentlyViewedUser.getId());
+			//if (spinnerDataEntity != null) {
+			//	lastBonusTime = spinnerDataEntity.getLastDailyBonus().toString();
+			//}
 		 } catch (Exception exc){
 			 exc.printStackTrace();
 		 }
