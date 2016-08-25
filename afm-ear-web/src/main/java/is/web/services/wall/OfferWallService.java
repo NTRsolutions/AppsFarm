@@ -49,6 +49,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -89,26 +90,28 @@ public class OfferWallService {
 	@Inject
 	private APIHelper apiHelper;
 
-	@GET
-	@Produces("application/json")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/offerwalls/")
-	public String getTargetedWallIds(@QueryParam("userId") String userId, @QueryParam("systemInfo") String systemInfo,
-			@QueryParam("applicationinfo") String applicationInfo) {
+	public String getTargetedWallIds(final APIRequestDetails details) {
 		OfferWallIdsResponse response = new OfferWallIdsResponse();
 		try {
 
 			String ipAddress = apiHelper.getIpAddressFromHttpRequest(httpRequest);
 			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
-							+ " identifying available offer walls for request: userId: " + userId + " systemInfo: "
-							+ systemInfo + " applicationInfo: " + applicationInfo + " ipAddress: " + ipAddress);
+							+ " identifying available offer walls for request: " + details + "ipAddress: " + ipAddress);
+			if (!userValidator.validate(details.getParameters())) {
+				apiHelper.setupFailedResponseForError(response, userValidator.getInvalidValueErrorCode());
+			} else {
+				String userId = (String) details.getParameters().get("userId");
+				AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
 
-			AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
-			if (appUser == null) {
 				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
 						LogStatus.ERROR, Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
 								+ "aborting as no user found under following request: " + userId);
-			} else {
+
 				List<OfferWallEntity> listOffers = daoOfferWall.findAllByRealmIdAndActiveAndCountryAndDevice(
 						appUser.getRealmId(), true, appUser.getCountryCode(), appUser.getDeviceType(),
 						appUser.getRewardTypeName());
@@ -206,13 +209,16 @@ public class OfferWallService {
 			}
 
 			// validate request hash
-			/*boolean isRequestValid = hashValidationManager.isRequestValid(realm.getApiKey(), hashkey,
-					hashValidationManager.getFullURL(httpRequest), phoneNumber, phoneNumberExt, systemInfo, miscData,
-					ipAddress);
-			if (!isRequestValid) {
-				return "{\"status\":\"" + RespStatusEnum.FAILED + "\", " + "\"code\":\""
-						+ RespCodesEnum.ERROR_REQUEST_VALIDATION_FAILED + "\", " + "\"userId\":\"-1\"}";
-			}*/
+			/*
+			 * boolean isRequestValid =
+			 * hashValidationManager.isRequestValid(realm.getApiKey(), hashkey,
+			 * hashValidationManager.getFullURL(httpRequest), phoneNumber,
+			 * phoneNumberExt, systemInfo, miscData, ipAddress); if
+			 * (!isRequestValid) { return "{\"status\":\"" +
+			 * RespStatusEnum.FAILED + "\", " + "\"code\":\"" +
+			 * RespCodesEnum.ERROR_REQUEST_VALIDATION_FAILED + "\", " +
+			 * "\"userId\":\"-1\"}"; }
+			 */
 
 			OfferWallEntity offerWall = daoOfferWall.findById(Integer.valueOf(offerWallId));
 			OfferWallContent offerWallContent = null;
@@ -221,17 +227,18 @@ public class OfferWallService {
 						LogStatus.OK,
 						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID + " "
 								+ Application.COW_SELECTION_BY_ID_IDENTIFIED + " " + " selecting offer wall with id: "
-								+ offerWallId + " userId: " + userId 
-								+ " deviceType: " + appUser.getDeviceType() + " for realm: " + realm.getName() + " network id: "
-								+ realm.getId());
-				logger.info(
-						"COW_SELECTION selecting offer wall with id: " + offerWallId + " for realm: " + realm.getName());
+								+ offerWallId + " userId: " + userId + " deviceType: " + appUser.getDeviceType()
+								+ " for realm: " + realm.getName() + " network id: " + realm.getId());
+				logger.info("COW_SELECTION selecting offer wall with id: " + offerWallId + " for realm: "
+						+ realm.getName());
 
 				// create wall selection log
 				logger.info("Indexing wall selection");
-				Application.getElasticSearchLogger().indexWallSelection(realm.getName(), Integer.valueOf(userId), appUser.getEmail(), appUser.getPhoneNumber(),
-						appUser.getPhoneNumberExtension(), Integer.valueOf(offerWallId), offerWall.getRewardTypeName(), offerWall.getTargetCountriesFilter(),
-						offerWall.getTargetDevicesFilter(), appUser.getLocale(),appUser.getIdfa(), ipAddress, systemInfo, applicationInfo);
+				Application.getElasticSearchLogger().indexWallSelection(realm.getName(), Integer.valueOf(userId),
+						appUser.getEmail(), appUser.getPhoneNumber(), appUser.getPhoneNumberExtension(),
+						Integer.valueOf(offerWallId), offerWall.getRewardTypeName(),
+						offerWall.getTargetCountriesFilter(), offerWall.getTargetDevicesFilter(), appUser.getLocale(),
+						appUser.getIdfa(), ipAddress, systemInfo, applicationInfo);
 				logger.info("Indexed wall selection");
 				// filter offer wall and remove offers that are already
 				// converted by user
