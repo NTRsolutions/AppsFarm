@@ -109,6 +109,21 @@ public class DAOAppUser {
 			return null;
 		}
 	}
+	
+	
+	public AppUserEntity findByUsername(String username) throws Exception {
+		try {
+			TypedQuery<AppUserEntity> query = em.createQuery("SELECT o FROM AppUserEntity o WHERE o.username = ?1",
+					AppUserEntity.class);
+
+			query.setParameter(1, username);
+
+			return query.getSingleResult();
+
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 
 	public AppUserEntity findByReferralCode(String referralCode) throws Exception {
 		try {

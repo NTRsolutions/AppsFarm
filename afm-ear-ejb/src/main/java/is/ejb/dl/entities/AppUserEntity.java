@@ -52,11 +52,15 @@ public class AppUserEntity implements Serializable {
    private String ageRange;
    private boolean male;
 
+
+   private String phoneNumber;
+
    @NotNull
    @NotEmpty
    @Column(unique=true)
-   private String phoneNumber;
-
+   private String username;
+   private String firstName;
+   private String lastName;
    @NotNull
    @NotEmpty
    private String password;
@@ -416,14 +420,39 @@ public class AppUserEntity implements Serializable {
 		this.quidcoUserId = quidcoUserId;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	@Override
 	public String toString() {
 		return "AppUserEntity [id=" + id + ", altabelUserId=" + altabelUserId + ", realmId=" + realmId + ", fullName="
 				+ fullName + ", gender=" + gender + ", email=" + email + ", ageRange=" + ageRange + ", male=" + male
-				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", phoneNumberExtension="
-				+ phoneNumberExtension + ", secretQuestion=" + secretQuestion + ", securityAnswer=" + securityAnswer
-				+ ", locale=" + locale + ", systemInfo=" + systemInfo + ", mac=" + mac + ", idfa=" + idfa + ", phoneId="
-				+ phoneId + ", deviceId=" + deviceId + ", iOSDeviceToken=" + iOSDeviceToken + ", androidDeviceToken="
+				+ ", phoneNumber=" + phoneNumber + ", username=" + username + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", password=" + password + ", phoneNumberExtension=" + phoneNumberExtension
+				+ ", secretQuestion=" + secretQuestion + ", securityAnswer=" + securityAnswer + ", locale=" + locale
+				+ ", systemInfo=" + systemInfo + ", mac=" + mac + ", idfa=" + idfa + ", phoneId=" + phoneId
+				+ ", deviceId=" + deviceId + ", iOSDeviceToken=" + iOSDeviceToken + ", androidDeviceToken="
 				+ androidDeviceToken + ", advertisingId=" + advertisingId + ", applicationName=" + applicationName
 				+ ", rewardTypeName=" + rewardTypeName + ", registrationTime=" + registrationTime + ", deviceType="
 				+ deviceType + ", countryCode=" + countryCode + ", successfulInstallConversions="
@@ -435,6 +464,9 @@ public class AppUserEntity implements Serializable {
 				+ ", activationCode=" + activationCode + ", quidcoUserId=" + quidcoUserId + "]";
 	}
 
+	
+
+	
 	
 }
 
