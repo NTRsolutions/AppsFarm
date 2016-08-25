@@ -43,6 +43,7 @@ public class CountriesBean {
 
 	@PostConstruct
 	public void init() {
+		logger.info("init country bean...");
 		FacesContext fc = FacesContext.getCurrentInstance();
 		loginBean = (LoginBean) fc.getApplication().evaluateExpressionGet(fc, "#{loginBean}", LoginBean.class);
 		realm = loginBean.getUser().getRealm();
@@ -62,6 +63,7 @@ public class CountriesBean {
 		country.setRealm(realm);
 
 		daoCountries.createOrUpdate(country);
+		logger.info("Added new country: " + country.getCode() + ", " + country.getName());
 		refresh();
 	}
 
@@ -71,17 +73,19 @@ public class CountriesBean {
 		}
 		
 		daoCountries.createOrUpdate(editingCountry);
+		logger.info("Edited country: " + editingCountry.getCode() + ", " + editingCountry.getName());
 		refresh();
 	}
 
 	public void deleteCountry(CountryEntity country) {
 		daoCountries.delete(country);
+		logger.info("Deleted country: " + country.getCode() + ", " + country.getName());
 		refresh();
 	}
 
 	public void refresh() {
+		logger.info("refreshing country bean...");
 		try {
-			logger.info("refreshing bean...");
 
 			newCode = null;
 			newName = null;
@@ -101,12 +105,15 @@ public class CountriesBean {
 	}
 	
 	private boolean validCountryCode(String code) {
+		logger.info("validating country code...");
 		if (code == null || code.isEmpty()) {
+			logger.info("country code is null or empty");
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Warning", "Country code is empty!"));
 			RequestContext.getCurrentInstance().update("tabView:idCountriesGrowl");
 			return false;
 		}
 		if (daoCountries.findByCode(code) != null) {
+			logger.info("country code already exists");
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Warning", "Country code: " + code + " already defined!"));
 			RequestContext.getCurrentInstance().update("tabView:idCountriesGrowl");
