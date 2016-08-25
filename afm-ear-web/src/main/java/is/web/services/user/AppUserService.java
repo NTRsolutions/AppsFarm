@@ -26,7 +26,9 @@ import is.web.services.APIRequestDetails;
 import is.web.services.APIResponse;
 import is.web.services.APIValidator;
 import is.web.services.user.validators.AdvertisingIdValidator;
+import is.web.services.user.validators.ApplicationValidator;
 import is.web.services.user.validators.CountryCodeValidator;
+import is.web.services.user.validators.DeviceTypeValidator;
 import is.web.services.user.validators.EmailDBValidator;
 import is.web.services.user.validators.EmailValidator;
 import is.web.services.user.validators.PasswordValidator;
@@ -54,7 +56,11 @@ public class AppUserService {
 	private EmailDBValidator emailDBValidator;
 	@Inject
 	private AdvertisingIdValidator advertisingIdValidator;
-
+	@Inject
+	private DeviceTypeValidator deviceTypeValidator;
+	@Inject
+	private ApplicationValidator applicationValidator;
+	
 	@Path("/user/register")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -113,9 +119,16 @@ public class AppUserService {
 			appUser.setUsername((String) parameters.get("username"));
 			appUser.setPassword(getPasswordHash((String) parameters.get("password")));
 			appUser.setEmail((String) parameters.get("email"));
-			appUser.setCountryCode((String) parameters.get("countryCode"));
 			appUser.setAdvertisingId((String) parameters.get("advertisingId"));
-
+			String countryCode = (String) parameters.get("countryCode");
+			String applicationName = (String) parameters.get("applicationName");
+			String deviceType = (String) parameters.get("deviceType");
+			appUser.setCountryCode(countryCode);
+			appUser.setApplicationName(applicationName);
+			appUser.setDeviceType(deviceType);
+			appUser.setRewardTypeName(getRewardType(applicationName, countryCode));
+			appUser.setRealmId(4);
+			
 			if (parameters.containsKey("firstName")) {
 				appUser.setFirstName((String) parameters.get("firstName"));
 			}
@@ -146,9 +159,25 @@ public class AppUserService {
 		validators.add(emailValidator);
 		validators.add(emailDBValidator);
 		validators.add(advertisingIdValidator);
+		validators.add(applicationValidator);
+		validators.add(deviceTypeValidator);
 		return validators;
 	}
 
+	private String getRewardType(String applicationName, String countryCode){
+		String rewardType = "";
+		if (applicationName.equals("AppsFarm")){
+			if (countryCode.equals("GB")){
+				rewardType = "AppsFarm-GB";
+			} 
+			if (countryCode.equals("US")){
+				rewardType = "AppsFarm-US";
+			}
+		}
+		return rewardType;
+	}
+	
+	
 	private void setupFailedResponseForError(APIResponse response, RespCodesEnum code) {
 		logger.info("Setup failed response for error: " + code);
 		response.setStatus(RespStatusEnum.FAILED);
