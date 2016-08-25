@@ -61,20 +61,20 @@ public class AppUserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String registerUser(final APIRequestDetails apiRequestDetails) {
 		logger.info("Received register request:" + apiRequestDetails);
-		RegisterUserResponse response = new RegisterUserResponse();
+		APIResponse response = new APIResponse();
 		validateRegisterRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
-			if (insertUser(apiRequestDetails)){
+			if (insertUser(apiRequestDetails)) {
 				setupSuccessResponse(response);
 			} else {
-				setupFailedResponseForError(response,RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
+				setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 			}
 		}
 
 		return new Gson().toJson(response);
 	}
 
-	private void validateRegisterRequest(APIRequestDetails apiRequestDetails, RegisterUserResponse response) {
+	private void validateRegisterRequest(APIRequestDetails apiRequestDetails, APIResponse response) {
 		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
 		logger.info("** Validating register request: **");
 		for (APIValidator validator : getRegisterValidators()) {
@@ -92,7 +92,7 @@ public class AppUserService {
 		try {
 			logger.info("** Inserting user to database **");
 			AppUserEntity appUser = prepareAppUserFromParameters(apiRequestDetails);
-			if (appUser == null){
+			if (appUser == null) {
 				logger.info("Could not create user from parameters.");
 				return false;
 			}
@@ -150,11 +150,13 @@ public class AppUserService {
 	}
 
 	private void setupFailedResponseForError(APIResponse response, RespCodesEnum code) {
+		logger.info("Setup failed response for error: " + code);
 		response.setStatus(RespStatusEnum.FAILED);
 		response.setCode(code);
 	}
 
 	private void setupSuccessResponse(APIResponse response) {
+		logger.info("Setup success response");
 		response.setStatus(RespStatusEnum.SUCCESS);
 		response.setCode(RespCodesEnum.OK);
 	}
@@ -162,6 +164,90 @@ public class AppUserService {
 	public String getPasswordHash(String password) {
 		String saltValue = "AppsfArm && S!S_salt stri!ng";
 		return DigestUtils.sha1Hex(password + saltValue);
+	}
+
+	@Path("/user/login")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String loginUser(final APIRequestDetails apiRequestDetails) {
+		logger.info("Received login request:" + apiRequestDetails);
+		LoginUserResponse response = new LoginUserResponse();
+		validateLoginRequest(apiRequestDetails, response);
+		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
+			executeUserLogin(apiRequestDetails, response);
+
+		}
+
+		return new Gson().toJson(response);
+	}
+
+	private void validateLoginRequest(APIRequestDetails apiRequestDetails, LoginUserResponse response) {
+		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
+		logger.info("** Validating login request: **");
+		for (APIValidator validator : getLoginValidators()) {
+			if (!validator.validate(parameters)) {
+				logger.info("-> Validator: " + validator.getClass() + " FAILED");
+				setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+				return;
+			} else {
+				logger.info("-> Validator: " + validator.getClass() + " OK");
+			}
+		}
+
+	}
+
+	private List<APIValidator> getLoginValidators() {
+		List<APIValidator> validators = new ArrayList<APIValidator>();
+		validators.add(usernameValidator);
+		validators.add(passwordValidator);
+		validators.add(advertisingIdValidator);
+		return validators;
+	}
+
+	private AppUserEntity getUser(String username) {
+		try {
+			return daoAppUser.findByUsername(username);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			return null;
+		}
+
+	}
+
+	private void executeUserLogin(final APIRequestDetails apiRequestDetails, LoginUserResponse response) {
+		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
+		String username = (String) parameters.get("username");
+		String password = (String) parameters.get("password");
+		String advertisingId = (String) parameters.get("advertisingId");
+		AppUserEntity appUser = getUser(username);
+		if (appUser == null) {
+			setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER);
+		} else {
+			String hashedPassword = getPasswordHash(password);
+			if (appUser.getPassword().equals(hashedPassword)) {
+				if (!appUser.getAdvertisingId().equals(advertisingId)) {
+					updateAdvertisingId(appUser, advertisingId);
+				}
+				setupSuccessResponse(response);
+				response.setAppUserEntity(appUser);
+			} else {
+				setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
+			}
+		}
+	}
+
+	private boolean updateAdvertisingId(AppUserEntity appUser, String advertisingId) {
+		try {
+			appUser.setAdvertisingId(advertisingId);
+			daoAppUser.createOrUpdate(appUser);
+			logger.info("Updated appUser with id: " + appUser.getId() + " advertisingId: " + advertisingId);
+			return true;
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			return false;
+		}
+
 	}
 
 }
