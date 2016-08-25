@@ -105,15 +105,8 @@
 								
 			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported country: " />
 			   			    	<h:panelGrid columns="2" cellpadding="1">
-						            <p:selectOneMenu value="#{offerWallConfigurationBean.editedDomain.targetCountriesFilter}" style="width:150px;" >  
-							  			<f:selectItem itemLabel="KE" itemValue="KE" />
-							  			<f:selectItem itemLabel="GB" itemValue="GB" />
-							  			<f:selectItem itemLabel="AU" itemValue="AU" />
-							  			<f:selectItem itemLabel="ZA" itemValue="ZA" />
-							  			<f:selectItem itemLabel="IN" itemValue="IN" />
-							  			<f:selectItem itemLabel="US" itemValue="US" />
-							  			<f:selectItem itemLabel="PL" itemValue="PL" />
-							  			<f:selectItem itemLabel="NG" itemValue="NG" />
+						            <p:selectOneMenu value="#{offerWallConfigurationBean.editedDomain.targetCountriesFilter}" style="width:150px;" > 
+						            	<f:selectItems value="#{offerWallConfigurationBean.countryCodes}"/> 
 						            </p:selectOneMenu>
 			   			    	</h:panelGrid>
 					            	
@@ -393,15 +386,8 @@
 	   				            
 			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported country: " />
 			   			    	<h:panelGrid columns="2" cellpadding="1">
-						            <p:selectOneMenu value="#{offerWallConfigurationBean.createdDomain.targetCountriesFilter}" style="width:150px;" >  
-							  			<f:selectItem itemLabel="KE" itemValue="KE" />
-							  			<f:selectItem itemLabel="GB" itemValue="GB" />
-							  			<f:selectItem itemLabel="AU" itemValue="AU" />
-							  			<f:selectItem itemLabel="ZA" itemValue="ZA" />
-							  			<f:selectItem itemLabel="IN" itemValue="IN" />
-							  			<f:selectItem itemLabel="US" itemValue="US" />
-							  			<f:selectItem itemLabel="PL" itemValue="PL" />
-							  			<f:selectItem itemLabel="NG" itemValue="NG" />
+						            <p:selectOneMenu value="#{offerWallConfigurationBean.createdDomain.targetCountriesFilter}" style="width:150px;" >
+						            	<f:selectItems value="#{offerWallConfigurationBean.countryCodes}"/>  
 						            </p:selectOneMenu>
 			   			    	</h:panelGrid>
 					            	

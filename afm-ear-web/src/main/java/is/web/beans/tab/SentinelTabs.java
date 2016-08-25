@@ -28,6 +28,9 @@ public class SentinelTabs {
 
 	//setupCurrencies.xhtml
 	public static String TAB_SETUP_CURRENCIES = "tabSupportedCurrencies";
+	
+	//setupCountries.xhtml
+	public static String TAB_COUNTRIES = "tabCountries";
 
 	//setupOfferFilters.xhtml
 	public static String TAB_SETUP_OFFER_FILTERS = "tabOfferFilters";
