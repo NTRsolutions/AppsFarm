@@ -34,6 +34,12 @@
 		        <p:column rendered="false" headerText="Country code" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
       						<h:outputText value="#{model.countryCode}" />  
 		        </p:column>
+		        <p:column rendered="true" headerText="Commision (%)" style="width:80px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.commisionPercentage}" />  
+		        </p:column>
+		        <p:column rendered="true" headerText="Multiplier" style="width:80px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
+      						<h:outputText value="#{model.multiplier}" />  
+		        </p:column>
 		        <p:column headerText="Creation date" style="width:140px;text-align:left; font-weight:bold;" styleClass="ui-nodesStatusTableHeader">
       						<h:outputText value="#{model.generationDate.toString()}" />  
 		        </p:column>
@@ -44,16 +50,6 @@
                       	     oncomplete="widgetDenominationModelEdit.show()"
                       	     update="@form" 
                       	     process="@this" />  
-		        </p:column>
-		        
-		        <p:column headerText="" style="width:90px;text-align:left;" styleClass="ui-nodesStatusTableHeader">
-	    			<p:commandButton value="Export" 
-	    				ajax="false" 
-	    				onclick="PrimeFaces.monitorDownload(start, stop);" 
-	    				icon="ui-icon-arrowthick-1-s" >
-	        			
-	        			<p:fileDownload value="#{denominationExportBean.getFile(model)}" />
-	    			</p:commandButton>
 		        </p:column>
 		        
  				<p:column headerText="" style="margin:auto;text-align:left;" styleClass="ui-nodesStatusTableHeader">
@@ -68,7 +64,8 @@
                        	     update="@form" 
                        	     process="@this"
                        	     rendered="true" /> 
-                       	<p:commandButton value="Import" 
+                       	<p:commandButton value="Import"
+                       		rendered="false" 
                        		onclick="widgetImport.show()" 
                        		icon="ui-icon-arrowthick-1-n" 
                        		style="margin-right:20px;" />
@@ -126,10 +123,19 @@
 			            </p:selectOneMenu>
 				    	<h:outputText render="true" styleClass="dialog-mediumFont" value="Country code: " rendered="false" />
 			            <p:inputText render="true" size="30" value="#{denominationModelBean.editedModel.countryCode}" rendered="false" />
+			            
+			            <h:outputText styleClass="dialog-mediumFont" value="Commision percentage (e.g, 50): "  />
+			            <p:inputText size="5" value="#{denominationModelBean.editedModel.commisionPercentage}"  />
+
+			            <h:outputText styleClass="dialog-mediumFont" value="Points multiplier: "  />
+			            <p:inputText size="5" value="#{denominationModelBean.editedModel.multiplier}"  />
+			            
    				    </h:panelGrid>
 				</h:panelGrid>
 
-			    <p:dataTable id="idDenominationModelEditTable" var="denominationModelRow" 
+			    <p:dataTable 
+			    	id="idDenominationModelEditTable" var="denominationModelRow"
+			    	rendered="false" 
 			    	value="#{denominationModelBean.denominationTableDataModel}"   				    
   				  	scrollable="true" 
   				  	scrollHeight="450" 
@@ -219,8 +225,8 @@
 					style="width:800px;"
 					header="Create Denomination Model" widgetVar="widgetDenominationModelCreate" 
 					resizable="false" showEffect="clip" hideEffect="fold" modal="false" appendToBody="false" >
- 					    <h:panelGrid id="idDenominationModelCreateData" columns="1" cellpadding="4">
-				    <h:panelGrid columns="2" cellpadding="4">
+				    <h:panelGrid id="idDenominationModelCreateData" columns="1" cellpadding="4">
+					    <h:panelGrid columns="2" cellpadding="4">
 				    	<h:outputText styleClass="dialog-mediumFont" value="Name: " />
 			            <p:inputText size="30" value="#{denominationModelBean.createdModel.name}"  />
 	   			    	<h:outputText styleClass="dialog-mediumFont" value="Default model globally applied across all offers: " />
@@ -248,10 +254,18 @@
 				            				itemLabel="#{currencyCode.code}" 
 				            				itemValue="#{currencyCode.code}" />   
 			            </p:selectOneMenu>
+
+			            <h:outputText styleClass="dialog-mediumFont" value="Commision percentage (e.g, 50): "  />
+			            <p:inputText size="5" value="#{denominationModelBean.createdModel.commisionPercentage}"  />
+
+			            <h:outputText styleClass="dialog-mediumFont" value="Points multiplier: "  />
+			            <p:inputText size="5" value="#{denominationModelBean.createdModel.multiplier}"  />
+			            
    				    </h:panelGrid>
 				</h:panelGrid>
 
-			    <p:dataTable id="idDenominationModelSettingsTable" var="denominationModelRow" value="#{denominationModelBean.denominationTableDataModel}"   				    
+			    <p:dataTable id="idDenominationModelSettingsTable" var="denominationModelRow" value="#{denominationModelBean.denominationTableDataModel}"
+						rendered="false"			       				    
       				  	scrollable="true" 
 	  				  	scrollHeight="450" 
 	  				  	scrollRows="10" 

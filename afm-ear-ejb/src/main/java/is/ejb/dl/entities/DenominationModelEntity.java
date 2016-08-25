@@ -64,6 +64,10 @@ public class DenominationModelEntity implements Serializable {
 	@DenominationExport
 	private String countryCode; //usually denonmination models will be associated with country code - provide this infor here as well
 
+	private double commisionPercentage = 50.0;
+	
+	private double multiplier = 1.0; 
+	
 	private Timestamp generationDate; //represents last time the wall content was generated
    
 	@DenominationExport
@@ -161,6 +165,22 @@ public class DenominationModelEntity implements Serializable {
 
 	public void setDefaultModel(boolean defaultModel) {
 		this.defaultModel = defaultModel;
+	}
+
+	public double getCommisionPercentage() {
+		return commisionPercentage;
+	}
+
+	public void setCommisionPercentage(double commisionPercentage) {
+		this.commisionPercentage = commisionPercentage;
+	}
+
+	public double getMultiplier() {
+		return multiplier;
+	}
+
+	public void setMultiplier(double multiplier) {
+		this.multiplier = multiplier;
 	}
 	
 }

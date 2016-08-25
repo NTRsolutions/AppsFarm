@@ -114,10 +114,10 @@
 					
 						<p:submenu label="Rewards" rendered="#{acccessFilterBean.renderConfiguration}" expanded="true" >
 							<p:menuitem value="Denomination Models" actionListener="#{sentinelMenuBean.loadTab('tabDenominationModels')}" ajax="false"  />
-							<p:menuitem value="Custom Denomination Models" actionListener="#{sentinelMenuBean.loadTab('tabCustomDenominationModels')}" ajax="false"  />
+							<p:menuitem rendered="false" value="Custom Denomination Models" actionListener="#{sentinelMenuBean.loadTab('tabCustomDenominationModels')}" ajax="false"  />
 							<p:menuitem value="Currencies" actionListener="#{sentinelMenuBean.loadTab('tabSupportedCurrencies')}" ajax="false"  />
 							<p:menuitem value="Reward Types" actionListener="#{sentinelMenuBean.loadTab('tabSupportedRewardTypes')}" ajax="false"  />
-							<p:menuitem value="Custom Application Rewards" actionListener="#{sentinelMenuBean.loadTab('tabApplicationsReward')}" ajax="false"  />
+							<p:menuitem value="Rewards" actionListener="#{sentinelMenuBean.loadTab('tabApplicationsReward')}" ajax="false"  />
 						</p:submenu>
 
 						<p:submenu label="Reports" rendered="#{acccessFilterBean.renderUsers}" >
