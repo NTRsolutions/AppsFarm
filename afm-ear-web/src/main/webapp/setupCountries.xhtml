@@ -1,0 +1,105 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j">
+
+<h:form prependId="false">
+	<p:growl id="idCountriesGrowl" showDetail="true" life="3000" />
+
+	<p:dataTable id="idCountriesTable" var="country"
+		value="#{countriesBean.countries}" rowKey="#{country.code}"
+		selectionMode="single">
+
+		<p:column headerText="Generation Time"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{country.generationTime.toString()}" />
+		</p:column>
+		<p:column headerText="Code"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{country.code}" />
+		</p:column>
+		<p:column headerText="Name"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{country.name}" />
+		</p:column>
+
+		<p:column headerText="" style="width:90px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Setup" icon="ui-icon-wrench"
+				action="#{countriesBean.setEditingCountry(country)}"
+				style="margin-right:20px;" oncomplete="widgetCountrySetup.show()"
+				update="@form" process="@this" />
+		</p:column>
+		<p:column headerText="" style="width:90px;text-align:left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="Delete" icon="ui-icon-trash"
+				action="#{countriesBean.deleteCountry(country)}"
+				style="margin-right:20px;" oncomplete="" update="@form"
+				process="@this">
+				<p:confirm header="Confirmation" message="Are you sure?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+		</p:column>
+
+		<f:facet name="footer">
+			<div align="left">
+				<p:commandButton value="Add new country" icon="ui-icon-plus"
+					style="margin-right:20px;" oncomplete="widgetCountryAdd.show()"
+					rendered="true" />
+			</div>
+		</f:facet>
+	</p:dataTable>
+
+
+	<p:dialog id="idCountryAddWidget" header="Add country"
+		widgetVar="widgetCountryAdd" resizable="false" showEffect="clip"
+		hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont" value="Code: " />
+			<p:inputText id="inNewCode" size="35"
+				value="#{countriesBean.newCode}" />
+
+			<h:outputText styleClass="dialog-mediumFont" value="Name: " />
+			<p:inputText id="inNewName" size="35"
+				value="#{countriesBean.newName}" />
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Add" icon="ui-icon-plus"
+				action="#{countriesBean.addCountry()}" process="" update=""
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-close" update=""
+				process="" oncomplete="widgetCountryAdd.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idCountrySetupWidget" header="Edit Country"
+		widgetVar="widgetCountrySetup" resizable="false" showEffect="clip"
+		hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid columns="2" cellpadding="4">
+			<h:outputText styleClass="dialog-mediumFont" value="Code: " />
+			<p:inputText id="inEditCode" size="35"
+				value="#{countriesBean.editingCountry.code}" />
+
+			<h:outputText styleClass="dialog-mediumFont" value="Name: " />
+			<p:inputText id="inEditName" size="35"
+				value="#{countriesBean.editingCountry.name}" />
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="4">
+			<p:commandButton value="Edit" icon="ui-icon-pencil"
+				action="#{countriesBean.editCountry()}" process="" update=""
+				oncomplete="" />
+			<p:commandButton value="Close" icon="ui-icon-close" update=""
+				process="" oncomplete="widgetCountrySetup.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+</h:form>
+
+</html>
+

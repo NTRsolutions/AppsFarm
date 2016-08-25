@@ -1,27 +1,20 @@
 package is.web.beans.tab;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+
 import is.ejb.bl.business.Application;
 import is.ejb.bl.system.logging.LogStatus;
 import is.web.beans.tab.SentinelTabBean.SingleTabBean;
 import is.web.beans.users.LoginBean;
-import is.web.geo.GeoLocation;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.faces.event.ActionEvent;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @ManagedBean(name="sentinelMenuBean")
 @SessionScoped
@@ -34,6 +27,11 @@ public class SentinelMenuBean implements Serializable  {
 //	<p:menuitem value="Provisioning" actionListener="#{sentinelMenuBean.loadTab('tabSentinelCWMPMassManagementProvisioning')}" ajax="false" icon="ui-icon-folder-open" />
 //	</p:submenu>
 	  
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	Logger logger;
 
@@ -104,6 +102,9 @@ public class SentinelMenuBean implements Serializable  {
 	   }
 	   else if(tabType.equals(SentinelTabs.TAB_SETUP_CURRENCIES)) { 
 		   tabBean.addTab(SentinelTabs.TAB_SETUP_CURRENCIES,"SetupCurrencies","setupCurrencies.xhtml","");
+	   }
+	   else if(tabType.equals(SentinelTabs.TAB_COUNTRIES)) { 
+		   tabBean.addTab(SentinelTabs.TAB_COUNTRIES, "Countries", "setupCountries.xhtml","");
 	   }
 	   else if(tabType.equals(SentinelTabs.TAB_SETUP_OFFER_FILTERS)) { 
 		   tabBean.addTab(SentinelTabs.TAB_SETUP_OFFER_FILTERS,"OfferFilters","setupOfferFilters.xhtml","");
