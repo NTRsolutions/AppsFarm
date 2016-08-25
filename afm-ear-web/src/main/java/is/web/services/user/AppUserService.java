@@ -22,6 +22,7 @@ import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.entities.AppUserEntity;
+import is.web.services.APIHelper;
 import is.web.services.APIRequestDetails;
 import is.web.services.APIResponse;
 import is.web.services.APIValidator;
@@ -60,6 +61,8 @@ public class AppUserService {
 	private DeviceTypeValidator deviceTypeValidator;
 	@Inject
 	private ApplicationValidator applicationValidator;
+	@Inject
+	private APIHelper apiHelper;
 	
 	@Path("/user/register")
 	@POST
@@ -71,9 +74,9 @@ public class AppUserService {
 		validateRegisterRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
 			if (insertUser(apiRequestDetails)) {
-				setupSuccessResponse(response);
+				apiHelper.setupSuccessResponse(response);
 			} else {
-				setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
+				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 			}
 		}
 
@@ -86,7 +89,7 @@ public class AppUserService {
 		for (APIValidator validator : getRegisterValidators()) {
 			if (!validator.validate(parameters)) {
 				logger.info("-> Validator: " + validator.getClass() + " FAILED");
-				setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+				apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
 				return;
 			} else {
 				logger.info("-> Validator: " + validator.getClass() + " OK");
@@ -177,18 +180,6 @@ public class AppUserService {
 		return rewardType;
 	}
 	
-	
-	private void setupFailedResponseForError(APIResponse response, RespCodesEnum code) {
-		logger.info("Setup failed response for error: " + code);
-		response.setStatus(RespStatusEnum.FAILED);
-		response.setCode(code);
-	}
-
-	private void setupSuccessResponse(APIResponse response) {
-		logger.info("Setup success response");
-		response.setStatus(RespStatusEnum.SUCCESS);
-		response.setCode(RespCodesEnum.OK);
-	}
 
 	public String getPasswordHash(String password) {
 		String saltValue = "AppsfArm && S!S_salt stri!ng";
@@ -217,7 +208,7 @@ public class AppUserService {
 		for (APIValidator validator : getLoginValidators()) {
 			if (!validator.validate(parameters)) {
 				logger.info("-> Validator: " + validator.getClass() + " FAILED");
-				setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+				apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
 				return;
 			} else {
 				logger.info("-> Validator: " + validator.getClass() + " OK");
@@ -251,17 +242,17 @@ public class AppUserService {
 		String advertisingId = (String) parameters.get("advertisingId");
 		AppUserEntity appUser = getUser(username);
 		if (appUser == null) {
-			setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER);
+			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER);
 		} else {
 			String hashedPassword = getPasswordHash(password);
 			if (appUser.getPassword().equals(hashedPassword)) {
 				if (!appUser.getAdvertisingId().equals(advertisingId)) {
 					updateAdvertisingId(appUser, advertisingId);
 				}
-				setupSuccessResponse(response);
+				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
 			} else {
-				setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
+				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
 			}
 		}
 	}

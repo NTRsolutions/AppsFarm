@@ -20,8 +20,8 @@ public class UserValidator implements APIValidator {
 	public boolean validate(HashMap<String, Object> parameters) {
 		try {
 			if (parameters.containsKey("userId")) {
-				String userId = (String) parameters.get("userId");
-				if (userId != null && userId.length() > 0 && getUserWithId(userId) != null) {
+				Integer userId = (Integer) parameters.get("userId");
+				if (userId != 0 && getUserWithId(userId) != null) {
 					return true;
 				} else {
 					return false;
@@ -35,9 +35,9 @@ public class UserValidator implements APIValidator {
 		}
 	}
 
-	private AppUserEntity getUserWithId(String userId) {
+	private AppUserEntity getUserWithId(Integer userId) {
 		try {
-			return daoAppUser.findById(Integer.valueOf(userId));
+			return daoAppUser.findById(userId);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			return null;
