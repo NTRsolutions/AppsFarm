@@ -18,8 +18,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.google.gson.Gson;
 
+import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
+import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.entities.AppUserEntity;
 import is.web.services.APIHelper;
@@ -63,13 +65,16 @@ public class AppUserService {
 	private ApplicationValidator applicationValidator;
 	@Inject
 	private APIHelper apiHelper;
-	
+
 	@Path("/user/register")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String registerUser(final APIRequestDetails apiRequestDetails) {
 		logger.info("Received register request:" + apiRequestDetails);
+		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
+				Application.USER_REGISTRATION_ACTIVITY + " Received register request: " + apiRequestDetails);
+
 		APIResponse response = new APIResponse();
 		validateRegisterRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
@@ -77,9 +82,11 @@ public class AppUserService {
 				apiHelper.setupSuccessResponse(response);
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
+
 			}
 		}
-
+		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
+				Application.USER_REGISTRATION_ACTIVITY + "response: " + response + " for request: " + apiRequestDetails);
 		return new Gson().toJson(response);
 	}
 
@@ -90,6 +97,11 @@ public class AppUserService {
 			if (!validator.validate(parameters)) {
 				logger.info("-> Validator: " + validator.getClass() + " FAILED");
 				apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
+						LogStatus.ERROR,
+						Application.USER_REGISTRATION_ACTIVITY + " Validation failed in : " + validator.getClass()
+								+ " cause: " + validator.getInvalidValueErrorCode() + " for request: "
+								+ apiRequestDetails);
 				return;
 			} else {
 				logger.info("-> Validator: " + validator.getClass() + " OK");
@@ -103,12 +115,21 @@ public class AppUserService {
 			AppUserEntity appUser = prepareAppUserFromParameters(apiRequestDetails);
 			if (appUser == null) {
 				logger.info("Could not create user from parameters.");
+				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
+						LogStatus.ERROR, Application.USER_REGISTRATION_ACTIVITY
+								+ " Error occured when creating user object from details: " + apiRequestDetails);
 				return false;
 			}
 			daoAppUser.create(appUser);
 			logger.info("** User inserted ** ");
+			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_REGISTRATION_ACTIVITY + " User inserted to database: " + appUser.toString());
 			return true;
 		} catch (Exception exc) {
+			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
+					Application.USER_REGISTRATION_ACTIVITY + " Error occured when inserting user: " + exc.toString()
+							+ " for details: " + apiRequestDetails);
+
 			exc.printStackTrace();
 			return false;
 		}
@@ -131,7 +152,7 @@ public class AppUserService {
 			appUser.setDeviceType(deviceType);
 			appUser.setRewardTypeName(getRewardType(applicationName, countryCode));
 			appUser.setRealmId(4);
-			
+
 			if (parameters.containsKey("firstName")) {
 				appUser.setFirstName((String) parameters.get("firstName"));
 			}
@@ -167,19 +188,18 @@ public class AppUserService {
 		return validators;
 	}
 
-	private String getRewardType(String applicationName, String countryCode){
+	private String getRewardType(String applicationName, String countryCode) {
 		String rewardType = "";
-		if (applicationName.equals("AppsFarm")){
-			if (countryCode.equals("GB")){
+		if (applicationName.equals("AppsFarm")) {
+			if (countryCode.equals("GB")) {
 				rewardType = "AppsFarm-GB";
-			} 
-			if (countryCode.equals("US")){
+			}
+			if (countryCode.equals("US")) {
 				rewardType = "AppsFarm-US";
 			}
 		}
 		return rewardType;
 	}
-	
 
 	public String getPasswordHash(String password) {
 		String saltValue = "AppsfArm && S!S_salt stri!ng";
@@ -192,6 +212,8 @@ public class AppUserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String loginUser(final APIRequestDetails apiRequestDetails) {
 		logger.info("Received login request:" + apiRequestDetails);
+		Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+				Application.USER_LOGIN_ACTIVITY + " received user login request: " + apiRequestDetails);
 		LoginUserResponse response = new LoginUserResponse();
 		validateLoginRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
@@ -199,6 +221,8 @@ public class AppUserService {
 
 		}
 
+		Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+				Application.USER_LOGIN_ACTIVITY + " result: " + response + "for request: " + apiRequestDetails);
 		return new Gson().toJson(response);
 	}
 
@@ -209,6 +233,9 @@ public class AppUserService {
 			if (!validator.validate(parameters)) {
 				logger.info("-> Validator: " + validator.getClass() + " FAILED");
 				apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+				Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.ERROR,
+						Application.USER_LOGIN_ACTIVITY + " validation failed for request: " + apiRequestDetails
+								+ " in: " + validator.getClass() + " cause: " + validator.getInvalidValueErrorCode());
 				return;
 			} else {
 				logger.info("-> Validator: " + validator.getClass() + " OK");
@@ -242,12 +269,17 @@ public class AppUserService {
 		String advertisingId = (String) parameters.get("advertisingId");
 		AppUserEntity appUser = getUser(username);
 		if (appUser == null) {
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.ERROR,
+					Application.USER_LOGIN_ACTIVITY + " there is no user for request: " + apiRequestDetails);
 			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER);
 		} else {
 			String hashedPassword = getPasswordHash(password);
 			if (appUser.getPassword().equals(hashedPassword)) {
 				if (!appUser.getAdvertisingId().equals(advertisingId)) {
 					updateAdvertisingId(appUser, advertisingId);
+					Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+							Application.USER_LOGIN_ACTIVITY + " updating user advertising id for request : "
+									+ apiRequestDetails);
 				}
 				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
