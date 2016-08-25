@@ -74,9 +74,11 @@ public class AarkiAPIManager {
         
         String requestUrl = ""; 
         if(numberOfOffersToPull >0) {
-        	requestUrl = "http://ar.aarki.net/adpick/campaign_list.json?src="+placementId+"&limit="+numberOfOffersToPull;	
+        	//requestUrl = "http://ar.aarki.net/adpick/campaign_list.json?src="+placementId+"&limit="+numberOfOffersToPull;
+        	requestUrl = "http://a.archyads.net/adpick/campaign_list.json?src="+placementId+"&limit="+numberOfOffersToPull;	
         } else {
-        	requestUrl = "http://ar.aarki.net/adpick/campaign_list.json?src="+placementId;
+        	//requestUrl = "http://ar.aarki.net/adpick/campaign_list.json?src="+placementId;
+        	requestUrl = "http://a.archyads.net/adpick/campaign_list.json?src="+placementId;
         }
 
 		Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
