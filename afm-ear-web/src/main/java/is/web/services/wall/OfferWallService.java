@@ -97,7 +97,6 @@ public class OfferWallService {
 	public String getTargetedWallIds(final APIRequestDetails details) {
 		OfferWallIdsResponse response = new OfferWallIdsResponse();
 		try {
-
 			String ipAddress = apiHelper.getIpAddressFromHttpRequest(httpRequest);
 			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
@@ -105,26 +104,7 @@ public class OfferWallService {
 			if (!userValidator.validate(details.getParameters())) {
 				apiHelper.setupFailedResponseForError(response, userValidator.getInvalidValueErrorCode());
 			} else {
-				String userId = (String) details.getParameters().get("userId");
-				AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
-
-				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
-						LogStatus.ERROR, Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
-								+ "aborting as no user found under following request: " + userId);
-
-				List<OfferWallEntity> listOffers = daoOfferWall.findAllByRealmIdAndActiveAndCountryAndDevice(
-						appUser.getRealmId(), true, appUser.getCountryCode(), appUser.getDeviceType(),
-						appUser.getRewardTypeName());
-
-				if (listOffers == null) {
-					listOffers = new ArrayList<OfferWallEntity>();
-				}
-				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
-								+ "selected offer walls:" + listOffers.size());
-
-				apiHelper.setupSuccessResponse(response);
-				response.setIds(getWallIds(listOffers));
+				executeWallIdsSelection(details, response);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -134,6 +114,34 @@ public class OfferWallService {
 		return apiHelper.getGson().toJson(response);
 
 	}
+
+
+	private void executeWallIdsSelection(final APIRequestDetails details, OfferWallIdsResponse response)
+			throws Exception {
+		String userId = (String) details.getParameters().get("userId");
+		AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
+
+		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
+				LogStatus.ERROR, Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
+						+ "aborting as no user found under following request: " + userId);
+
+		List<OfferWallEntity> listOffers = daoOfferWall.findAllByRealmIdAndActiveAndCountryAndDevice(
+				appUser.getRealmId(), true, appUser.getCountryCode(), appUser.getDeviceType(),
+				appUser.getRewardTypeName());
+
+		if (listOffers == null) {
+			listOffers = new ArrayList<OfferWallEntity>();
+		}
+		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
+				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
+						+ "selected offer walls:" + listOffers.size());
+
+		apiHelper.setupSuccessResponse(response);
+		response.setIds(getWallIds(listOffers));
+	}
+	
+	
+	
 
 	private List<Integer> getWallIds(List<OfferWallEntity> offerWallList) {
 		List<Integer> idList = new ArrayList<Integer>();
