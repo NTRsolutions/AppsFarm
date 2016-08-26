@@ -118,8 +118,8 @@ public class OfferWallService {
 
 	private void executeWallIdsSelection(final APIRequestDetails details, OfferWallIdsResponse response)
 			throws Exception {
-		String userId = (String) details.getParameters().get("userId");
-		AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
+		Integer userId = (Integer) details.getParameters().get("userId");
+		AppUserEntity appUser = daoAppUser.findById(userId);
 
 		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
 				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
@@ -184,8 +184,8 @@ public class OfferWallService {
 
 	private void executeOfferWallSelection(String offerWallId, final APIRequestDetails details,
 			OfferWallResponse response, String ipAddress) throws Exception {
-		String userId = (String) details.getParameters().get("userId");
-		AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
+		Integer userId = (Integer) details.getParameters().get("userId");
+		AppUserEntity appUser = daoAppUser.findById(userId);
 		RealmEntity realm = daoRealm.findById(appUser.getRealmId());
 		if (realm == null){
 			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER_DATA);

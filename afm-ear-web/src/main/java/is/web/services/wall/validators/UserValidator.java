@@ -20,8 +20,8 @@ public class UserValidator implements APIValidator {
 	public boolean validate(HashMap<String, Object> parameters) {
 		try {
 			if (parameters.containsKey("userId")) {
-				String userIdStr = (String) parameters.get("userId");
-				Integer userId = Integer.valueOf(userIdStr);
+				Integer userId = (Integer) parameters.get("userId");
+				
 				if (userId != 0 && getUserWithId(userId) != null) {
 					return true;
 				} else {
