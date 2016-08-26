@@ -97,12 +97,12 @@ Pulling existing ear repo from github onto local eclipse (when we want to work o
 ---------------------
 
 Tut: https://alextheedom.wordpress.com/cloud/java-ee-project-from-remote-git-repository/
-1. Open the Git Repository Exploring perspective. Navigate to Eclipse > Window > Open Perspective > Others and select the Git Repository Exploring perspective
+1.	Open the Git Repository Exploring perspective. Navigate to Eclipse > Window > Open Perspective > Others and select the Git Repository Exploring perspective
 in git view select clone repository
-2. Select clone a Git repository and put following url: https://github.com/aelbereth/AppsFarm-Middleware.git
-3. provide git https url for the github project
-4. select local folder where to clone it
-6. once repo is cloned select import existing maven project and provide location of the folder where repo was cloned
+2.	Select clone a Git repository and put following url: https://github.com/aelbereth/AppsFarm-Middleware.git
+3.	provide git https url for the github project
+4.	select local folder where to clone it
+6.	once repo is cloned select import existing maven project and provide location of the folder where repo was cloned
 
 Creating and publishing new ear repo to github (only when we want to create new github repo from existing java code)
 ---------------------

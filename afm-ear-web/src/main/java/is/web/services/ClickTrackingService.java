@@ -81,6 +81,7 @@ public class ClickTrackingService {
 	@Inject
 	private DAOUserEvent daoUserEvent;
 
+	
 	@Inject
 	private DAOAppUser daoAppUser;
 
