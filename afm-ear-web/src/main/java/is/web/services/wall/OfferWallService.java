@@ -30,6 +30,7 @@ import is.web.services.ResponseOWIds;
 import is.web.services.wall.validators.UserValidator;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class OfferWallService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/offerwalls/")
-	public String getTargetedWallIds(final APIRequestDetails details) {
+	public String getOfferWallIds(final APIRequestDetails details) {
 		OfferWallIdsResponse response = new OfferWallIdsResponse();
 		try {
 			String ipAddress = apiHelper.getIpAddressFromHttpRequest(httpRequest);
@@ -115,14 +116,13 @@ public class OfferWallService {
 
 	}
 
-
 	private void executeWallIdsSelection(final APIRequestDetails details, OfferWallIdsResponse response)
 			throws Exception {
 		String userId = (String) details.getParameters().get("userId");
 		AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
 
-		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
-				LogStatus.ERROR, Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
+		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
+				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
 						+ "aborting as no user found under following request: " + userId);
 
 		List<OfferWallEntity> listOffers = daoOfferWall.findAllByRealmIdAndActiveAndCountryAndDevice(
@@ -133,15 +133,12 @@ public class OfferWallService {
 			listOffers = new ArrayList<OfferWallEntity>();
 		}
 		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
-				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
-						+ "selected offer walls:" + listOffers.size());
+				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " " + "selected offer walls:"
+						+ listOffers.size());
 
 		apiHelper.setupSuccessResponse(response);
 		response.setIds(getWallIds(listOffers));
 	}
-	
-	
-	
 
 	private List<Integer> getWallIds(List<OfferWallEntity> offerWallList) {
 		List<Integer> idList = new ArrayList<Integer>();
@@ -155,194 +152,115 @@ public class OfferWallService {
 	 * This method returns offer walls that are personalized for individual user
 	 * based on his previous download history
 	 */
-	@GET
-	@Produces("application/json")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/offerwall/{id}/")
-	public String getCompositeOfferWallContent(@PathParam("id") String offerWallId, @QueryParam("userId") String userId,
-			@QueryParam("systemInfo") String systemInfo, @QueryParam("applicationInfo") String applicationInfo) {
+	public String getOfferWallById(@PathParam("id") String offerWallId, final APIRequestDetails details) {
 
+		OfferWallResponse response = new OfferWallResponse();
 		String ipAddress = apiHelper.getIpAddressFromHttpRequest(httpRequest);
 		Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.OK,
 				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
-						+ " Retrieving offer wall with id: " + offerWallId + " applicationInfo: " + applicationInfo
-						+ " userId : " + userId + " systemInfo: " + systemInfo + " ip: " + ipAddress);
-
-		logger.info("got request: " + httpRequest);
-		logger.info("got ip: " + ipAddress);
-
+						+ " Retrieving offer wall with id: " + offerWallId + " ip: " + ipAddress + details.toString());
 		try {
-			// get user by id
-			AppUserEntity appUser = null;
-			appUser = daoAppUser.findById(Integer.valueOf(userId));
-			if (appUser == null) { // user already registered!
-				Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
-								+ " Unable to identify offer wall with provided id: " + offerWallId
-								+ " please make sure that offer id is correct" + " status: "
-								+ RespStatusEnum.FAILED.toString() + " error code: "
-								+ RespCodesEnum.ERROR_OFFER_NOT_FOUND.toString());
-
-				// return user object
-				ResponseMultiOfferWall responseObject = new ResponseMultiOfferWall();
-				responseObject.setCode(RespCodesEnum.ERROR_OFFER_NOT_FOUND.toString());
-				responseObject.setStatus(RespStatusEnum.FAILED.toString());
-				responseObject.setMultiOfferWall(null);
-
-				// serialize into string
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String jsonResponseContent = gson.toJson(responseObject);
-
-				return jsonResponseContent;
-			}
-
-			// get realm by key
-			RealmEntity realm = daoRealm.findById(appUser.getRealmId());
-			if (realm == null) {
-				Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
-								+ " Unable to identify network, please make sure that network with provided name is correct "
-								+ " status: " + RespStatusEnum.FAILED.toString() + " error code: "
-								+ RespCodesEnum.ERROR_AD_NETWORK_NOT_FOUND.toString());
-
-				// return user object
-				ResponseMultiOfferWall responseObject = new ResponseMultiOfferWall();
-				responseObject.setCode(RespCodesEnum.ERROR_AD_NETWORK_NOT_FOUND.toString());
-				responseObject.setStatus(RespStatusEnum.FAILED.toString());
-				responseObject.setMultiOfferWall(null);
-
-				// serialize into string
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String jsonResponseContent = gson.toJson(responseObject);
-				return jsonResponseContent;
-			}
-
-			// validate request hash
-			/*
-			 * boolean isRequestValid =
-			 * hashValidationManager.isRequestValid(realm.getApiKey(), hashkey,
-			 * hashValidationManager.getFullURL(httpRequest), phoneNumber,
-			 * phoneNumberExt, systemInfo, miscData, ipAddress); if
-			 * (!isRequestValid) { return "{\"status\":\"" +
-			 * RespStatusEnum.FAILED + "\", " + "\"code\":\"" +
-			 * RespCodesEnum.ERROR_REQUEST_VALIDATION_FAILED + "\", " +
-			 * "\"userId\":\"-1\"}"; }
-			 */
-
-			OfferWallEntity offerWall = daoOfferWall.findById(Integer.valueOf(offerWallId));
-			OfferWallContent offerWallContent = null;
-			if (offerWall != null) {
-				Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, realm.getId(),
-						LogStatus.OK,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID + " "
-								+ Application.COW_SELECTION_BY_ID_IDENTIFIED + " " + " selecting offer wall with id: "
-								+ offerWallId + " userId: " + userId + " deviceType: " + appUser.getDeviceType()
-								+ " for realm: " + realm.getName() + " network id: " + realm.getId());
-				logger.info("COW_SELECTION selecting offer wall with id: " + offerWallId + " for realm: "
-						+ realm.getName());
-
-				// create wall selection log
-				logger.info("Indexing wall selection");
-				Application.getElasticSearchLogger().indexWallSelection(realm.getName(), Integer.valueOf(userId),
-						appUser.getEmail(), appUser.getPhoneNumber(), appUser.getPhoneNumberExtension(),
-						Integer.valueOf(offerWallId), offerWall.getRewardTypeName(),
-						offerWall.getTargetCountriesFilter(), offerWall.getTargetDevicesFilter(), appUser.getLocale(),
-						appUser.getIdfa(), ipAddress, systemInfo, applicationInfo);
-				logger.info("Indexed wall selection");
-				// filter offer wall and remove offers that are already
-				// converted by user
-				// offerWallContent =
-				// filterOutAlreadyConvertedByUserApps(appUser, offerWall);
-				// if offer wall is empty - return it and device should not
-				// display it!
-				/**
-				 * dynamically attach real-time feed (offer wall contains only
-				 * anchor to include that feed but its generated in real time
-				 * during this request
-				 */
-				// https://geo.tp-cdn.com/api/offer/v1/?vic=f53667b888d5a293ebbc42723926aaf9&sid=528340&ua=Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+8_3+like+Mac+OS+X%29+AppleWebKit%2F600.1.4+%28KHTML%2C+like+Gecko%29+Mobile%2F12F70&ip=86.154.102.160&;idfa=5E2ECC3A-83AD-4A26-A65C-8A65EB31EB5B&num_offers=100
-				RealtimeFeedDataHolder realtimeFeedDataHolder = new RealtimeFeedDataHolder();
-				// overriden values for testing
-				// ua =
-				// "Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+8_3+like+Mac+OS+X%29+AppleWebKit%2F600.1.4+%28KHTML%2C+like+Gecko%29+Mobile%2F12F70";
-				// ipAddress="86.154.102.160";
-				// idfa="5E2ECC3A-83AD-4A26-A65C-8A65EB31EB5B";
-
-				realtimeFeedDataHolder.setGaid(URLEncoder.encode(appUser.getAdvertisingId(), "UTF-8"));
-				realtimeFeedDataHolder.setIdfa(URLEncoder.encode("", "UTF-8"));
-				realtimeFeedDataHolder.setIp(URLEncoder.encode(ipAddress, "UTF-8"));
-				realtimeFeedDataHolder.setUa(URLEncoder.encode("", "UTF-8"));
-				realtimeFeedDataHolder.setUserId(URLEncoder.encode(userId + "", "UTF-8"));
-				realtimeFeedDataHolder.setDeviceType(URLEncoder.encode(appUser.getDeviceType(), "UTF-8"));
-				offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder, true);
-
-				// filter offer wall and remove offers that are already
-				// converted by user
-				offerWallContent = filterOutAlreadyConvertedByUserApps(appUser, offerWall);
-
-				// count how many offers are returned
-				int returnedOffers = 0;
-				for (int i = 0; i < offerWallContent.getOfferWalls().size(); i++) {
-					IndividualOfferWall wall = offerWallContent.getOfferWalls().get(i);
-					if (wall != null) {
-						returnedOffers = returnedOffers + wall.getOffers().size();
-					}
-				}
-
-				Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.OK,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID + " returning wall: "
-								+ offerWallContent.getCompositeOfferWallName() + " individual walls number: "
-								+ offerWallContent.getOfferWalls().size() + " returned_offers: " + returnedOffers
-								+ " for user with id: " + userId + " ip: " + ipAddress);
-
-				// return user object
-				ResponseMultiOfferWall responseObject = new ResponseMultiOfferWall();
-				responseObject.setCode(RespCodesEnum.OK.toString());
-				responseObject.setStatus(RespStatusEnum.SUCCESS.toString());
-				responseObject.setMultiOfferWall(offerWallContent);
-
-				// serialize into string
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String jsonResponseContent = gson.toJson(responseObject);
-				return jsonResponseContent;
-			} else { // no offer wall with id found
-				Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
-						Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
-								+ " Unable to identify offer wall with provided id: " + offerWallId
-								+ " please make sure that offer id is correct" + " status: "
-								+ RespStatusEnum.FAILED.toString() + " error code: "
-								+ RespCodesEnum.ERROR_OFFER_NOT_FOUND.toString());
-
-				// return user object
-				ResponseMultiOfferWall responseObject = new ResponseMultiOfferWall();
-				responseObject.setCode(RespCodesEnum.ERROR_OFFER_NOT_FOUND.toString());
-				responseObject.setStatus(RespStatusEnum.FAILED.toString());
-				responseObject.setMultiOfferWall(null);
-
-				// serialize into string
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String jsonResponseContent = gson.toJson(responseObject);
-				return jsonResponseContent;
+			if (!userValidator.validate(details.getParameters())) {
+				apiHelper.setupFailedResponseForError(response, userValidator.getInvalidValueErrorCode());
+			} else {
+				executeOfferWallSelection(offerWallId, details, response, ipAddress);
 			}
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			logger.severe(exc.toString());
+			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 			Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
 					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
 							+ " Error selecting offer: " + exc.toString() + " status: "
 							+ RespStatusEnum.FAILED.toString() + " error code: "
 							+ RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR.toString());
-
-			// return user object
-			ResponseMultiOfferWall responseObject = new ResponseMultiOfferWall();
-			responseObject.setCode(RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR.toString());
-			responseObject.setStatus(RespStatusEnum.FAILED.toString());
-			responseObject.setMultiOfferWall(null);
-
-			// serialize into string
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String jsonResponseContent = gson.toJson(responseObject);
-			return jsonResponseContent;
 		}
+		return apiHelper.getGson().toJson(response);
+
+	}
+
+	private void executeOfferWallSelection(String offerWallId, final APIRequestDetails details,
+			OfferWallResponse response, String ipAddress) throws Exception {
+		String userId = (String) details.getParameters().get("userId");
+		AppUserEntity appUser = daoAppUser.findById(Integer.valueOf(userId));
+		RealmEntity realm = daoRealm.findById(appUser.getRealmId());
+		if (realm == null){
+			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER_DATA);
+			Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
+					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
+							+ " realm is null for request: " + details.toString());
+		}
+		OfferWallEntity offerWall = daoOfferWall.findById(Integer.valueOf(offerWallId));
+		if (offerWall == null) {
+			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_OFFER_WALL_NOT_FOUND);
+			Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
+					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
+							+ " Unable to identify offer wall with provided id: " + offerWallId
+							+ " please make sure that offer id is correct" + " status: "
+							+ RespStatusEnum.FAILED.toString() + " error code: "
+							+ RespCodesEnum.ERROR_OFFER_NOT_FOUND.toString());
+		} else {
+			Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, realm.getId(),
+					LogStatus.OK,
+					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID + " "
+							+ Application.COW_SELECTION_BY_ID_IDENTIFIED + " " + " selecting offer wall with id: "
+							+ offerWallId + " userId: " + userId + " deviceType: " + appUser.getDeviceType()
+							+ " for realm: " + realm.getName() + " network id: " + realm.getId());
+			logger.info(
+					"COW_SELECTION selecting offer wall with id: " + offerWallId + " for realm: " + realm.getName());
+
+			Application.getElasticSearchLogger().indexWallSelection(realm.getName(), Integer.valueOf(userId),
+					appUser.getEmail(), appUser.getPhoneNumber(), appUser.getPhoneNumberExtension(),
+					Integer.valueOf(offerWallId), offerWall.getRewardTypeName(), offerWall.getTargetCountriesFilter(),
+					offerWall.getTargetDevicesFilter(), appUser.getLocale(), appUser.getIdfa(), ipAddress,
+					details.getSystemInfo(), details.getApplicationInfo());
+			logger.info("Indexed wall selection");
+
+			OfferWallContent offerWallContent = filterWalls(appUser, ipAddress, offerWall);
+			apiHelper.setupSuccessResponse(response);
+			response.setMultiOfferWall(offerWallContent);
+
+		}
+	}
+	
+	
+
+	private OfferWallContent filterWalls(AppUserEntity appUser, String ipAddress, OfferWallEntity offerWall)
+			throws Exception {
+		RealtimeFeedDataHolder realtimeFeedDataHolder = new RealtimeFeedDataHolder();
+
+		realtimeFeedDataHolder.setGaid(URLEncoder.encode(appUser.getAdvertisingId(), "UTF-8"));
+		realtimeFeedDataHolder.setIdfa(URLEncoder.encode("", "UTF-8"));
+		realtimeFeedDataHolder.setIp(URLEncoder.encode(ipAddress, "UTF-8"));
+		realtimeFeedDataHolder.setUa(URLEncoder.encode("", "UTF-8"));
+		realtimeFeedDataHolder.setUserId(URLEncoder.encode(appUser.getId() + "", "UTF-8"));
+		realtimeFeedDataHolder.setDeviceType(URLEncoder.encode(appUser.getDeviceType(), "UTF-8"));
+		OfferWallContent offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder,
+				true);
+
+		// filter offer wall and remove offers that are already
+		// converted by user
+		offerWallContent = filterOutAlreadyConvertedByUserApps(appUser, offerWall);
+
+		// count how many offers are returned
+		int returnedOffers = 0;
+		for (int i = 0; i < offerWallContent.getOfferWalls().size(); i++) {
+			IndividualOfferWall wall = offerWallContent.getOfferWalls().get(i);
+			if (wall != null) {
+				returnedOffers = returnedOffers + wall.getOffers().size();
+			}
+		}
+
+		Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.OK,
+				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID + " returning wall: "
+						+ offerWallContent.getCompositeOfferWallName() + " individual walls number: "
+						+ offerWallContent.getOfferWalls().size() + " returned_offers: " + returnedOffers
+						+ " for user with id: " + appUser.getId() + " ip: " + ipAddress);
+		return offerWallContent;
+
 	}
 
 	private OfferWallContent filterOutAlreadyConvertedByUserApps(AppUserEntity appUser, OfferWallEntity offerWall) {
