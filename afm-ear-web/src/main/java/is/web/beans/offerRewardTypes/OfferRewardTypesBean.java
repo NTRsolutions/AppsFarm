@@ -1,8 +1,11 @@
 package is.web.beans.offerRewardTypes;
 
+import is.ejb.bl.business.CountryCode;
+import is.ejb.dl.dao.DAOCountries;
 import is.ejb.dl.dao.DAODenominationModel;
 import is.ejb.dl.dao.DAOMobileApplicationType;
 import is.ejb.dl.dao.DAORewardType;
+import is.ejb.dl.entities.CountryEntity;
 import is.ejb.dl.entities.MobileApplicationTypeEntity;
 import is.ejb.dl.entities.RealmEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
@@ -48,6 +51,10 @@ public class OfferRewardTypesBean implements Serializable {
 
 	@Inject
 	private DAOMobileApplicationType daoMobileApplicationType;
+	
+	@Inject
+	private DAOCountries daoCountries;
+	
 
 	private List<RewardTypeEntity> listRewardTypes = new ArrayList<RewardTypeEntity>();
 
@@ -71,8 +78,13 @@ public class OfferRewardTypesBean implements Serializable {
 
 	private String imageBannerAction;
 
+	private List<CountryEntity> countries;
+	
 	public OfferRewardTypesBean() {
 	}
+	
+	
+	
 
 	@PostConstruct
 	public void init() {
@@ -88,6 +100,8 @@ public class OfferRewardTypesBean implements Serializable {
 			rewardTypeDataModelBean = new RewardTypeDataModelBean(
 					listRewardTypes);
 			updateImageBannerDataTable(editedRewardType);
+			countries = daoCountries.getAll();
+			
 		} catch (Exception e) {
 			logger.severe(e.toString());
 			sendFacesMessage("Error", "Couldn't init reward type bean.", false);
@@ -230,6 +244,21 @@ public class OfferRewardTypesBean implements Serializable {
 		RequestContext.getCurrentInstance().update(
 				"tabView:idSetupRewardTypesGrowl");
 	}
+	
+	public List<SelectItem> getCountries(){
+		try{
+			List<SelectItem> countriesSelectionList = new ArrayList<SelectItem>();
+			List<CountryEntity> countries = this.daoCountries.getAll();
+			for (CountryEntity country: countries){
+				countriesSelectionList.add(new SelectItem(country.getCode(),country.getCode()));
+			}
+			return countriesSelectionList;
+		}catch (Exception exc){
+			exc.printStackTrace();
+			return new ArrayList<SelectItem>();
+		}
+	}
+	
 
 	public List<SelectItem> getApplicationTypeList() {
 		try {

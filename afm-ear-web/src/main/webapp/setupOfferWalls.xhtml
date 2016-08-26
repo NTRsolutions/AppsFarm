@@ -102,14 +102,7 @@
 							            				itemValue="#{rewardType.name}" />   
 									</p:selectOneMenu>	   				            
 								</h:panelGrid>
-								
-			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported country: " />
-			   			    	<h:panelGrid columns="2" cellpadding="1">
-						            <p:selectOneMenu value="#{offerWallConfigurationBean.editedDomain.targetCountriesFilter}" style="width:150px;" > 
-						            	<f:selectItems value="#{offerWallConfigurationBean.countryCodes}"/> 
-						            </p:selectOneMenu>
-			   			    	</h:panelGrid>
-					            	
+
 			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported device: " />
 			   			    	<h:panelGrid columns="2" cellpadding="1">
 						            <p:selectOneMenu value="#{offerWallConfigurationBean.editedDomain.targetDevicesFilter}" style="width:150px;" >  
@@ -383,14 +376,6 @@
 							            				itemValue="#{rewardType.name}" />   
 									</p:selectOneMenu>	   				            
 								</h:panelGrid>
-	   				            
-			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported country: " />
-			   			    	<h:panelGrid columns="2" cellpadding="1">
-						            <p:selectOneMenu value="#{offerWallConfigurationBean.createdDomain.targetCountriesFilter}" style="width:150px;" >
-						            	<f:selectItems value="#{offerWallConfigurationBean.countryCodes}"/>  
-						            </p:selectOneMenu>
-			   			    	</h:panelGrid>
-					            	
 			   			    	<h:outputText styleClass="dialog-mediumFont" value="Supported device: " />
 			   			    	<h:panelGrid columns="2" cellpadding="1">
 						            <p:selectOneMenu value="#{offerWallConfigurationBean.createdDomain.targetDevicesFilter}" style="width:150px;" >  

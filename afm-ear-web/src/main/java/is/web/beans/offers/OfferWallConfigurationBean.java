@@ -218,7 +218,8 @@ public class OfferWallConfigurationBean implements Serializable {
 			offerWallConfiguration.setConfigurations(listSingleOfferWallConfigurations);
 			String strOfferWallConfiguration = serDeOfferWallConfiguration.serialize(offerWallConfiguration);
 			editedDomain.setConfiguration(strOfferWallConfiguration);
-
+			RewardTypeEntity rewardTypeEntity = daoRewardType.findByName(editedDomain.getRewardTypeName());
+			editedDomain.setTargetCountriesFilter(rewardTypeEntity.getCountryCode());
 			daoOfferWall.createOrUpdate(editedDomain);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
 					"Offer wall: " + editedDomain.getName() + " successfully updated"));
@@ -335,6 +336,9 @@ public class OfferWallConfigurationBean implements Serializable {
 				offerWallConfiguration.setConfigurations(listSingleOfferWallConfigurations);
 				String strOfferWallConfiguration = serDeOfferWallConfiguration.serialize(offerWallConfiguration);
 				createdDomain.setConfiguration(strOfferWallConfiguration);
+				RewardTypeEntity rewardType = daoRewardType.findByName(createdDomain.getRewardTypeName());
+				createdDomain.setTargetCountriesFilter(rewardType.getCountryCode());
+				
 				createdDomain = daoOfferWall.createOrUpdate(createdDomain);
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
