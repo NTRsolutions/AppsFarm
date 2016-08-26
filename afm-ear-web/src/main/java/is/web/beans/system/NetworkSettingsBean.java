@@ -316,7 +316,7 @@ public class NetworkSettingsBean implements Serializable {
 			RequestContext.getCurrentInstance().update("tabView:idOfferWallSettingsDataGrid");
 			RequestContext.getCurrentInstance().update("tabView:idMonitoringSettingsDataGrid");
 			RequestContext.getCurrentInstance().update("tabView:idRewardTypesEnableTable");
-			RequestContext.getCurrentInstance().update("tabView:idExternalServerSettings");
+			RequestContext.getCurrentInstance().update("tabView:idCallbackServersSettings");
 			RequestContext.getCurrentInstance().update("tabView:idMobileApplicationTypes");
 			RequestContext.getCurrentInstance().update("tabView:idReferralRewardsTable");
 			RequestContext.getCurrentInstance().update("tabView:idSnapdealOrderList");

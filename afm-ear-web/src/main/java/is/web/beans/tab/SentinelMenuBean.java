@@ -121,6 +121,9 @@ public class SentinelMenuBean implements Serializable  {
 		else if(tabType.equals(SentinelTabs.TAB_NETWORK_SETTINGS)) { 
 			tabBean.addTab(SentinelTabs.TAB_NETWORK_SETTINGS,"NetworkSettings","networkSettings.xhtml","");
 		}
+		else if(tabType.equals(SentinelTabs.TAB_CALLBACK_SERVERS)) { 
+			tabBean.addTab(SentinelTabs.TAB_CALLBACK_SERVERS, "CallbackServers", "callbackServers.xhtml", "");
+		}
 		else if(tabType.equals(SentinelTabs.TAB_MOBILE_APPLICATIONS)) { 
 			tabBean.addTab(SentinelTabs.TAB_MOBILE_APPLICATIONS, "MobileApplications", "mobileApplications.xhtml", "");
 		}

@@ -50,6 +50,9 @@ public class SentinelTabs {
 	//mobileApplications.xhtml
 	public static final String TAB_MOBILE_APPLICATIONS = "tabMobileApplications";
 	
+	//callbackServers.xhtml
+	public static final String TAB_CALLBACK_SERVERS = "tabCallbackServers";
+	
 	//quidcoEventBrowser.xhtml
 	public static final String TAB_QUIDCO_EVENT_BROWSER = "tabQuidcoEventBrowser";
 

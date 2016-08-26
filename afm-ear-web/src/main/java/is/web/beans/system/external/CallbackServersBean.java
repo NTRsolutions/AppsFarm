@@ -18,62 +18,56 @@ import javax.inject.Inject;
 
 import org.primefaces.context.RequestContext;
 
-@ManagedBean(name = "externalServerAddressSettingsBean")
+@ManagedBean(name = "callbackServersBean")
 @SessionScoped
-public class ExternalServerAddressSettingsBean {
+public class CallbackServersBean {
 
 	@Inject
 	private DAOExternalServerAddress daoExternalServerAddress;
+	
 	private ExternalServerAddressTableDataModelBean externalServerAddressTableDataModelBean;
 	private ExternalServerAddressEntity createModel, editModel;
+	
 	@Inject
 	private ExternalServerManager externalServerManager;
 
+	
 	@PostConstruct
 	public void init() {
 		try {
 			createModel = new ExternalServerAddressEntity();
 			editModel = new ExternalServerAddressEntity();
 			List<ExternalServerAddressEntity> externalServerAddressList = daoExternalServerAddress.findAll();
-			externalServerAddressTableDataModelBean = new ExternalServerAddressTableDataModelBean(
-					externalServerAddressList);
-
+			externalServerAddressTableDataModelBean = new ExternalServerAddressTableDataModelBean(externalServerAddressList);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 	}
 
 	public void editIpAddress() {
-
 		try {
-
 			if (editModel.getIpContent().trim().length() == 0) {
 				pushFacesMessage(true, "Failed", "Please provide ip address list.");
 				return;
 			}
 
 			externalServerManager.insertOrUpdateExternalServerAddress(editModel);
-			pushFacesMessage(false, "Success", "External server address updated.");
-			RequestContext.getCurrentInstance().execute("widgetEditExternalServerAddress.hide()");
+			pushFacesMessage(false, "Success", "Callback Server updated.");
+			RequestContext.getCurrentInstance().execute("widgetEditCallbackServer.hide()");
 			editModel = new ExternalServerAddressEntity();
 			refresh();
 			update();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			pushFacesMessage(true, "Failed", e.toString());
-			RequestContext.getCurrentInstance().execute("widgetEditExternalServerAddress.hide()");
-
+			RequestContext.getCurrentInstance().execute("widgetEditCallbackServer.hide()");
 		}
 	}
 
 	public void createIpAddress() {
-
 		try {
-
 			if (!isExternalServerTypeInList(createModel.getExternalServerType())) {
-				pushFacesMessage(true, "Failed",
-						"Provider type: " + createModel.getExternalServerType() + " is already in list.");
+				pushFacesMessage(true, "Failed", "Provider type: " + createModel.getExternalServerType() + " is already in list.");
 				return;
 			}
 
@@ -83,16 +77,15 @@ public class ExternalServerAddressSettingsBean {
 			}
 
 			externalServerManager.insertOrUpdateExternalServerAddress(createModel);
-			pushFacesMessage(false, "Success", "External server address created.");
-			RequestContext.getCurrentInstance().execute("widgetCreateExternalServerAddress.hide()");
+			pushFacesMessage(false, "Success", "Callback Server created.");
+			RequestContext.getCurrentInstance().execute("widgetCreateCallbackServer.hide()");
 			createModel = new ExternalServerAddressEntity();
 			refresh();
 			update();
 		} catch (Exception e) {
 			e.printStackTrace();
 			pushFacesMessage(true, "Failed", e.toString());
-			RequestContext.getCurrentInstance().execute("widgetCreateExternalServerAddress.hide()");
-
+			RequestContext.getCurrentInstance().execute("widgetCreateCallbackServer.hide()");
 		}
 	}
 
@@ -113,8 +106,8 @@ public class ExternalServerAddressSettingsBean {
 	public void deleteIpAddress() {
 
 		externalServerManager.deleteExternalServerAddress(editModel);
-		pushFacesMessage(false, "Success", "External server address deleted.");
-		RequestContext.getCurrentInstance().execute("widgetEditExternalServerAddress.hide()");
+		pushFacesMessage(false, "Success", "Callback Server deleted.");
+		RequestContext.getCurrentInstance().execute("widgetEditCallbackServer.hide()");
 		editModel = new ExternalServerAddressEntity();
 		refresh();
 		update();
@@ -123,8 +116,7 @@ public class ExternalServerAddressSettingsBean {
 	public void refresh() {
 		try {
 			List<ExternalServerAddressEntity> externalServerAddressList = daoExternalServerAddress.findAll();
-			externalServerAddressTableDataModelBean = new ExternalServerAddressTableDataModelBean(
-					externalServerAddressList);
+			externalServerAddressTableDataModelBean = new ExternalServerAddressTableDataModelBean(externalServerAddressList);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -132,18 +124,16 @@ public class ExternalServerAddressSettingsBean {
 
 	private void pushFacesMessage(boolean failed, String title, String message) {
 		if (failed) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, title, message));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, title, message));
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
 		}
-		RequestContext.getCurrentInstance().update("tabView:idApiGrowl");
+		RequestContext.getCurrentInstance().update("tabView:idCallbackServersGrowl");
 	}
 
 	public void update() {
-		pushFacesMessage(false,"Success", "Data successfully updated");
-		RequestContext.getCurrentInstance().update("tabView:idExternalServerSettings");
+		pushFacesMessage(false, "Success", "Data successfully updated");
+		RequestContext.getCurrentInstance().update("tabView:idCallbackServersSettings");
 	}
 
 	public List<SelectItem> getExternalServerTypes() {
