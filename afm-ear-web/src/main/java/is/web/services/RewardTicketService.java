@@ -12,9 +12,11 @@ import javax.ws.rs.QueryParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.bl.business.RewardTicketStatus;
+import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.entities.RewardTicketEntity;
 
@@ -56,11 +58,14 @@ public class RewardTicketService {
 		rewardTicket.setCreditPoints(creditPoints);
 		rewardTicket.setRequestDate(new Timestamp(System.currentTimeMillis()));
 		rewardTicket.setStatus(RewardTicketStatus.NEW);
+		rewardTicket.generateHash();
 
 		try {
 			daoRewardTickets.createOrUpdate(rewardTicket);
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK, "Request Ticket - " + rewardTicket.getContent(), rewardTicket);
 		} catch (Exception e) {
 			logger.info("requestTicket exception: " + e.getMessage());
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.ERROR, "Request Ticket exception: " + e.getMessage() + " - " + rewardTicket.getContent(), rewardTicket);
 			return getJsonResponse(RespStatusEnum.FAILED, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 		}
 

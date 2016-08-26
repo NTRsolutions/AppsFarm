@@ -9,5 +9,6 @@ public enum ESIndexName {
 	ab_wall_selections,
 	ab_support_requests,
 	ab_wallet_transactions,
-	ab_crash_reports;
+	ab_crash_reports,
+	ab_reward_tickets;
 }

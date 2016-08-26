@@ -1,37 +1,20 @@
 package is.ejb.bl.system.logging;
 
-import static org.elasticsearch.node.NodeBuilder.*;
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
-import is.ejb.bl.notificationSystems.gcm.test.TestGoogleNotificationSender;
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.ActionFuture;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse; 
-import org.jboss.marshalling.TraceInformation.IndexType;
+
+import is.ejb.dl.entities.RewardTicketEntity;
 public class ESLogger {
 
 	protected static final Logger logger = Logger.getLogger(ESLogger.class.getName());
@@ -65,13 +48,16 @@ public class ESLogger {
 	private ESLoggerWorkerThread threadCrashReportsQueue = null;
 	private String indexNameCrashReports = ESIndexName.ab_crash_reports.toString();
 	private String typeNameCrashReports = ESTypeName.crash_reports.toString();
+	
+	private ESLoggerWorkerThread threadRewardTicketsQueue = null;
+	private String indexNameRewardTickets = ESIndexName.ab_reward_tickets.toString();
+	private String typeNameRewardTickets = ESTypeName.reward_tickets.toString();
 
 	
 	
 	private Client client = null;
 	private Client clientBackup = null;
 	
-	private Node node = null;	
 	private String localhostname = "default name";
 	public static int threadCounter = 0;
 	
@@ -147,7 +133,7 @@ public class ESLogger {
 				indexNameUserClicks, typeNameUserClicks, 
 				pushTimeInterval, batchSizeLimit, 
 				batchNumberLimit, statusQuoLimit);
-
+		
 		//-------------- user registrations queue ------------------------
 		threadUserRegistrationsQueue = new ESLoggerWorkerThread(client, clientBackup, 
 				indexNameUserRegistrations, typeNameUserRegistrations, 
@@ -183,11 +169,16 @@ public class ESLogger {
 				indexNameCrashReports, typeNameCrashReports, 
 				pushTimeInterval, batchSizeLimit, 
 				batchNumberLimit, statusQuoLimit);
+		
+		//-------------- reward tickets queue ------------------------
+		threadRewardTicketsQueue = new ESLoggerWorkerThread(client, clientBackup, 
+				indexNameRewardTickets, typeNameRewardTickets, 
+				pushTimeInterval, batchSizeLimit, 
+				batchNumberLimit, statusQuoLimit);
 
 		try {
 			localhostname = java.net.InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.severe(e.toString());
 		}
@@ -578,6 +569,35 @@ public class ESLogger {
 				xcb.field("serverName", localhostname);
 				xcb.endObject();
 				threadCrashReportsQueue.addToQueue(xcb);
+			}
+		} catch(Exception exc) {
+			exc.toString();
+			exc.printStackTrace();
+		}
+	}
+	
+	public void indexRewardTicket(LogStatus logStatus, String message, RewardTicketEntity ticket) {
+		try {
+			if(threadRewardTicketsQueue.isQueueNotFull()) {
+				XContentBuilder xcb = jsonBuilder().startObject();
+				xcb.field("userId", ticket.getUserId());
+				xcb.field("email", ticket.getEmail());
+				xcb.field("rewardName", ticket.getRewardName());
+				xcb.field("creditPoints", ticket.getCreditPoints());
+				xcb.field("requestDate", ticket.getRequestDate().toString());
+				xcb.field("processingDate", ticket.getProcessingDate());
+				xcb.field("closeDate", ticket.getCloseDate());
+				xcb.field("status", ticket.getStatus().toString());
+				xcb.field("comment", ticket.getComment());
+				xcb.field("ticketOwner", ticket.getTicketOwner());
+				xcb.field("hash", ticket.getHash());
+				xcb.field("@logStatus", logStatus.toString());
+				xcb.field("@time", System.currentTimeMillis());
+				xcb.field("@timestamp", new Date());
+				xcb.field("serverName", localhostname);
+				xcb.field("message", message);
+				xcb.endObject();
+				threadRewardTicketsQueue.addToQueue(xcb);
 			}
 		} catch(Exception exc) {
 			exc.toString();

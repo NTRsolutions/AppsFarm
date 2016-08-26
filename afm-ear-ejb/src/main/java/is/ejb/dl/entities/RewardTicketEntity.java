@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import is.ejb.bl.business.RewardTicketStatus;
+import is.ejb.bl.system.security.KeyGenerator;
 
 @Entity
 @XmlRootElement
@@ -34,6 +35,17 @@ public class RewardTicketEntity {
 
 	private String comment;
 	private String ticketOwner;
+	private String hash;
+	
+	
+	/***
+	 * Generate and set hash
+	 * 
+	 * @return the hash
+	 */
+	public String generateHash() {
+		return hash = KeyGenerator.genetareSha1Hex(userId + email + rewardName + requestDate.toString()) + "r6t6";
+	}
 
 	public int getId() {
 		return id;
@@ -123,12 +135,27 @@ public class RewardTicketEntity {
 		this.ticketOwner = ticketOwner;
 	}
 
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+	
+	public String getContent() {
+		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
+				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
+				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
+				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + "]";
+	}
+
 	@Override
 	public String toString() {
 		return "RewardTicketEntity [id=" + id + ", userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
 				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
-				+ ", ticketOwner=" + ticketOwner + "]";
+				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + "]";
 	}
 
 }

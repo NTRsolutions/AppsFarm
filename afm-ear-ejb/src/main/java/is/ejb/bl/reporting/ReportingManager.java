@@ -1,118 +1,54 @@
 package is.ejb.bl.reporting;
 
-import static org.elasticsearch.node.NodeBuilder.*;
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
-import is.ejb.bl.business.Application;
-import is.ejb.bl.business.BlockedOfferCommand;
-import is.ejb.bl.business.BlockedOfferType;
-import is.ejb.bl.business.UserEventCategory;
-import is.ejb.bl.business.UserEventType;
-import is.ejb.bl.notificationSystems.gcm.test.TestGoogleNotificationSender;
-import is.ejb.bl.offerFilter.BlockedOffer;
-import is.ejb.bl.offerFilter.BlockedOffers;
-import is.ejb.bl.offerFilter.SerDeBlockedOffers;
-import is.ejb.bl.offerProviders.snapdeal.SnapdealReportType;
-import is.ejb.bl.offerWall.content.Offer;
-import is.ejb.bl.rewardSystems.radius.SpinnerRewardsReport;
-import is.ejb.bl.spinner.SpinnerManager;
-import is.ejb.bl.system.logging.ESIndexName;
-import is.ejb.bl.system.logging.ESLoggerWorkerThread;
-import is.ejb.bl.system.logging.ESTypeName;
-import is.ejb.bl.system.logging.LogStatus;
-import is.ejb.dl.dao.DAOBlockedOffers;
-import is.ejb.dl.dao.DAOInvitation;
-import is.ejb.dl.dao.DAOUserEvent;
-import is.ejb.dl.entities.BlockedOffersEntity;
-import is.ejb.dl.entities.InvitationEntity;
-import is.ejb.dl.entities.RealmEntity;
-import is.ejb.dl.entities.SpinnerRewardEntity;
-import is.ejb.dl.entities.UserEventEntity;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.UnknownHostException;
-import java.text.Collator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.logging.Logger;
-
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.ActionFuture;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.count.CountResponse;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
-import org.jboss.marshalling.TraceInformation.IndexType;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.Strings;
-import org.elasticsearch.common.joda.time.DateTime;
-import org.elasticsearch.common.joda.time.Days;
-import org.elasticsearch.common.joda.time.format.DateTimeFormat;
-import org.elasticsearch.common.joda.time.format.DateTimeFormatter;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.InternalAggregations;
-import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram.Bucket;
-import org.elasticsearch.search.aggregations.bucket.histogram.InternalDateHistogram;
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.metrics.avg.InternalAvg;
-import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-import org.hibernate.criterion.Order;
-import org.hibernate.mapping.Array;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+
+import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.joda.time.DateTime;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogram.Bucket;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
+import org.elasticsearch.search.sort.SortOrder;
+
+import is.ejb.bl.business.Application;
+import is.ejb.bl.business.UserEventCategory;
+import is.ejb.bl.business.UserEventType;
+import is.ejb.bl.offerFilter.BlockedOffer;
+import is.ejb.bl.rewardSystems.radius.SpinnerRewardsReport;
+import is.ejb.bl.spinner.SpinnerManager;
+import is.ejb.bl.system.logging.LogStatus;
+import is.ejb.dl.dao.DAOInvitation;
+import is.ejb.dl.dao.DAOUserEvent;
+import is.ejb.dl.entities.InvitationEntity;
+import is.ejb.dl.entities.RealmEntity;
+import is.ejb.dl.entities.UserEventEntity;
 
 @Stateless
 public class ReportingManager {
@@ -2286,14 +2222,22 @@ public class ReportingManager {
 		logger.info("*** closing ES client from ReportingManager");
 		client.close();
 	}
+	
+	public List<LogEntry> getRewardTicketsLogs(String hash) {
+		return getLogs(new String[]{"ab-logs*", "ab_reward_tickets*"}, hash, "message", "hash");
+	}
 
-	public List<LogEntry> getLogs(String searchWord) {
+	public List<LogEntry> getLogs(String value) {
+		return getLogs(new String[]{"ab*"}, value, "message");
+	}
+	
+	public List<LogEntry> getLogs(String[] logIndexPatterns, String value, String... fields) {
 		final String TAG_TIME = "@time";
 		final String TAG_LOG_STATUS = "@logStatus";
 		final String TAG_MESSAGE = "message";
 		final String TAG_SERVER_NAME = "serverName";
 
-		List<SearchHit> searchHits = getLogsList(searchWord);
+		List<SearchHit> searchHits = getLogsList(logIndexPatterns, value, fields);
 		List<LogEntry> logs = new ArrayList<LogEntry>();
 
 		for (SearchHit hit : searchHits) {
@@ -2324,21 +2268,21 @@ public class ReportingManager {
 			logs.add(new LogEntry(time, logStatus, message, serverName));
 		}
 
-		logger.info("returing found logs: " + logs.size() + " based on key: " + searchWord);
+		logger.info("returing found logs: " + logs.size() + " based on key: " + value);
 
 		return logs;
 	}
 
-	private List<SearchHit> getLogsList(String searchWord) {
+	private List<SearchHit> getLogsList(String[] logIndexPatterns, String value, String... fields) {
 		SearchResponse response = null;
 		QueryBuilder query;
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("message", searchWord));
+		boolQueryBuilder.should(QueryBuilders.multiMatchQuery(value, fields));
 		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("SN", Application.LOGS_VIEWER_ACTIVITY));
 		query = boolQueryBuilder;
 
-		response = client.prepareSearch("ab*").setQuery(query).setSize(100000000).execute().actionGet();
+		response = client.prepareSearch(logIndexPatterns).setQuery(query).setSize(100000000).execute().actionGet();
 
 		SearchHit[] searchHitsArray = null;
 		searchHitsArray = response.getHits().getHits();
@@ -2350,7 +2294,7 @@ public class ReportingManager {
 
 		return searchHits;
 	}
-
+	
 	public static void main(String[] args) {
 		// ReportingManager manager = new ReportingManager("104.155.72.76",
 		// "airrewardz"); //test server

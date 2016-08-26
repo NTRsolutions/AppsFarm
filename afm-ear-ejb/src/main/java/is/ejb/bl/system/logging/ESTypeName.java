@@ -9,5 +9,6 @@ public enum ESTypeName {
 	wall_selections,
 	support_requests,
 	wallet_transactions,
-	crash_reports;
+	crash_reports,
+	reward_tickets;
 }

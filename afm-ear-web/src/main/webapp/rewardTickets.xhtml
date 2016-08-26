@@ -35,12 +35,19 @@
 						<h:outputText value="User Id" styleClass="dialog-mediumFont" />
 					</p:column>
 					<p:column>
-						<p:selectBooleanCheckbox value="#{rewardTicketsBean.renderUserEmailColumn}" />
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderUserEmailColumn}" />
 						<p:spacer width="5" height="10" />
 						<h:outputText value="Email" styleClass="dialog-mediumFont" />
 					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderHashColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Hash" styleClass="dialog-mediumFont" />
+					</p:column>
 				</p:row>
-				
+
 				<p:row>
 					<p:column colspan="5">
 						<h:outputText value="Reward information:"
@@ -67,8 +74,7 @@
 				<p:row>
 					<p:column colspan="5">
 						<h:outputText style="font-size: 14px !important;"
-							styleClass="dialog-mediumFont"
-							value="Processing information:" />
+							styleClass="dialog-mediumFont" value="Processing information:" />
 					</p:column>
 				</p:row>
 				<p:row>
@@ -90,15 +96,13 @@
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderCloseDateColumn}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Close Date"
-							styleClass="dialog-mediumFont" />
+						<h:outputText value="Close Date" styleClass="dialog-mediumFont" />
 					</p:column>
 					<p:column>
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderStatusColumn}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Status"
-							styleClass="dialog-mediumFont" />
+						<h:outputText value="Status" styleClass="dialog-mediumFont" />
 					</p:column>
 				</p:row>
 				<p:row>
@@ -107,15 +111,13 @@
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderCommentColumn}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Comment"
-							styleClass="dialog-mediumFont" />
+						<h:outputText value="Comment" styleClass="dialog-mediumFont" />
 					</p:column>
 					<p:column>
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderTicketOwnerColumn}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Ticket Owner"
-							styleClass="dialog-mediumFont" />
+						<h:outputText value="Ticket Owner" styleClass="dialog-mediumFont" />
 					</p:column>
 				</p:row>
 			</p:panelGrid>
@@ -123,13 +125,15 @@
 		<p:tab title="Filters" id="idRewardTicketsFilters">
 			<h:panelGrid columns="10" cellpadding="4">
 				<h:outputText styleClass="dialog-mediumFont" value="View data from" />
-				<p:calendar id="startdatetime" value="#{rewardTicketsBean.startDate}"
+				<p:calendar id="startdatetime"
+					value="#{rewardTicketsBean.startDate}"
 					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
 				<h:outputText styleClass="dialog-mediumFont" value="to" />
 				<p:calendar id="enddatetime" value="#{rewardTicketsBean.endDate}"
 					pattern="dd/MM/yyyy HH:mm:ss" size="22" />
 				<h:outputText styleClass="dialog-mediumFont" value="for reward" />
-				<p:selectOneMenu value="#{rewardTicketsBean.filterRewardName}" style="width:120px">
+				<p:selectOneMenu value="#{rewardTicketsBean.filterRewardName}"
+					style="width:120px">
 					<f:selectItems value="#{rewardTicketsBean.rewardNames}" />
 				</p:selectOneMenu>
 				<h:outputText styleClass="dialog-mediumFont" value="and for" />
@@ -140,6 +144,7 @@
 					<f:selectItem itemLabel="Email" itemValue="email" />
 					<f:selectItem itemLabel="Status" itemValue="status" />
 					<f:selectItem itemLabel="Ticket Owner" itemValue="ticketOwner" />
+					<f:selectItem itemLabel="Hash" itemValue="hash" />
 				</p:selectOneMenu>
 				<p:inputText id="idFilterValueField"
 					value="#{rewardTicketsBean.filterValue}" style="width:250px" />
@@ -151,10 +156,10 @@
 
 		</p:tab>
 	</p:accordionPanel>
-	<p:dataTable id="idRewardTicketsTable" sortBy="#{event.requestDate}"
-		sortOrder="DESCENDING" widgetVar="widgetUserEventsTable" var="event"
-		value="#{rewardTicketsBean.rewardTicketsLazy}" lazy="true" paginator="true"
-		paginatorPosition="top" rows="10"
+	<p:dataTable id="idRewardTicketsTable" sortBy="#{ticket.requestDate}"
+		sortOrder="DESCENDING" widgetVar="widgetUserEventsTable" var="ticket"
+		value="#{rewardTicketsBean.rewardTicketsLazy}" lazy="true"
+		paginator="true" paginatorPosition="top" rows="10"
 		currentPageReportTemplate="{startRecord}-{endRecord} from {totalRecords}"
 		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,30,50,100" resizableColumns="true">
@@ -162,83 +167,126 @@
 		<p:ajax event="page" update="" onstart="" oncomplete=""
 			listener="#{rewardTicketsBean.pageUpdate}" />
 
-		
+		<p:column prependId="false" headerText="Logs" style="width:45px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="View logs" id="idRewardTicketLogButton"
+				actionListener="#{rewardTicketsBean.loadLogs(ticket)}"
+				oncomplete="widgetDialogRewardTicketLogs.show()" />
+		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderIdColumn}"
 			prependId="false" headerText="Id" sortBy="id"
-			style="width:120px;text-align: left;"
+			style="width:25px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.id}" />
+			<h:outputText value="#{ticket.id}" />
 		</p:column>
-		<p:column rendered="#{rewardTicketsBean.renderUserIdColumn}" 
+		<p:column rendered="#{rewardTicketsBean.renderUserIdColumn}"
 			prependId="false" headerText="User ID" sortBy="userId"
-			style="width:80px; text-align: left;"
+			style="width:30px; text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.userId}" />
+			<h:outputText value="#{ticket.userId}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderUserEmailColumn}"
-			prependId="false" headerText="User Email"
-			sortBy="email" style="width:100px;text-align:left;"
+			prependId="false" headerText="User Email" sortBy="email"
+			style="width:100px;text-align:left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.email}" />
+			<h:outputText value="#{ticket.email}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderRewardNameColumn}"
 			prependId="false" headerText="Reward Name" sortBy="rewardName"
 			style="width:80px; text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.rewardName}" />
+			<h:outputText value="#{ticket.rewardName}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderCreditPointsColumn}"
-			prependId="false"
-			footerText="#{rewardTicketsBean.sumCreditPoints}"
+			prependId="false" footerText="#{rewardTicketsBean.sumCreditPoints}"
 			headerText="Credit Points" sortBy="creditPoints"
-			style="width:120px;text-align: left;"
+			style="width:55px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.creditPoints}" />
+			<h:outputText value="#{ticket.creditPoints}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderRequestDateColumn}"
 			prependId="false" headerText="Request Date" sortBy="requestDate"
 			style="width:90px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.requestDate.toString()}" />
+			<h:outputText value="#{ticket.requestDate.toString()}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderProcessingDateColumn}"
-			prependId="false" headerText="Processing Date" sortBy="processingDate"
-			style="width:90px;text-align: left;"
+			prependId="false" headerText="Processing Date"
+			sortBy="processingDate" style="width:90px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.processingDate.toString()}" />
+			<h:outputText value="#{ticket.processingDate.toString()}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderCloseDateColumn}"
 			prependId="false" headerText="Close Date" sortBy="closeDate"
 			style="width:90px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.closeDate.toString()}" />
+			<h:outputText value="#{ticket.closeDate.toString()}" />
 		</p:column>
-		<p:column
-			rendered="#{rewardTicketsBean.renderStatusColumn}"
+		<p:column rendered="#{rewardTicketsBean.renderStatusColumn}"
 			prependId="false" headerText="Status" sortBy="status"
-			style="width:80px;text-align: left;"
+			style="width:60px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.status}" />
+			<h:outputText value="#{ticket.status}" />
 		</p:column>
-		<p:column
-			rendered="#{rewardTicketsBean.renderCommentColumn}"
+		<p:column rendered="#{rewardTicketsBean.renderCommentColumn}"
 			prependId="false" headerText="Comment" sortBy="comment"
-			style="width:80px;text-align: left;"
+			style="width:100px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.comment}" />
+			<h:outputText value="#{ticket.comment}" />
 		</p:column>
-		<p:column
-			rendered="#{rewardTicketsBean.renderTicketOwnerColumn}"
+		<p:column rendered="#{rewardTicketsBean.renderTicketOwnerColumn}"
 			prependId="false" headerText="Ticket Owner" sortBy="ticketOwner"
 			style="width:80px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{event.ticketOwner}" />
+			<h:outputText value="#{ticket.ticketOwner}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderHashColumn}"
+			prependId="false" headerText="Hash" sortBy="hash"
+			style="width:300px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{ticket.hash}" />
 		</p:column>
 
 		<f:facet name="footer">
 			<h:outputText value="#{rewardTicketsBean.sumTotalRows}" />
 		</f:facet>
 	</p:dataTable>
+
+	<p:dialog id="idDialogRewardTicketLogs"
+		header="Logs for #{rewardTicketsBean.selectedTicket.hash}"
+		widgetVar="widgetDialogRewardTicketLogs" width="60%" height="700"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+
+		<p:dataTable id="idRewardTicketLogsTable"
+			value="#{rewardTicketsBean.logs}" var="log"
+			widgetVar="widgetRewardTicketLogsTable">
+
+			<p:column headerText="Time" prependId="false"
+				styleClass="ui-nodesStatusTableHeader" style="width:120px"
+				sortBy="time">
+				<h:outputText value="#{log.time}" />
+			</p:column>
+			<p:column headerText="Log Status" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.logStatus}" />
+			</p:column>
+			<p:column headerText="Message" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.message}" />
+			</p:column>
+			<p:column headerText="Server Name" prependId="false"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{log.serverName}" />
+			</p:column>
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4"
+			style="position: absolute !important; bottom: 0px !important; vertical-align: bottom !important;">
+			<p:commandButton value="Close" icon="ui-icon-close" update=""
+				process="" oncomplete="widgetDialogLogs.hide()" />
+		</h:panelGrid>
+	</p:dialog>
 
 </h:form>
 

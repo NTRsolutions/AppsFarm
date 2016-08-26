@@ -75,6 +75,14 @@ public class DAORewardTickets {
 
 		return query.getResultList();
 	}
+	
+	public RewardTicketEntity getByHash(String hash) {
+		TypedQuery<RewardTicketEntity> query = entityManager
+				.createQuery("SELECT o FROM RewardTicketEntity o WHERE o.hash = ?1", RewardTicketEntity.class);
+		query.setParameter(1, hash);
+
+		return query.getSingleResult();
+	}
 
 	public List<RewardTicketEntity> findFiltered(int first, int pageSize, String sortField, String sortOrder,
 			Map<String, String> filters, Timestamp startDate, Timestamp endDate, int realmId) throws Exception {

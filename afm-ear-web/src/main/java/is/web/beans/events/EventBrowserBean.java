@@ -1,31 +1,5 @@
 package is.web.beans.events;
 
-import is.ejb.bl.business.Application;
-import is.ejb.bl.business.OfferProviderCodeNames;
-import is.ejb.bl.business.UserEventCategory;
-import is.ejb.bl.offerProviders.fyber.FyberProviderConfig;
-import is.ejb.bl.offerProviders.fyber.SerDeFyberProviderConfiguration;
-import is.ejb.bl.offerProviders.minimob.MinimobProviderConfig;
-import is.ejb.bl.offerProviders.minimob.SerDeMinimobProviderConfiguration;
-import is.ejb.bl.offerProviders.snapdeal.SnapdealManager;
-import is.ejb.bl.offerProviders.snapdeal.SnapdealReportType;
-import is.ejb.bl.reporting.LogEntry;
-import is.ejb.bl.reporting.ReportingManager;
-import is.ejb.bl.reward.RewardManager;
-import is.ejb.bl.system.logging.LogStatus;
-import is.ejb.dl.dao.DAOAdProvider;
-import is.ejb.dl.dao.DAORealm;
-import is.ejb.dl.dao.DAORewardType;
-import is.ejb.dl.dao.DAOUser;
-import is.ejb.dl.dao.DAOUserEvent;
-import is.ejb.dl.entities.AdProviderEntity;
-import is.ejb.dl.entities.RealmEntity;
-import is.ejb.dl.entities.RewardTypeEntity;
-import is.ejb.dl.entities.UserEntity;
-import is.ejb.dl.entities.UserEventEntity;
-import is.web.beans.offers.AdProviderDataModelBean;
-import is.web.beans.users.LoginBean;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,14 +13,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Map.Entry;
-import java.util.UUID;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -56,42 +25,38 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import org.apache.lucene.analysis.compound.hyphenation.TernaryTree.Iterator;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.data.PageEvent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.TreeNode;
 import org.primefaces.model.SortOrder;
 
-import java.util.Map;
+import is.ejb.bl.business.Application;
+import is.ejb.bl.business.UserEventCategory;
+import is.ejb.bl.offerProviders.snapdeal.SnapdealManager;
+import is.ejb.bl.offerProviders.snapdeal.SnapdealReportType;
+import is.ejb.bl.reporting.LogEntry;
+import is.ejb.bl.reporting.ReportingManager;
+import is.ejb.bl.reward.RewardManager;
+import is.ejb.bl.system.logging.LogStatus;
+import is.ejb.dl.dao.DAORewardType;
+import is.ejb.dl.dao.DAOUserEvent;
+import is.ejb.dl.entities.RewardTypeEntity;
+import is.ejb.dl.entities.UserEventEntity;
+import is.web.beans.users.LoginBean;
 
 @ManagedBean(name = "eventBrowserBean")
 @SessionScoped
 public class EventBrowserBean implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	private Logger logger;
 
 	private LoginBean loginBean;
-
-	@Inject
-	private DAORealm daoRealm;
 
 	@Inject
 	private DAOUserEvent daoUserEvent;

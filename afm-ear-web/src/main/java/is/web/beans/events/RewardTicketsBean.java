@@ -1,5 +1,7 @@
 package is.web.beans.events;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +22,8 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+import is.ejb.bl.reporting.LogEntry;
+import is.ejb.bl.reporting.ReportingManager;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.entities.RewardTicketEntity;
@@ -62,8 +66,11 @@ public class RewardTicketsBean {
 	private boolean renderStatusColumn = true;
 	private boolean renderCommentColumn = true;
 	private boolean renderTicketOwnerColumn = true;
+	private boolean renderHashColumn = true;
 
 	private LazyDataModel<RewardTicketEntity> rewardTicketsLazy;
+	private RewardTicketEntity selectedTicket;
+	private List<LogEntry> logs = new ArrayList<>();
 
 	private double sumCreditPoints = 0;
 	private String sumTotalRows = "";
@@ -137,7 +144,7 @@ public class RewardTicketsBean {
 			logger.severe(e1.toString());
 		}
 	}
-
+	
 	public void refresh() {
 		try {
 			logger.info("refreshing bean...");
@@ -150,6 +157,19 @@ public class RewardTicketsBean {
 
 	public void pageUpdate(PageEvent event) {
 		logger.info("page update event triggered...");
+	}
+
+	public void loadLogs(RewardTicketEntity ticket) {
+		logger.info("load logs for: " + ticket.toString());
+		String hostName = loginBean.getUser().getRealm().getEsPrimaryStorageIp();
+		selectedTicket = ticket;
+		
+		ReportingManager reportingManager = new ReportingManager(hostName, ReportingManager.DEFAULT_CLUSTER_NAME);
+		logs = reportingManager.getRewardTicketsLogs(ticket.getHash());
+		reportingManager.closeESClient();
+		logger.info("logs count: " + logs.size());
+	
+		RequestContext.getCurrentInstance().update("tabView:idDialogRewardTicketLogs");
 	}
 
 	private Date getDefaultStartDate() {
@@ -172,7 +192,7 @@ public class RewardTicketsBean {
 		for(RewardTicketEntity ticket: tickets) {
 			sum += ticket.getCreditPoints();
 		}
-		return sum;
+		return round(sum, 2);
 	}
 
 	private boolean isRewardTypeSelected() {
@@ -198,6 +218,30 @@ public class RewardTicketsBean {
 		for (RewardTypeEntity rewardType : rewardTypes) {
 			rewardNames.add(rewardType.getName());
 		}
+	}
+	
+	private double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
+
+	public List<LogEntry> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<LogEntry> logs) {
+		this.logs = logs;
+	}
+
+	public RewardTicketEntity getSelectedTicket() {
+		return selectedTicket;
+	}
+
+	public void setSelectedTicket(RewardTicketEntity selectedTicket) {
+		this.selectedTicket = selectedTicket;
 	}
 
 	public String getSumTotalRows() {
@@ -358,6 +402,14 @@ public class RewardTicketsBean {
 
 	public void setRenderTicketOwnerColumn(boolean renderTicketOwnerColumn) {
 		this.renderTicketOwnerColumn = renderTicketOwnerColumn;
+	}
+
+	public boolean isRenderHashColumn() {
+		return renderHashColumn;
+	}
+
+	public void setRenderHashColumn(boolean renderHashColumn) {
+		this.renderHashColumn = renderHashColumn;
 	}
 
 }

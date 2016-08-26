@@ -509,6 +509,8 @@ public class Application {
 	public static final String EVENT_MANUALLY_REWARDED = "EVENT_MANUALLY_REWARDED";
 	
 	public static final String LOGGER_SERVICE_LOG = "LOGGER_SERVICE_LOG";
+	
+	public static final String REWARD_TICKET_ACTIVITY = "REWARD_TICKET_ACTIVITY";
 
 
 	
