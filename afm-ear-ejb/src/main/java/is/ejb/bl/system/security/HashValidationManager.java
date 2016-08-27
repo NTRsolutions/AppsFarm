@@ -7,6 +7,7 @@ import is.ejb.bl.system.logging.LogStatus;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -29,7 +30,18 @@ public class HashValidationManager {
 	@Inject
 	private Logger logger;
 	
-	
+	public boolean isAPIRequestValid(HashMap<String, Object> parameters) {
+		logger.info("Validating hash map with " + parameters.size() + " parameters");
+		int hashCodeFromRequest = (Integer) parameters.remove("hashCode");
+		System.out.println(parameters);
+		int hashCode = parameters.hashCode();
+		logger.info("Hash code from request: " + hashCodeFromRequest + " generated: " + hashCode);
+		if (hashCodeFromRequest == hashCode) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/*
 	 * object should not contains "hashKey" value, so it should be null!
 	 */
