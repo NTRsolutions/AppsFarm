@@ -189,7 +189,10 @@ public class SentinelMenuBean implements Serializable  {
 		else if(tabType.equals(SentinelTabs.TAB_SPINNER_STATS)) { 
 			tabBean.addTab(SentinelTabs.TAB_SPINNER_STATS,"SpinnerStats","spinnerStats.xhtml","");
 		}
-
+		else if(tabType.equals(SentinelTabs.TAB_REWARD_CATEGORIES)) { 
+			tabBean.addTab(SentinelTabs.TAB_REWARD_CATEGORIES,"RewardCategories","rewardCategories.xhtml","");
+		}
+		
 
 		//to be deleted in future
 		else if(tabType.equals(SentinelTabs.TAB_SENTINEL_AUTOREGISTER)) { 

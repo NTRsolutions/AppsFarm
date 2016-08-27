@@ -329,6 +329,9 @@ public class SentinelTabBean implements Serializable {
         if (tabBean.getType().startsWith(SentinelTabs.TAB_SPINNER_STATS)){
         	
 		}
+        if (tabBean.getType().startsWith(SentinelTabs.TAB_REWARD_CATEGORIES)){
+        	
+		}
         
         
 	}

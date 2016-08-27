@@ -101,6 +101,9 @@ public class SentinelTabs {
 	//spinnerStats.xhtml
 	public static final String TAB_SPINNER_STATS = "tabSpinnerStats";
 	
+	//rewardCategories.xhtml
+	public static final String TAB_REWARD_CATEGORIES = "tabRewardCategories";
+	
 
 	//-------------------------------------- domain config -------------------------------------
 	//autoregister.xhtml
