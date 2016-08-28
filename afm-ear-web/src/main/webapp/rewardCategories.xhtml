@@ -31,6 +31,11 @@
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.name}" />
 			</p:column>
+			<p:column rendered="true" headerText="Image URL"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.imageUrl}" />
+			</p:column>
 			<p:column rendered="true" headerText="Action"
 				style="width:50px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
@@ -60,7 +65,9 @@
 				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
 				<p:inputText size="30"
 					value="#{rewardCategoryBean.createModel.name}" />
-
+				<h:outputText styleClass="dialog-mediumFont" value="Image Url:" />
+				<p:inputText size="30"
+					value="#{rewardCategoryBean.createModel.imageUrl}" />
 
 
 
@@ -68,8 +75,7 @@
 
 			<h:panelGrid columns="3" cellpadding="4">
 				<p:commandButton value="Create" icon="ui-icon-search"
-					action="#{rewardCategoryBean.insertCategory()}" update="@form"
-					oncomplete="" />
+					action="#{rewardCategoryBean.insertCategory()}" update="@form" />
 				<p:commandButton value="Close" icon="ui-icon-search"
 					oncomplete="widgetCreateRewardCategory.hide()"
 					action="#{rewardCategoryBean.refresh()}" update="@form" />

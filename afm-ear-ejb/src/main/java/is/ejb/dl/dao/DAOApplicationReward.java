@@ -73,4 +73,19 @@ public class DAOApplicationReward {
 			   return null;
 		   } 
 	   }
+	   
+	   public List<ApplicationRewardEntity>  findByRewardType(String rewardType) throws Exception {
+		   try
+		   {
+			   TypedQuery<ApplicationRewardEntity > query = em.createQuery(
+				        "SELECT o FROM ApplicationRewardEntity  o WHERE o.rewardType = ?1", ApplicationRewardEntity .class);
+
+			   query.setParameter(1, rewardType);
+
+			   return query.getResultList(); 
+			   
+		   } catch(NoResultException e) {
+			   return null;
+		   } 
+	   }
 }

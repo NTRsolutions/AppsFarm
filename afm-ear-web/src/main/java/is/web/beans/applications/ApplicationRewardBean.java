@@ -6,11 +6,13 @@ import is.ejb.bl.offerFilter.SerDeCurrencyCode;
 import is.ejb.dl.dao.DAOApplicationReward;
 import is.ejb.dl.dao.DAOCurrencyCode;
 import is.ejb.dl.dao.DAOMobileApplicationType;
+import is.ejb.dl.dao.DAORewardCategory;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.entities.ApplicationRewardEntity;
 import is.ejb.dl.entities.CurrencyCodeEntity;
 import is.ejb.dl.entities.MobileApplicationTypeEntity;
 import is.ejb.dl.entities.RealmEntity;
+import is.ejb.dl.entities.RewardCategoryEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
 import is.ejb.dl.entities.WalletPayoutCarrierEntity;
 import is.web.beans.system.WalletSettingsTableDataModelBean;
@@ -18,6 +20,7 @@ import is.web.beans.users.LoginBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -35,6 +38,9 @@ public class ApplicationRewardBean {
 	@Inject
 	private LoginBean loginBean;
 
+	@Inject
+	private Logger logger;
+	
 	private RealmEntity realm = null;
 
 	@Inject
@@ -53,6 +59,7 @@ public class ApplicationRewardBean {
 
 	private List<SelectItem> mobileAppSelectItemList;
 
+	private List<SelectItem> rewardCategoryList;
 	@Inject
 	private DAOCurrencyCode daoCurrencyCode;
 
@@ -65,6 +72,9 @@ public class ApplicationRewardBean {
 
 	private List<SelectItem> rewardTypesList;
 
+	@Inject
+	private DAORewardCategory daoRewardCategory;
+	
 	@PostConstruct
 	public void init() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -95,6 +105,7 @@ public class ApplicationRewardBean {
 			for (CurrencyCode code : currencyCodeList) {
 				currencyCodeSelectItemList.add(new SelectItem(code.getCode(), code.getCode()));
 			}
+			loadRewardCategories();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -102,6 +113,20 @@ public class ApplicationRewardBean {
 		}
 
 	}
+	
+	public void loadRewardCategories(){
+		try{
+			rewardCategoryList = new ArrayList<SelectItem>();
+			List<RewardCategoryEntity> rewardCategories = daoRewardCategory.getAll();
+			for (RewardCategoryEntity reward: rewardCategories){
+				rewardCategoryList.add(new SelectItem(reward.getName(),reward.getName()));
+			}
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+		}
+	}
+	
 
 	public ApplicationRewardTableDataModelBean getApplicationRewardTableDataModel() {
 		return applicationRewardTableDataModel;
@@ -184,7 +209,7 @@ public class ApplicationRewardBean {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward carrier created."));
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 			RequestContext.getCurrentInstance().execute("widgetCreateApplicationReward.hide()");
-
+			logger.info("Edit completed!");
 			refresh();
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -286,5 +311,15 @@ public class ApplicationRewardBean {
 	public void setRewardTypesList(List<SelectItem> rewardTypesList) {
 		this.rewardTypesList = rewardTypesList;
 	}
+
+	public List<SelectItem> getRewardCategoryList() {
+		return rewardCategoryList;
+	}
+
+	public void setRewardCategoryList(List<SelectItem> rewardCategoryList) {
+		this.rewardCategoryList = rewardCategoryList;
+	}
+	
+	
 
 }

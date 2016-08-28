@@ -19,7 +19,7 @@ public class ApplicationRewardEntity {
 	private int applicationId;
 	private String applicationName;
 	private int realmId;
-	private String currencyCode;
+	private String rewardCategory;
 	private String rewardType;
 	
 	
@@ -72,12 +72,14 @@ public class ApplicationRewardEntity {
 		this.applicationId = applicationId;
 	}
 
-	public String getCurrencyCode() {
-		return currencyCode;
+	
+
+	public String getRewardCategory() {
+		return rewardCategory;
 	}
 
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+	public void setRewardCategory(String rewardCategory) {
+		this.rewardCategory = rewardCategory;
 	}
 
 	public String getRewardType() {

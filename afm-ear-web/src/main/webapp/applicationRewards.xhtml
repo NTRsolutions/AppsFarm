@@ -45,10 +45,10 @@
 				<h:outputText value="#{model.applicationName}" />
 			</p:column>
 
-			<p:column rendered="true" headerText="Currency"
+			<p:column rendered="true" headerText="Reward Category"
 				style="width:50px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
-				<h:outputText value="#{model.currencyCode}" />
+				<h:outputText value="#{model.rewardCategory}" />
 			</p:column>
 
 			<p:column rendered="true" headerText="Reward Type"
@@ -104,11 +104,11 @@
 				</p:selectOneMenu>
 
 				<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Currency:" />
+					value="Reward Category:" />
 				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.createModel.currencyCode}">
+					value="#{applicationRewardBean.createModel.rewardCategory}">
 					<f:selectItems
-						value="#{applicationRewardBean.currencyCodeSelectItemList}" />
+						value="#{applicationRewardBean.rewardCategoryList}" />
 				</p:selectOneMenu>
 
 				<h:outputText rendered="true" styleClass="dialog-mediumFont"
@@ -158,12 +158,12 @@
 					<f:selectItems
 						value="#{applicationRewardBean.mobileAppSelectItemList}" />
 				</p:selectOneMenu>
-				<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Currency:" />
+					<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Reward Category:" />
 				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.editModel.currencyCode}">
+					value="#{applicationRewardBean.createModel.rewardCategory}">
 					<f:selectItems
-						value="#{applicationRewardBean.currencyCodeSelectItemList}" />
+						value="#{applicationRewardBean.rewardCategoryList}" />
 				</p:selectOneMenu>
 
 				<h:outputText rendered="true" styleClass="dialog-mediumFont"
