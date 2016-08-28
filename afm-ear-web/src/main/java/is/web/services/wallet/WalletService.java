@@ -129,6 +129,7 @@ public class WalletService {
 			double roundBalance = round(walletData.getBalance(), 2);
 			walletData.setBalance(roundBalance);
 			walletData.setUserId(appUser.getId());
+			daoWalletData.createOrUpdate(walletData);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}

@@ -136,7 +136,7 @@
 
 
 		<p:dialog id="idWidgetEditApplicationReward" width="500"
-			style="width:500px;" header="Create mobile application reward"
+			style="width:500px;" header="Edit mobile application reward"
 			widgetVar="widgetEditApplicationReward" resizable="false"
 			showEffect="clip" hideEffect="fold" modal="false"
 			appendToBody="false">
@@ -161,7 +161,7 @@
 					<h:outputText rendered="true" styleClass="dialog-mediumFont"
 					value="Reward Category:" />
 				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.createModel.rewardCategory}">
+					value="#{applicationRewardBean.editModel.rewardCategory}">
 					<f:selectItems
 						value="#{applicationRewardBean.rewardCategoryList}" />
 				</p:selectOneMenu>

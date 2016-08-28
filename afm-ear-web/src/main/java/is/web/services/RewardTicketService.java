@@ -57,7 +57,7 @@ public class RewardTicketService {
 		rewardTicket.setRewardName(rewardName);
 		rewardTicket.setCreditPoints(creditPoints);
 		rewardTicket.setRequestDate(new Timestamp(System.currentTimeMillis()));
-		rewardTicket.setStatus(RewardTicketStatus.NEW);
+		//rewardTicket.setStatus(RewardTicketStatus.NEW);
 		rewardTicket.generateHash();
 
 		try {

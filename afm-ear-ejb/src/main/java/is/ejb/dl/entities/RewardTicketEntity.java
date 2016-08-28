@@ -25,6 +25,8 @@ public class RewardTicketEntity {
 	private int userId;
 	private String email;
 	private String rewardName;
+	private int rewardId;
+	private String rewardType;
 	private double creditPoints;
 	private Timestamp requestDate;
 	private Timestamp processingDate;
@@ -143,6 +145,25 @@ public class RewardTicketEntity {
 		this.hash = hash;
 	}
 	
+	
+	
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
+	}
+
+	public int getRewardId() {
+		return rewardId;
+	}
+
+	public void setRewardId(int rewardId) {
+		this.rewardId = rewardId;
+	}
+
 	public String getContent() {
 		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="

@@ -90,6 +90,13 @@ public class ApplicationRewardEntity {
 		this.rewardType = rewardType;
 	}
 
+	@Override
+	public String toString() {
+		return "ApplicationRewardEntity [id=" + id + ", rewardName=" + rewardName + ", rewardValue=" + rewardValue
+				+ ", applicationId=" + applicationId + ", applicationName=" + applicationName + ", realmId=" + realmId
+				+ ", rewardCategory=" + rewardCategory + ", rewardType=" + rewardType + "]";
+	}
+
 	
 	
 	

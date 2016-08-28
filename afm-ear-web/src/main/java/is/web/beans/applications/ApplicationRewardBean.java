@@ -40,7 +40,7 @@ public class ApplicationRewardBean {
 
 	@Inject
 	private Logger logger;
-	
+
 	private RealmEntity realm = null;
 
 	@Inject
@@ -74,7 +74,7 @@ public class ApplicationRewardBean {
 
 	@Inject
 	private DAORewardCategory daoRewardCategory;
-	
+
 	@PostConstruct
 	public void init() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -88,16 +88,16 @@ public class ApplicationRewardBean {
 			for (RewardTypeEntity ent : rewardTypeEntityList) {
 				rewardTypesList.add(new SelectItem(ent.getName(), ent.getName()));
 			}
-			applicationRewardEntityList = daoApplicationReward.findAll();
-			this.applicationRewardTableDataModel = new ApplicationRewardTableDataModelBean(applicationRewardEntityList);
+			loadTableModelBean();
 			mobileApplicationTypeEntityList = daoApplicationType.findAll();
-			
+
 			mobileAppSelectItemList = new ArrayList<SelectItem>();
 			for (MobileApplicationTypeEntity ent : mobileApplicationTypeEntityList) {
 				mobileAppSelectItemList.add(new SelectItem(ent.getName(), ent.getName()));
 			}
 
-			CurrencyCodeEntity currencyCodeEntity = daoCurrencyCode.findByRealmId(loginBean.getUser().getRealm().getId());
+			CurrencyCodeEntity currencyCodeEntity = daoCurrencyCode
+					.findByRealmId(loginBean.getUser().getRealm().getId());
 
 			CurrencyCodes currencyCodes = serDeCurrencyCode.deserialize(currencyCodeEntity.getSupportedCurrencies());
 			List<CurrencyCode> currencyCodeList = currencyCodes.getListCodes();
@@ -113,26 +113,34 @@ public class ApplicationRewardBean {
 		}
 
 	}
-	
-	public void loadRewardCategories(){
-		try{
-			rewardCategoryList = new ArrayList<SelectItem>();
-			List<RewardCategoryEntity> rewardCategories = daoRewardCategory.getAll();
-			for (RewardCategoryEntity reward: rewardCategories){
-				rewardCategoryList.add(new SelectItem(reward.getName(),reward.getName()));
-			}
-		}
-		catch (Exception exc){
+
+	public void loadTableModelBean() {
+		try {
+			applicationRewardEntityList = daoApplicationReward.findAll();
+			this.applicationRewardTableDataModel = new ApplicationRewardTableDataModelBean(applicationRewardEntityList);
+		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 	}
-	
+
+	public void loadRewardCategories() {
+		try {
+			rewardCategoryList = new ArrayList<SelectItem>();
+			List<RewardCategoryEntity> rewardCategories = daoRewardCategory.getAll();
+			for (RewardCategoryEntity reward : rewardCategories) {
+				rewardCategoryList.add(new SelectItem(reward.getName(), reward.getName()));
+			}
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+	}
 
 	public ApplicationRewardTableDataModelBean getApplicationRewardTableDataModel() {
 		return applicationRewardTableDataModel;
 	}
 
-	public void setApplicationRewardTableDataModel(ApplicationRewardTableDataModelBean applicationRewardTableDataModel) {
+	public void setApplicationRewardTableDataModel(
+			ApplicationRewardTableDataModelBean applicationRewardTableDataModel) {
 		this.applicationRewardTableDataModel = applicationRewardTableDataModel;
 	}
 
@@ -143,14 +151,16 @@ public class ApplicationRewardBean {
 			applicationRewardEntityList = daoApplicationReward.findAll();
 			this.applicationRewardTableDataModel = new ApplicationRewardTableDataModelBean(applicationRewardEntityList);
 			mobileApplicationTypeEntityList = daoApplicationType.findAll();
-			//System.out.println(mobileApplicationTypeEntityList.size() + "<<<SIZE !!!!!");
+			// System.out.println(mobileApplicationTypeEntityList.size() +
+			// "<<<SIZE !!!!!");
 			mobileAppSelectItemList = new ArrayList<SelectItem>();
 			for (MobileApplicationTypeEntity ent : mobileApplicationTypeEntityList) {
 				System.out.println(ent);
 				mobileAppSelectItemList.add(new SelectItem(ent.getName(), ent.getName()));
 			}
 
-			CurrencyCodeEntity currencyCodeEntity = daoCurrencyCode.findByRealmId(loginBean.getUser().getRealm().getId());
+			CurrencyCodeEntity currencyCodeEntity = daoCurrencyCode
+					.findByRealmId(loginBean.getUser().getRealm().getId());
 
 			CurrencyCodes currencyCodes = serDeCurrencyCode.deserialize(currencyCodeEntity.getSupportedCurrencies());
 			List<CurrencyCode> currencyCodeList = currencyCodes.getListCodes();
@@ -189,31 +199,36 @@ public class ApplicationRewardBean {
 		try {
 
 			if (editModel.getRewardName().trim().length() == 0) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward name."));
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward name."));
 				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 				return;
 			}
 
 			if (editModel.getRewardValue() == 0) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward value."));
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward value."));
 				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 				return;
 			}
 
-			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType.findByName(editModel.getApplicationName());
+			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType
+					.findByName(editModel.getApplicationName());
 			editModel.setApplicationId(applicationTypeEntity.getId());
 			editModel.setRealmId(loginBean.getUser().getRealm().getId());
-
+			logger.info(editModel.toString());
 			daoApplicationReward.createOrUpdate(editModel);
 			editModel = new ApplicationRewardEntity();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward carrier created."));
-			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
-			RequestContext.getCurrentInstance().execute("widgetCreateApplicationReward.hide()");
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward updated."));
 			logger.info("Edit completed!");
 			refresh();
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
+		} finally {
+			loadTableModelBean();
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 			RequestContext.getCurrentInstance().execute("widgetEditApplicationReward.hide()");
 		}
@@ -224,41 +239,46 @@ public class ApplicationRewardBean {
 		try {
 
 			if (createModel.getRewardName().trim().length() == 0) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward name."));
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward name."));
 				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 				return;
 			}
 
 			if (createModel.getRewardValue() == 0) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward value."));
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward value."));
 				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 				return;
 			}
 
-			//System.out.println(createModel);
+			// System.out.println(createModel);
 
-			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType.findByName(createModel.getApplicationName());
+			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType
+					.findByName(createModel.getApplicationName());
 
-			//System.out.println("***********");
-			//System.out.println("***********");
-			//System.out.println("***********");
-		
+			// System.out.println("***********");
+			// System.out.println("***********");
+			// System.out.println("***********");
 
 			createModel.setApplicationId(applicationTypeEntity.getId());
 			createModel.setRealmId(loginBean.getUser().getRealm().getId());
 
 			daoApplicationReward.create(createModel);
 			createModel = new ApplicationRewardEntity();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward carrier created."));
-			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
-			RequestContext.getCurrentInstance().execute("widgetCreateApplicationReward.hide()");
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward carrier created."));
 
 			refresh();
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
+		} finally {
+			loadTableModelBean();
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 			RequestContext.getCurrentInstance().execute("widgetCreateApplicationReward.hide()");
+
 		}
 	}
 
@@ -267,14 +287,16 @@ public class ApplicationRewardBean {
 
 			daoApplicationReward.delete(editModel);
 			editModel = new ApplicationRewardEntity();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward  deleted."));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application reward  deleted."));
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 			RequestContext.getCurrentInstance().execute("widgetCreateApplicationReward.hide()");
 
 			refresh();
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", exc.getMessage()));
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 			RequestContext.getCurrentInstance().execute("widgetEditApplicationReward.hide()");
 		}
@@ -319,7 +341,5 @@ public class ApplicationRewardBean {
 	public void setRewardCategoryList(List<SelectItem> rewardCategoryList) {
 		this.rewardCategoryList = rewardCategoryList;
 	}
-	
-	
 
 }
