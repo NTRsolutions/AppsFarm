@@ -486,7 +486,7 @@ public class ReferralManager {
 		}
 		daoInvitation.createOrUpdate(invitation);
 
-		rewardManager.createUserConversionHistory(event); // update conversion
+		//rewardManager.createUserConversionHistory(event); // update conversion
 															// history (needed
 															// to filter out
 															// already clicked

@@ -250,7 +250,7 @@ public class RewardTrackingService {
 				RealmEntity realm = daoRealm.findById(event.getRealmId());
 				// we only udpate status and if failed - return cash back to
 				// user wallet here
-				rewardManager.updateWalletPayoutTransactionStatus(realm, event, false);
+				//rewardManager.updateWalletPayoutTransactionStatus(realm, event, false);
 			}
 
 			// send notification to user
@@ -298,7 +298,7 @@ public class RewardTrackingService {
 				if (newEventQueueElementToProcessFromQueue != null) {
 					UserEventEntity newEventToSendToMode = daoUserEvent.findById(newEventQueueElementToProcessFromQueue.getEventId());
 					//directly request reward for this transaction
-					rewardManager.requestRewardMode(newEventToSendToMode, null, false);
+					//rewardManager.requestRewardMode(newEventToSendToMode, null, false);
 				} else {
 					Application.getElasticSearchLogger().indexLog(Application.EVENT_QUEUE_ACTIVITY, event.getRealmId(), LogStatus.OK,
 							Application.EVENT_QUEUE_ACTIVITY + " " + Application.EVENT_QUEUE_NO_ELEMENTS_TO_PROCESS + " "

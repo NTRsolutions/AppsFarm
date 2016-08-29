@@ -202,7 +202,7 @@ public class VideoManager {
 						+ event.getOfferPayoutIsoCurrencyCode());
 
 		event = daoUserEvent.createOrUpdate(event, 1); 
-		rewardManager.createUserConversionHistory(event); 
+		//rewardManager.createUserConversionHistory(event); 
 
 		// add conversion event to conversion index in es (imitate click so that conversion rate is in balance)
 		Application.getElasticSearchLogger().indexUserClick(realm.getId(),

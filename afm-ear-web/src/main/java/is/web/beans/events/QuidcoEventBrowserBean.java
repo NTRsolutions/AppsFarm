@@ -744,9 +744,9 @@ public class QuidcoEventBrowserBean implements Serializable {
 						showAlert("Information", "Canceling reward. No application type.");
 					}
 					if (event.getApplicationName().toLowerCase().contains("air")) {
-						rewardManager.requestRewardMode(event, null, false);
+						//rewardManager.requestRewardMode(event, null, false);
 					} else {
-						rewardManager.requestRewardGoAhead(event, null, false);
+						//rewardManager.requestRewardGoAhead(event, null, false);
 					}
 					showAlert("Information", "Successfully sent transaction to reward manager.");
 				}
