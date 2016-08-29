@@ -1,6 +1,6 @@
 package is.web.services.rewards;
 
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,19 +17,14 @@ import javax.ws.rs.core.MediaType;
 
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespCodesEnum;
-import is.ejb.bl.business.RewardTicketStatus;
+
 import is.ejb.bl.reward.RewardTicketManager;
 import is.ejb.bl.system.logging.LogStatus;
-import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOApplicationReward;
 import is.ejb.dl.dao.DAORewardCategory;
-import is.ejb.dl.dao.DAORewardTickets;
-import is.ejb.dl.dao.DAOWalletData;
-import is.ejb.dl.entities.AppUserEntity;
 import is.ejb.dl.entities.ApplicationRewardEntity;
 import is.ejb.dl.entities.RewardCategoryEntity;
 import is.ejb.dl.entities.RewardTicketEntity;
-import is.ejb.dl.entities.WalletDataEntity;
 import is.web.services.APIHelper;
 import is.web.services.APIRequestDetails;
 import is.web.services.APIResponse;
@@ -44,6 +39,7 @@ import is.web.services.wallet.validators.UsernamePasswordCombinationValidator;
 
 @Path("/")
 public class RewardService {
+
 
 	@Inject
 	private DAOApplicationReward daoApplicationReward;

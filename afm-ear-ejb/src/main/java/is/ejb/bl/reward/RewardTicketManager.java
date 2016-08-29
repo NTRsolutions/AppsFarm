@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.system.logging.LogStatus;
+import is.ejb.bl.wallet.WalletManager;
+import is.ejb.bl.wallet.WalletTransactionType;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOApplicationReward;
 import is.ejb.dl.dao.DAORewardTickets;
@@ -24,7 +26,8 @@ import is.ejb.dl.entities.WalletDataEntity;
 public class RewardTicketManager {
 	@Inject
 	private DAORewardTickets daoRewardTickets;
-
+	@Inject
+	private WalletManager walletManager;
 	@Inject
 	private DAOAppUser daoAppUser;
 	@Inject
@@ -108,7 +111,7 @@ public class RewardTicketManager {
 		AppUserEntity appUser = new AppUserEntity();
 		try {
 			appUser = daoAppUser.findById(rewardTicket.getUserId());
-			WalletDataEntity walletData = daoWalletData.findByUserId(appUser.getId());
+			WalletDataEntity walletData = walletManager.getWalletData(appUser);
 			double balance = walletData.getBalance();
 			double balanceAfterAdd = balance + rewardTicket.getCreditPoints();
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
@@ -120,28 +123,29 @@ public class RewardTicketManager {
 							+ balance + " balance after: " + balanceAfterAdd + " hash: " + rewardTicket.getHash(),
 					rewardTicket);
 
-			walletData.setBalance(balanceAfterAdd);
-			walletData.setTransactionCounter(walletData.getTransactionCounter() + 1);
-			daoWalletData.createOrUpdate(walletData);
+			boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION,
+					rewardTicket.getCreditPoints(), "Reward credit from reward ticket with id: " + rewardTicket.getId()
+							+ " hash: " + rewardTicket.getHash());
+
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId"
-							+ appUser.getId() + " was success. Balance after: " + balanceAfterAdd);
+							+ appUser.getId() + " was " + result + " . Balance after: " + balanceAfterAdd);
 
-			Application.getElasticSearchLogger().indexRewardTicket(
-					LogStatus.OK, "Add reward amount from wallet for userId" + appUser.getId()
-							+ " was success. Balance after: " + balanceAfterAdd + " hash: " + rewardTicket.getHash(),
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+					"Add reward amount from wallet for userId" + appUser.getId() + " was " + result
+							+ " . Balance after: " + balanceAfterAdd + " hash: " + rewardTicket.getHash(),
 					rewardTicket);
 			return true;
 
 		} catch (Exception exception) {
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.ERROR,
+			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1,
+					LogStatus.ERROR,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId : "
 							+ appUser.getId() + "was failed. Error:" + exception.toString());
-			Application.getElasticSearchLogger()
-					.indexRewardTicket(
-							LogStatus.ERROR, "Add reward amount from wallet for userId : " + appUser.getId()
-									+ "was failed. Error:" + exception.toString() + " hash: " + rewardTicket.getHash(),
-							rewardTicket);
+			Application.getElasticSearchLogger().indexRewardTicket(
+					LogStatus.ERROR, "Add reward amount from wallet for userId : " + appUser.getId()
+							+ "was failed. Error:" + exception.toString() + " hash: " + rewardTicket.getHash(),
+					rewardTicket);
 			exception.printStackTrace();
 			return false;
 		}
@@ -149,7 +153,7 @@ public class RewardTicketManager {
 
 	private boolean substractRewardAmountFromWallet(AppUserEntity appUser, RewardTicketEntity rewardTicket) {
 		try {
-			WalletDataEntity walletData = daoWalletData.findByUserId(appUser.getId());
+			WalletDataEntity walletData = walletManager.getWalletData(appUser);
 			double balance = walletData.getBalance();
 			double balanceAfterSubstract = balance - rewardTicket.getCreditPoints();
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
@@ -163,19 +167,18 @@ public class RewardTicketManager {
 					rewardTicket);
 
 			if (balanceAfterSubstract >= 0) {
-				walletData.setBalance(balanceAfterSubstract);
-				walletData.setTransactionCounter(walletData.getTransactionCounter() + 1);
-				daoWalletData.createOrUpdate(walletData);
+				boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.SUBTRACTION,
+						rewardTicket.getCreditPoints(), "Reward credit from reward ticket with id: "
+								+ rewardTicket.getId() + " hash: " + rewardTicket.getHash());
 				Application.getElasticSearchLogger()
 						.indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 								Application.REWARD_TICKET_CREATE_ACTIVITY
-										+ "Substract reward amount from wallet for userId" + appUser.getId()
-										+ " was success. Balance after: " + balanceAfterSubstract);
+										+ "Substract reward amount from wallet for userId" + appUser.getId() + " was "
+										+ result + " . Balance after: " + balanceAfterSubstract);
 
 				Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
-						"Substract reward amount from wallet for userId" + appUser.getId()
-								+ " was success. Balance after: " + balanceAfterSubstract + " hash: "
-								+ rewardTicket.getHash(),
+						"Substract reward amount from wallet for userId" + appUser.getId() + " was " + result
+								+ ". Balance after: " + balanceAfterSubstract + " hash: " + rewardTicket.getHash(),
 						rewardTicket);
 
 				return true;
@@ -194,9 +197,11 @@ public class RewardTicketManager {
 				return false;
 			}
 		} catch (Exception exception) {
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.ERROR,
-					Application.REWARD_TICKET_CREATE_ACTIVITY + "Substract reward amount from wallet for userId : "
-							+ appUser.getId() + "was failed. Error:" + exception.toString());
+			Application.getElasticSearchLogger()
+					.indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.ERROR,
+							Application.REWARD_TICKET_CREATE_ACTIVITY
+									+ "Substract reward amount from wallet for userId : " + appUser.getId()
+									+ "was failed. Error:" + exception.toString());
 
 			Application.getElasticSearchLogger().indexRewardTicket(
 					LogStatus.ERROR, "Substract reward amount from wallet for userId : " + appUser.getId()
@@ -210,10 +215,9 @@ public class RewardTicketManager {
 	public void updateTicket(RewardTicketEntity rewardTicket) {
 		try {
 			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
-					"Updating ticket:" + rewardTicket.toString(),
-					rewardTicket);
+					"Updating ticket:" + rewardTicket.toString(), rewardTicket);
 			logger.info("Updating ticket:" + rewardTicket);
-			
+
 			daoRewardTickets.createOrUpdate(rewardTicket);
 		} catch (Exception exc) {
 			exc.printStackTrace();

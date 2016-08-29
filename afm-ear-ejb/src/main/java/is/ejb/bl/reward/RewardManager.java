@@ -142,28 +142,7 @@ public class RewardManager {
 	@Inject
 	private UserFriendManager userFriendManager;
 
-	public void retryFailedReward(UserEventEntity event) {
-		try {
-			if (event != null) {
-				// counters??
-				RealmEntity realmEntity = daoRealm.findById(event.getRealmId());
-				issueReward(realmEntity, event, null, false);
-
-				Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, event.getRealmId(),
-						LogStatus.OK, Application.REWARD_ACTIVITY + " RETRY : " + event.getId() + " CATEGORY"
-								+ event.getUserEventCategory());
-
-			}
-			// TODO update retry date and increment retry counter in the
-			// UserEventFailed object representing this transaction
-		} catch (Exception exc) {
-			exc.printStackTrace();
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, event.getRealmId(), LogStatus.OK,
-					Application.REWARD_ACTIVITY + " RETRY : " + Arrays.toString(exc.getStackTrace()));
-
-		}
-
-	}
+	
 
 	public void createUserConversionHistory(UserEventEntity event) {
 		try {
@@ -276,13 +255,18 @@ public class RewardManager {
 
 	public String issueReward(RealmEntity realm, UserEventEntity event, InvitationEntity invitation,
 			boolean isEventFromUserThatWasInviting) {
-
+		
+		try{
+			
+		} catch (Exception exc){
+			exc.printStackTrace();
+		}
+		return null;
+		
+		
 		// System.out.println(invitation);
-		System.out.println(event);
+		/*System.out.println(event);
 
-		/**
-		 * based on rewardType decide what reward provider will be used
-		 */
 		if (event.getRewardTypeName().equals(Application.REWARD_PROVIDER_AIR_REWARDZ_SOUTH_AFRICA.toString())) {
 			// monitor if referral reward should be assigned as a result of
 			// reward (conversion) that is either instant or wallet recharge
@@ -493,7 +477,7 @@ public class RewardManager {
 		// confirmation back to offer provider that AB successfully processed
 		// their request
 		return "{\"response\":\" status: " + RespStatusEnum.SUCCESS + " " + event.getTransactionId() + ":OK" + " code: "
-				+ RespCodesEnum.OK_NO_CONTENT + "\"}";
+				+ RespCodesEnum.OK_NO_CONTENT + "\"}";*/
 	}
 
 	private void requestRewardQuidco(RealmEntity realm, UserEventEntity event) {

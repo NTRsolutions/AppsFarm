@@ -15,6 +15,7 @@ import is.ejb.bl.rewardSystems.mode.TestModeManager;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.security.HashValidationManager;
 import is.ejb.bl.testing.TestManager;
+import is.ejb.bl.wallet.WalletManager;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOConversionHistory;
 import is.ejb.dl.dao.DAODenominationModel;
@@ -103,11 +104,6 @@ public class ClickService {
 	@Inject
 	private DAOUserEvent daoUserEvent;
 
-	@Inject
-	private DAOAppUser daoAppUser;
-
-	@Inject
-	private DAODenominationModel daoDenominationModel;
 
 	@Inject
 	private DAOConversionHistory daoConversionHistory;

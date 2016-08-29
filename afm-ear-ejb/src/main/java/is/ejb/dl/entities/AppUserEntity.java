@@ -455,23 +455,7 @@ public class AppUserEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AppUserEntity [id=" + id + ", altabelUserId=" + altabelUserId + ", realmId=" + realmId + ", fullName="
-				+ fullName + ", gender=" + gender + ", email=" + email + ", ageRange=" + ageRange + ", male=" + male
-				+ ", phoneNumber=" + phoneNumber + ", username=" + username + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", password=" + password + ", phoneNumberExtension=" + phoneNumberExtension
-				+ ", secretQuestion=" + secretQuestion + ", securityAnswer=" + securityAnswer + ", locale=" + locale
-				+ ", systemInfo=" + systemInfo + ", mac=" + mac + ", idfa=" + idfa + ", phoneId=" + phoneId
-				+ ", deviceId=" + deviceId + ", iOSDeviceToken=" + iOSDeviceToken + ", androidDeviceToken="
-				+ androidDeviceToken + ", advertisingId=" + advertisingId + ", applicationName=" + applicationName
-				+ ", rewardTypeName=" + rewardTypeName + ", registrationTime=" + registrationTime + ", deviceType="
-				+ deviceType + ", countryCode=" + countryCode + ", successfulInstallConversions="
-				+ successfulInstallConversions + ", referralCode=" + referralCode + ", numberOfSuccessfulInvitations="
-				+ numberOfSuccessfulInvitations + ", successfulReferralsCounter=" + successfulReferralsCounter
-				+ ", pendingReferralsCounter=" + pendingReferralsCounter + ", fbInvitationCode=" + fbInvitationCode
-				+ ", mobileDetails=" + mobileDetails + ", overEighteen=" + overEighteen + ", videoConversionCounterVG="
-				+ videoConversionCounterVG + ", installConversionCounterVG=" + installConversionCounterVG
-				+ ", activationCode=" + activationCode + ", quidcoUserId=" + quidcoUserId + ", attendanceLastBonusTime="
-				+ attendanceLastBonusTime + "]";
+		return "AppUserEntity [id=" + id + "]";
 	}
 
 	

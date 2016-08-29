@@ -392,7 +392,7 @@ public class FailedEventsBrowserBean implements Serializable {
 			if (type != null && type.equals(UserEventCategory.INSTALL.toString())) {
 
 				UserEventEntity event = getUserEventEntityFromUserEventFailed(entity);
-				rewardManager.retryFailedReward(event);
+				//rewardManager.retryFailedReward(event);
 				msg = "Event successfully retransmissed.";
 			} else {
 				msg = "Event not supported:" + entity.getUserEventCategory();
