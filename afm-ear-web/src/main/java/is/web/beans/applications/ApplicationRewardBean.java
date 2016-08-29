@@ -169,7 +169,8 @@ public class ApplicationRewardBean {
 			for (CurrencyCode code : currencyCodeList) {
 
 				currencyCodeSelectItemList.add(new SelectItem(code.getCode(), code.getCode()));
-			}
+			}	
+			loadRewardCategories();
 
 			// refresh tab GUI after model update
 			RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
@@ -197,7 +198,7 @@ public class ApplicationRewardBean {
 
 	public void edit() {
 		try {
-
+			
 			if (editModel.getRewardName().trim().length() == 0) {
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward name."));
