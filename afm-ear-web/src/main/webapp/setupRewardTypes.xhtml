@@ -146,8 +146,7 @@
 				value="Minimum instant reward threshold (in target currency): " />
 			<p:inputText size="35"
 				value="#{offerRewardTypesBean.editedRewardType.minimalInstantRewardThresholdInTargetCurrency}" />
-			<h:outputText styleClass="dialog-mediumFont"
-				value="Application type: " />
+
 
 			<h:outputText styleClass="dialog-mediumFont" value="Country: " />
 			<p:selectOneMenu id="countryCodeEdit2"
@@ -155,7 +154,8 @@
 				<f:selectItems value="#{offerRewardTypesBean.countries}" />
 			</p:selectOneMenu>
 
-
+			<h:outputText styleClass="dialog-mediumFont"
+				value="Application type: " />
 			<p:selectOneMenu id="realmedit2"
 				value="#{offerRewardTypesBean.editedRewardType.applicationType}">
 				<f:selectItems value="#{offerRewardTypesBean.applicationTypeList}" />
