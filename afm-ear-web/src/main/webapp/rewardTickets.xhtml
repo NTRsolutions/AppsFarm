@@ -287,7 +287,8 @@
 		<p:column rendered="true" prependId="false" headerText="Action"
 			sortBy="action" style="width:16px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
-			<p:rowToggler actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}" />
+			<p:rowToggler
+				actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}" />
 		</p:column>
 		<p:column prependId="false" headerText="Logs" style="width:50px"
 			styleClass="ui-nodesStatusTableHeader">
@@ -295,9 +296,11 @@
 				actionListener="#{rewardTicketsBean.loadLogs(ticket)}"
 				oncomplete="widgetDialogRewardTicketLogs.show()" />
 		</p:column>
-		<p:rowExpansion actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}" >
+		<p:rowExpansion
+			actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}">
 
-			<p:panelGrid id="idTicketPanel" style="background: #F1F5F8;width:100%" columns="1">
+			<p:panelGrid id="idTicketPanel"
+				style="background: #F1F5F8;width:100%" columns="1">
 				<h:panelGrid id="idTicketPanelGrid1" columns="3" cellpadding="1">
 					<h:outputText style="font-size:20px" value="Ticket # #{ticket.id}" />
 					<h:outputText style="font-size:20px" value="Comment" />
@@ -355,6 +358,19 @@
 						<p:commandButton value="Change Ticket Owner" icon="ui-icon-person"
 							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
 							oncomplete="widgetEditTicketOwner.show()" />
+						<p:commandButton value="Send Credits Back To Wallet"
+							icon="ui-icon-person"
+							actionListener="#{rewardTicketsBean.sendCreditsBackToWallet(ticket)}">
+							<p:confirm header="Confirmation" message="Are you sure want to transfer credits back to wallet?"
+								icon="ui-icon-alert" />
+						</p:commandButton>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:panelGrid>
@@ -379,7 +395,8 @@
 				<f:selectItems value="#{rewardTicketsBean.getTicketStatuses()}" />
 			</p:selectOneMenu>
 			<p:commandButton value="Save" icon="ui-icon-check"
-				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket(
+				)}"
 				oncomplete="widgetEditTicketStatus.hide()" />
 			<p:commandButton value="Close" icon="ui-icon-close"
 				oncomplete="widgetEditTicketStatus.hide()" />

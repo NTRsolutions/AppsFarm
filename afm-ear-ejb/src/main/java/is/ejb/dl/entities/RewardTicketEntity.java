@@ -182,6 +182,7 @@ public class RewardTicketEntity {
 	@Override
 	public String toString() {
 		return "RewardTicketEntity [id=" + id + ", userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
+				+ ", rewardId=" + rewardId + ", rewardType=" + rewardType + ", rewardCategory=" + rewardCategory
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
 				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
 				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + "]";

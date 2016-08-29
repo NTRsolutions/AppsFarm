@@ -33,6 +33,7 @@ public class RewardTicketManager {
 	private DAOWalletData daoWalletData;
 	@Inject
 	private Logger logger;
+
 	public RewardTicketEntity createRewardTicket(HashMap<String, Object> parameters) {
 		RewardTicketEntity rewardTicket = new RewardTicketEntity();
 		Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
@@ -61,7 +62,13 @@ public class RewardTicketManager {
 			}
 
 			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
-					"Request Ticket - " + rewardTicket.getContent(), rewardTicket);
+					"Reward Ticket Created for user id: " + appUser.getId() + " email: " + appUser.getEmail()
+							+ " reward name: " + rewardTicket.getRewardName() + " reward id: " + reward.getId()
+							+ " credit points: " + reward.getRewardValue() + " request date: "
+							+ rewardTicket.getRequestDate() + " reward type: " + rewardTicket.getRewardType()
+							+ " reward category: " + rewardTicket.getRewardCategory() + " hash: "
+							+ rewardTicket.getHash(),
+					rewardTicket);
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Reward ticket created for data: " + parameters);
 
@@ -83,6 +90,11 @@ public class RewardTicketManager {
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Marking reward type with id: " + rewardTicket.getId()
 							+ " as failed. Comment: " + comment);
+			Application.getElasticSearchLogger()
+					.indexRewardTicket(
+							LogStatus.OK, "Marking reward type with id: " + rewardTicket.getId()
+									+ " as failed. Comment: " + comment + " hash: " + rewardTicket.getHash(),
+							rewardTicket);
 			rewardTicket.setComment(comment);
 			rewardTicket.setCloseDate(new Timestamp(new Date().getTime()));
 			rewardTicket.setStatus(RewardTicketStatus.PROCESSED_FAILED);
@@ -92,8 +104,47 @@ public class RewardTicketManager {
 		}
 	}
 
-	private void addRewardAmountBackToWallet(AppUserEntity appUser, RewardTicketEntity rewardTicket) {
+	public boolean addRewardAmountBackToWallet(RewardTicketEntity rewardTicket) {
+		AppUserEntity appUser = new AppUserEntity();
+		try {
+			appUser = daoAppUser.findById(rewardTicket.getUserId());
+			WalletDataEntity walletData = daoWalletData.findByUserId(appUser.getId());
+			double balance = walletData.getBalance();
+			double balanceAfterAdd = balance + rewardTicket.getCreditPoints();
+			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
+					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId : "
+							+ appUser.getId() + " balance before: " + balance + " balance after: " + balanceAfterAdd);
 
+			Application.getElasticSearchLogger().indexRewardTicket(
+					LogStatus.OK, "Add reward amount from wallet for userId : " + appUser.getId() + " balance before: "
+							+ balance + " balance after: " + balanceAfterAdd + " hash: " + rewardTicket.getHash(),
+					rewardTicket);
+
+			walletData.setBalance(balanceAfterAdd);
+			walletData.setTransactionCounter(walletData.getTransactionCounter() + 1);
+			daoWalletData.createOrUpdate(walletData);
+			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
+					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId"
+							+ appUser.getId() + " was success. Balance after: " + balanceAfterAdd);
+
+			Application.getElasticSearchLogger().indexRewardTicket(
+					LogStatus.OK, "Add reward amount from wallet for userId" + appUser.getId()
+							+ " was success. Balance after: " + balanceAfterAdd + " hash: " + rewardTicket.getHash(),
+					rewardTicket);
+			return true;
+
+		} catch (Exception exception) {
+			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.ERROR,
+					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId : "
+							+ appUser.getId() + "was failed. Error:" + exception.toString());
+			Application.getElasticSearchLogger()
+					.indexRewardTicket(
+							LogStatus.ERROR, "Add reward amount from wallet for userId : " + appUser.getId()
+									+ "was failed. Error:" + exception.toString() + " hash: " + rewardTicket.getHash(),
+							rewardTicket);
+			exception.printStackTrace();
+			return false;
+		}
 	}
 
 	private boolean substractRewardAmountFromWallet(AppUserEntity appUser, RewardTicketEntity rewardTicket) {
@@ -105,6 +156,12 @@ public class RewardTicketManager {
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Substract reward amount from wallet for userId : "
 							+ appUser.getId() + " balance before: " + balance + " balance after: "
 							+ balanceAfterSubstract);
+
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+					"Substract reward amount from wallet for userId : " + appUser.getId() + " balance before: "
+							+ balance + " balance after: " + balanceAfterSubstract + " hash: " + rewardTicket.getHash(),
+					rewardTicket);
+
 			if (balanceAfterSubstract >= 0) {
 				walletData.setBalance(balanceAfterSubstract);
 				walletData.setTransactionCounter(walletData.getTransactionCounter() + 1);
@@ -114,6 +171,13 @@ public class RewardTicketManager {
 								Application.REWARD_TICKET_CREATE_ACTIVITY
 										+ "Substract reward amount from wallet for userId" + appUser.getId()
 										+ " was success. Balance after: " + balanceAfterSubstract);
+
+				Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+						"Substract reward amount from wallet for userId" + appUser.getId()
+								+ " was success. Balance after: " + balanceAfterSubstract + " hash: "
+								+ rewardTicket.getHash(),
+						rewardTicket);
+
 				return true;
 			} else {
 				Application.getElasticSearchLogger()
@@ -121,12 +185,23 @@ public class RewardTicketManager {
 								Application.REWARD_TICKET_CREATE_ACTIVITY
 										+ "Substract reward amount from wallet for userId" + appUser.getId()
 										+ " was failed. Balance after: " + balanceAfterSubstract);
+
+				Application.getElasticSearchLogger().indexRewardTicket(LogStatus.ERROR,
+						"Substract reward amount from wallet for userId" + appUser.getId()
+								+ " was failed. Balance after: " + balanceAfterSubstract + " hash: "
+								+ rewardTicket.getHash(),
+						rewardTicket);
 				return false;
 			}
 		} catch (Exception exception) {
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
+			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.ERROR,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Substract reward amount from wallet for userId : "
 							+ appUser.getId() + "was failed. Error:" + exception.toString());
+
+			Application.getElasticSearchLogger().indexRewardTicket(
+					LogStatus.ERROR, "Substract reward amount from wallet for userId : " + appUser.getId()
+							+ "was failed. Error:" + exception.toString() + " hash: " + rewardTicket.getHash(),
+					rewardTicket);
 			exception.printStackTrace();
 			return false;
 		}
@@ -134,6 +209,9 @@ public class RewardTicketManager {
 
 	public void updateTicket(RewardTicketEntity rewardTicket) {
 		try {
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+					"Updating ticket:" + rewardTicket.toString(),
+					rewardTicket);
 			logger.info("Updating ticket:" + rewardTicket);
 			
 			daoRewardTickets.createOrUpdate(rewardTicket);

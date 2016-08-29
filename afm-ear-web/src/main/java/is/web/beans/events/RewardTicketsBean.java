@@ -24,10 +24,12 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.reporting.LogEntry;
 import is.ejb.bl.reporting.ReportingManager;
 import is.ejb.bl.reward.RewardTicketManager;
+import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.dao.DAOUser;
@@ -54,6 +56,7 @@ public class RewardTicketsBean {
 	private RewardTicketManager rewardTicketManager;
 	@Inject
 	private DAOUser daoUser;
+
 	private final String DEFAULT_FILTER_REWARD_NAME = "All";
 	private String filterRewardName = DEFAULT_FILTER_REWARD_NAME;
 	private List<String> rewardNames = new ArrayList<String>();
@@ -269,6 +272,10 @@ public class RewardTicketsBean {
 				selectedTicket.setProcessingDate(new Timestamp(new Date().getTime()));
 			}
 		}
+		Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+				"User: " + loginBean.getUser().getName() + " (" + loginBean.getUser().getEmail()
+						+ ") Updated  in ticket with id: " + selectedTicket.getId() + " hash: " + selectedTicket.getHash(),
+				selectedTicket);
 		rewardTicketManager.updateTicket(selectedTicket);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Ticket updated"));
 		refresh();
@@ -286,6 +293,23 @@ public class RewardTicketsBean {
 			exc.printStackTrace();
 		}
 		return adminList;
+	}
+
+	public void sendCreditsBackToWallet(RewardTicketEntity rewardTicket) {
+
+		Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+				"User: " + loginBean.getUser().getName() + " (" + loginBean.getUser().getEmail()
+						+ ") Send credit back to wallet from ticket with id: " + rewardTicket.getId() + " hash: "
+						+ rewardTicket.getHash(),
+				rewardTicket);
+		boolean result = rewardTicketManager.addRewardAmountBackToWallet(rewardTicket);
+		if (result) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Success", "Credits transfered successfully"));
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Failed", "Credits transfered failed"));
+		}
+		refresh();
 	}
 
 	public List<LogEntry> getLogs() {
