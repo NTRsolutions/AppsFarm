@@ -37,6 +37,8 @@ import is.web.services.user.validators.EmailValidator;
 import is.web.services.user.validators.PasswordValidator;
 import is.web.services.user.validators.UsernameDBValidator;
 import is.web.services.user.validators.UsernameValidator;
+import is.web.services.wall.validators.DeviceValidator;
+import is.web.services.wall.validators.PhoneValidator;
 
 @Path("/")
 public class AppUserService {
@@ -63,6 +65,10 @@ public class AppUserService {
 	private DeviceTypeValidator deviceTypeValidator;
 	@Inject
 	private ApplicationValidator applicationValidator;
+	@Inject
+	private DeviceValidator deviceValidator;
+	@Inject
+	private PhoneValidator phoneValidator;
 	@Inject
 	private APIHelper apiHelper;
 
@@ -185,6 +191,8 @@ public class AppUserService {
 		validators.add(advertisingIdValidator);
 		validators.add(applicationValidator);
 		validators.add(deviceTypeValidator);
+		validators.add(phoneValidator);
+		validators.add(deviceValidator);
 		return validators;
 	}
 
