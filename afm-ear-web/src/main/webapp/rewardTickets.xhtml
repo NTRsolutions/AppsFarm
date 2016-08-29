@@ -5,6 +5,11 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
+<style>
+.ticketcontainer {
+	vertical-align: top;
+}
+</style>
 <h:form prependId="false">
 	<p:growl id="idRewardTicketsGrowl" showDetail="true" life="3000" />
 
@@ -68,6 +73,25 @@
 							value="#{rewardTicketsBean.renderCreditPointsColumn}" />
 						<p:spacer width="5" height="10" />
 						<h:outputText value="Credit Points" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderRewardTypeColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Type" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderRewardIdColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Id" styleClass="dialog-mediumFont" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{rewardTicketsBean.renderRewardCategoryColumn}" />
+						<p:spacer width="5" height="10" />
+						<h:outputText value="Reward Category"
+							styleClass="dialog-mediumFont" />
 					</p:column>
 				</p:row>
 
@@ -167,17 +191,18 @@
 		<p:ajax event="page" update="" onstart="" oncomplete=""
 			listener="#{rewardTicketsBean.pageUpdate}" />
 
-		<p:column prependId="false" headerText="Logs" style="width:45px"
-			styleClass="ui-nodesStatusTableHeader">
-			<p:commandButton value="View logs" id="idRewardTicketLogButton"
-				actionListener="#{rewardTicketsBean.loadLogs(ticket)}"
-				oncomplete="widgetDialogRewardTicketLogs.show()" />
-		</p:column>
+
 		<p:column rendered="#{rewardTicketsBean.renderIdColumn}"
 			prependId="false" headerText="Id" sortBy="id"
 			style="width:25px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.id}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderStatusColumn}"
+			prependId="false" headerText="Status" sortBy="status"
+			style="width:90px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{ticket.status}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderUserIdColumn}"
 			prependId="false" headerText="User ID" sortBy="userId"
@@ -196,6 +221,24 @@
 			style="width:80px; text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.rewardName}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderRewardCategoryColumn}"
+			prependId="false" headerText="Reward Name" sortBy="rewardName"
+			style="width:80px; text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{ticket.rewardCategory}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderRewardTypeColumn}"
+			prependId="false" headerText="Reward Type" sortBy="rewardType"
+			style="width:100px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{ticket.rewardType}" />
+		</p:column>
+		<p:column rendered="#{rewardTicketsBean.renderRewardIdColumn}"
+			prependId="false" headerText="Hash" sortBy="hash"
+			style="width:300px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{ticket.rewardId}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderCreditPointsColumn}"
 			prependId="false" footerText="#{rewardTicketsBean.sumCreditPoints}"
@@ -222,15 +265,10 @@
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.closeDate.toString()}" />
 		</p:column>
-		<p:column rendered="#{rewardTicketsBean.renderStatusColumn}"
-			prependId="false" headerText="Status" sortBy="status"
-			style="width:60px;text-align: left;"
-			styleClass="ui-nodesStatusTableHeader">
-			<h:outputText value="#{ticket.status}" />
-		</p:column>
+
 		<p:column rendered="#{rewardTicketsBean.renderCommentColumn}"
 			prependId="false" headerText="Comment" sortBy="comment"
-			style="width:100px;text-align: left;"
+			style="width:200px;text-align: left; table-layout: fixed; word-wrap: break-word;"
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.comment}" />
 		</p:column>
@@ -246,11 +284,143 @@
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.hash}" />
 		</p:column>
+		<p:column rendered="true" prependId="false" headerText="Action"
+			sortBy="action" style="width:16px;text-align: left;"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:rowToggler actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}" />
+		</p:column>
+		<p:column prependId="false" headerText="Logs" style="width:50px"
+			styleClass="ui-nodesStatusTableHeader">
+			<p:commandButton value="View logs" id="idRewardTicketLogButton"
+				actionListener="#{rewardTicketsBean.loadLogs(ticket)}"
+				oncomplete="widgetDialogRewardTicketLogs.show()" />
+		</p:column>
+		<p:rowExpansion actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}" >
+
+			<p:panelGrid id="idTicketPanel" style="background: #F1F5F8;width:100%" columns="1">
+				<h:panelGrid id="idTicketPanelGrid1" columns="3" cellpadding="1">
+					<h:outputText style="font-size:20px" value="Ticket # #{ticket.id}" />
+					<h:outputText style="font-size:20px" value="Comment" />
+					<h:outputText style="font-size:20px" value="Actions" />
+				</h:panelGrid>
+
+				<h:panelGrid id="idTicketPanelGrid2" columns="3" cellpadding="1">
+					<h:panelGrid id="idTicketPanelGrid3" columns="1" cellpadding="1">
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Reward name: #{ticket.rewardName}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Reward category: #{ticket.rewardCategory}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Reward type: #{ticket.rewardType}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Reward id: #{ticket.rewardId}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Credit Points: #{ticket.creditPoints}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="User id: #{ticket.userId}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="User email: #{ticket.email}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Request Date: #{ticket.requestDate}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Processing Date: #{ticket.processingDate}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Close Date: #{ticket.closeDate}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Status: #{ticket.status}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Ticket Owner: #{ticket.ticketOwner}" />
+						<h:outputText styleClass="dialog-mediumFont"
+							value="Hash: #{ticket.hash}" />
+
+					</h:panelGrid>
+
+					<h:panelGrid id="idTicketPanelGrid4" columns="1" cellpadding="1"
+						columnClasses="ticketcontainer">
+						<h:outputText
+							style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
+							value="#{ticket.comment}" />
+
+					</h:panelGrid>
+					<h:panelGrid id="idTicketPanelGrid5" columns="1" cellpadding="1"
+						columnClasses="ticketcontainer">
+						<p:commandButton value="Change Ticket Status" icon="ui-icon-tag"
+							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
+							oncomplete="widgetEditTicketStatus.show()" />
+
+						<p:commandButton value="Modify Comment" icon="ui-icon-comment"
+							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
+							oncomplete="widgetEditTicketComment.show()" />
+
+						<p:commandButton value="Change Ticket Owner" icon="ui-icon-person"
+							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
+							oncomplete="widgetEditTicketOwner.show()" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:panelGrid>
+
+		</p:rowExpansion>
 
 		<f:facet name="footer">
 			<h:outputText value="#{rewardTicketsBean.sumTotalRows}" />
 		</f:facet>
 	</p:dataTable>
+
+
+	<p:dialog id="idWidgetEditTicketStatus" width="300"
+		style="width:500px;" header="Change ticket status"
+		widgetVar="widgetEditTicketStatus" resizable="false" showEffect="clip"
+		hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Ticket Status:" />
+			<p:selectOneMenu rendered="true"
+				value="#{rewardTicketsBean.selectedTicket.status}">
+				<f:selectItems value="#{rewardTicketsBean.getTicketStatuses()}" />
+			</p:selectOneMenu>
+			<p:commandButton value="Save" icon="ui-icon-check"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
+				oncomplete="widgetEditTicketStatus.hide()" />
+			<p:commandButton value="Close" icon="ui-icon-close"
+				oncomplete="widgetEditTicketStatus.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idWidgetEditTicketComment" width="400"
+		style="width:400px;" header="Change ticket comment"
+		widgetVar="widgetEditTicketComment" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Ticket Comment:" />
+			<p:inputTextarea rows="6" cols="33"
+				value="#{rewardTicketsBean.selectedTicket.comment}" />
+			<p:commandButton value="Save" icon="ui-icon-check"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
+				oncomplete="widgetEditTicketComment.hide()" />
+			<p:commandButton value="Close" icon="ui-icon-close"
+				oncomplete="widgetEditTicketComment.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idWidgetEditTicketOwner" width="400" style="width:400px;"
+		header="Change ticket owner" widgetVar="widgetEditTicketOwner"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Ticket Owner:" />
+			<p:selectOneMenu rendered="true"
+				value="#{rewardTicketsBean.selectedTicket.ticketOwner}">
+				<f:selectItems value="#{rewardTicketsBean.getAdministrators()}" />
+			</p:selectOneMenu>
+			<p:commandButton value="Save" icon="ui-icon-check"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
+				oncomplete="widgetEditTicketOwner.hide()" />
+			<p:commandButton value="Close" icon="ui-icon-close"
+				oncomplete="widgetEditTicketOwner.hide()" />
+		</h:panelGrid>
+	</p:dialog>
 
 	<p:dialog id="idDialogRewardTicketLogs"
 		header="Logs for #{rewardTicketsBean.selectedTicket.hash}"

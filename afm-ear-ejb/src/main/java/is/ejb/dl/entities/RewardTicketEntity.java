@@ -2,11 +2,13 @@ package is.ejb.dl.entities;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -27,6 +29,7 @@ public class RewardTicketEntity {
 	private String rewardName;
 	private int rewardId;
 	private String rewardType;
+	private String rewardCategory;
 	private double creditPoints;
 	private Timestamp requestDate;
 	private Timestamp processingDate;
@@ -34,12 +37,12 @@ public class RewardTicketEntity {
 
 	@Enumerated(EnumType.STRING)
 	private RewardTicketStatus status;
-
+	@Lob
+	@Column
 	private String comment;
 	private String ticketOwner;
 	private String hash;
-	
-	
+
 	/***
 	 * Generate and set hash
 	 * 
@@ -144,9 +147,14 @@ public class RewardTicketEntity {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	
-	
-	
+
+	public String getRewardCategory() {
+		return rewardCategory;
+	}
+
+	public void setRewardCategory(String rewardCategory) {
+		this.rewardCategory = rewardCategory;
+	}
 
 	public String getRewardType() {
 		return rewardType;
@@ -165,10 +173,10 @@ public class RewardTicketEntity {
 	}
 
 	public String getContent() {
-		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
-				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
-				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
-				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + "]";
+		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName + ", creditPoints="
+				+ creditPoints + ", requestDate=" + requestDate + ", processingDate=" + processingDate + ", closeDate="
+				+ closeDate + ", status=" + status + ", comment=" + comment + ", ticketOwner=" + ticketOwner + ", hash="
+				+ hash + "]";
 	}
 
 	@Override

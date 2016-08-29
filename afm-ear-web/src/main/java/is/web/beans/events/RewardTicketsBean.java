@@ -12,9 +12,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.primefaces.context.RequestContext;
@@ -22,12 +24,16 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.reporting.LogEntry;
 import is.ejb.bl.reporting.ReportingManager;
+import is.ejb.bl.reward.RewardTicketManager;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.dao.DAORewardType;
+import is.ejb.dl.dao.DAOUser;
 import is.ejb.dl.entities.RewardTicketEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
+import is.ejb.dl.entities.UserEntity;
 import is.web.beans.users.LoginBean;
 
 @ManagedBean(name = "rewardTicketsBean")
@@ -41,10 +47,13 @@ public class RewardTicketsBean {
 
 	@Inject
 	private DAORewardTickets daoRewardTickets;
-	
+
 	@Inject
 	private DAORewardType daoRewardType;
-
+	@Inject
+	private RewardTicketManager rewardTicketManager;
+	@Inject
+	private DAOUser daoUser;
 	private final String DEFAULT_FILTER_REWARD_NAME = "All";
 	private String filterRewardName = DEFAULT_FILTER_REWARD_NAME;
 	private List<String> rewardNames = new ArrayList<String>();
@@ -56,20 +65,22 @@ public class RewardTicketsBean {
 	private Date endDate = getDefaultEndDate();
 
 	private boolean renderIdColumn = true;
-	private boolean renderUserIdColumn = true;
+	private boolean renderUserIdColumn = false;
 	private boolean renderUserEmailColumn = true;
 	private boolean renderRewardNameColumn = true;
 	private boolean renderCreditPointsColumn = true;
 	private boolean renderRequestDateColumn = true;
-	private boolean renderProcessingDateColumn = true;
-	private boolean renderCloseDateColumn = true;
+	private boolean renderProcessingDateColumn = false;
+	private boolean renderCloseDateColumn = false;
 	private boolean renderStatusColumn = true;
-	private boolean renderCommentColumn = true;
+	private boolean renderCommentColumn = false;
 	private boolean renderTicketOwnerColumn = true;
-	private boolean renderHashColumn = true;
-
+	private boolean renderHashColumn = false;
+	private boolean renderRewardIdColumn = false;
+	private boolean renderRewardTypeColumn = true;
+	private boolean renderRewardCategoryColumn = true;
 	private LazyDataModel<RewardTicketEntity> rewardTicketsLazy;
-	private RewardTicketEntity selectedTicket;
+	private RewardTicketEntity selectedTicket = new RewardTicketEntity();
 	private List<LogEntry> logs = new ArrayList<>();
 
 	private double sumCreditPoints = 0;
@@ -87,7 +98,7 @@ public class RewardTicketsBean {
 
 		try {
 			loadRewardNames(loginBean.getUser().getRealm().getId());
-			
+
 			rewardTicketsLazy = new LazyDataModel<RewardTicketEntity>() {
 				private static final long serialVersionUID = 1L;
 
@@ -97,7 +108,7 @@ public class RewardTicketsBean {
 
 					Timestamp startTime = new Timestamp(startDate.getTime());
 					Timestamp endTime = new Timestamp(endDate.getTime());
-					
+
 					if (isRewardTypeSelected()) {
 						filters.put("rewardName", filterRewardName);
 					}
@@ -112,7 +123,7 @@ public class RewardTicketsBean {
 						int totalCount = daoRewardTickets.countTotal(startTime, endTime, filters,
 								loginBean.getUser().getRealm().getId());
 						rewardTicketsLazy.setRowCount(totalCount);
-						
+
 						logger.info("sort field: " + sortField + " filters: " + filters);
 						logger.info("lazy loading ticket list between: " + first + " and " + (first + pageSize)
 								+ " total tickets count: " + totalCount);
@@ -129,7 +140,7 @@ public class RewardTicketsBean {
 								+ endTime.toString());
 						tickets = daoRewardTickets.findFiltered(first, pageSize, sortField, sortingOrder, filters,
 								startTime, endTime, loginBean.getUser().getRealm().getId());
-						
+
 						sumCreditPoints = sumCreditPoints((List<RewardTicketEntity>) tickets);
 						logger.info("sumCreditPoints: " + sumCreditPoints);
 					} catch (Exception e) {
@@ -144,11 +155,12 @@ public class RewardTicketsBean {
 			logger.severe(e1.toString());
 		}
 	}
-	
+
 	public void refresh() {
 		try {
 			logger.info("refreshing bean...");
 			RequestContext.getCurrentInstance().update("tabView:idRewardTicketsTable");
+			RequestContext.getCurrentInstance().update("tabView:idRewardTicketsGrowl");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.severe("Error: " + e.toString());
@@ -163,12 +175,12 @@ public class RewardTicketsBean {
 		logger.info("load logs for: " + ticket.toString());
 		String hostName = loginBean.getUser().getRealm().getEsPrimaryStorageIp();
 		selectedTicket = ticket;
-		
+
 		ReportingManager reportingManager = new ReportingManager(hostName, ReportingManager.DEFAULT_CLUSTER_NAME);
 		logs = reportingManager.getRewardTicketsLogs(ticket.getHash());
 		reportingManager.closeESClient();
 		logger.info("logs count: " + logs.size());
-	
+
 		RequestContext.getCurrentInstance().update("tabView:idDialogRewardTicketLogs");
 	}
 
@@ -186,10 +198,10 @@ public class RewardTicketsBean {
 		calendar.set(Calendar.MILLISECOND, 999);
 		return calendar.getTime();
 	}
-	
+
 	private double sumCreditPoints(List<RewardTicketEntity> tickets) {
 		double sum = 0;
-		for(RewardTicketEntity ticket: tickets) {
+		for (RewardTicketEntity ticket : tickets) {
 			sum += ticket.getCreditPoints();
 		}
 		return round(sum, 2);
@@ -210,7 +222,7 @@ public class RewardTicketsBean {
 			return true;
 		}
 	}
-	
+
 	private void loadRewardNames(int realmId) throws Exception {
 		rewardNames.clear();
 		rewardNames.add(DEFAULT_FILTER_REWARD_NAME);
@@ -219,13 +231,61 @@ public class RewardTicketsBean {
 			rewardNames.add(rewardType.getName());
 		}
 	}
-	
-	private double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
 
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	private double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
+
+	public List<SelectItem> getTicketStatuses() {
+		List<SelectItem> statusList = new ArrayList<SelectItem>();
+		statusList.add(new SelectItem(RewardTicketStatus.AWAITING_PROCESSING.toString(),
+				RewardTicketStatus.AWAITING_PROCESSING.toString()));
+		statusList.add(new SelectItem(RewardTicketStatus.CURRENTLY_PROCESSED.toString(),
+				RewardTicketStatus.CURRENTLY_PROCESSED.toString()));
+		statusList.add(new SelectItem(RewardTicketStatus.PROCESSED_SUCCESS.toString(),
+				RewardTicketStatus.PROCESSED_SUCCESS.toString()));
+		statusList.add(new SelectItem(RewardTicketStatus.PROCESSED_FAILED.toString(),
+				RewardTicketStatus.PROCESSED_FAILED.toString()));
+
+		return statusList;
+	}
+
+	public void saveSelectedTicket() {
+		if (selectedTicket.getStatus() == RewardTicketStatus.CURRENTLY_PROCESSED
+				&& selectedTicket.getProcessingDate() == null) {
+			selectedTicket.setProcessingDate(new Timestamp(new Date().getTime()));
+		}
+
+		if (selectedTicket.getStatus() == RewardTicketStatus.PROCESSED_FAILED
+				|| selectedTicket.getStatus() == RewardTicketStatus.PROCESSED_SUCCESS
+						&& selectedTicket.getCloseDate() == null) {
+			selectedTicket.setCloseDate(new Timestamp(new Date().getTime()));
+			if (selectedTicket.getProcessingDate() == null) {
+				selectedTicket.setProcessingDate(new Timestamp(new Date().getTime()));
+			}
+		}
+		rewardTicketManager.updateTicket(selectedTicket);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Ticket updated"));
+		refresh();
+	}
+
+	public List<SelectItem> getAdministrators() {
+		List<SelectItem> adminList = new ArrayList<SelectItem>();
+		try {
+			List<UserEntity> userList = daoUser.findAll();
+			adminList.add(new SelectItem("", ""));
+			for (UserEntity user : userList) {
+				adminList.add(new SelectItem(user.getName(), user.getName()));
+			}
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return adminList;
 	}
 
 	public List<LogEntry> getLogs() {
@@ -242,6 +302,9 @@ public class RewardTicketsBean {
 
 	public void setSelectedTicket(RewardTicketEntity selectedTicket) {
 		this.selectedTicket = selectedTicket;
+		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketComment");
+		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketStatus");
+		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketOwner");
 	}
 
 	public String getSumTotalRows() {
@@ -410,6 +473,30 @@ public class RewardTicketsBean {
 
 	public void setRenderHashColumn(boolean renderHashColumn) {
 		this.renderHashColumn = renderHashColumn;
+	}
+
+	public boolean isRenderRewardIdColumn() {
+		return renderRewardIdColumn;
+	}
+
+	public void setRenderRewardIdColumn(boolean renderRewardIdColumn) {
+		this.renderRewardIdColumn = renderRewardIdColumn;
+	}
+
+	public boolean isRenderRewardTypeColumn() {
+		return renderRewardTypeColumn;
+	}
+
+	public void setRenderRewardTypeColumn(boolean renderRewardTypeColumn) {
+		this.renderRewardTypeColumn = renderRewardTypeColumn;
+	}
+
+	public boolean isRenderRewardCategoryColumn() {
+		return renderRewardCategoryColumn;
+	}
+
+	public void setRenderRewardCategoryColumn(boolean renderRewardCategoryColumn) {
+		this.renderRewardCategoryColumn = renderRewardCategoryColumn;
 	}
 
 }

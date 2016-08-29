@@ -3,6 +3,7 @@ package is.ejb.bl.reward;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,7 +31,8 @@ public class RewardTicketManager {
 	private DAOApplicationReward daoApplicationReward;
 	@Inject
 	private DAOWalletData daoWalletData;
-
+	@Inject
+	private Logger logger;
 	public RewardTicketEntity createRewardTicket(HashMap<String, Object> parameters) {
 		RewardTicketEntity rewardTicket = new RewardTicketEntity();
 		Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
@@ -49,6 +51,7 @@ public class RewardTicketManager {
 			rewardTicket.setRequestDate(new Timestamp(System.currentTimeMillis()));
 			rewardTicket.setStatus(RewardTicketStatus.AWAITING_PROCESSING);
 			rewardTicket.setRewardType(reward.getRewardType());
+			rewardTicket.setRewardCategory(reward.getRewardCategory());
 			rewardTicket.generateHash();
 
 			daoRewardTickets.createOrUpdate(rewardTicket);
@@ -104,7 +107,7 @@ public class RewardTicketManager {
 							+ balanceAfterSubstract);
 			if (balanceAfterSubstract >= 0) {
 				walletData.setBalance(balanceAfterSubstract);
-				walletData.setTransactionCounter(walletData.getTransactionCounter()+1);
+				walletData.setTransactionCounter(walletData.getTransactionCounter() + 1);
 				daoWalletData.createOrUpdate(walletData);
 				Application.getElasticSearchLogger()
 						.indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
@@ -126,6 +129,16 @@ public class RewardTicketManager {
 							+ appUser.getId() + "was failed. Error:" + exception.toString());
 			exception.printStackTrace();
 			return false;
+		}
+	}
+
+	public void updateTicket(RewardTicketEntity rewardTicket) {
+		try {
+			logger.info("Updating ticket:" + rewardTicket);
+			
+			daoRewardTickets.createOrUpdate(rewardTicket);
+		} catch (Exception exc) {
+			exc.printStackTrace();
 		}
 	}
 
