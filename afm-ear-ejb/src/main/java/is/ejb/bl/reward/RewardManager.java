@@ -28,7 +28,6 @@ import is.ejb.bl.testing.TestManager;
 import is.ejb.bl.wallet.WalletManager;
 import is.ejb.bl.wallet.WalletTransactionType;
 import is.ejb.dl.dao.DAOAppUser;
-import is.ejb.dl.dao.DAOCloudtraxConfiguration;
 import is.ejb.dl.dao.DAOConversionHistory;
 import is.ejb.dl.dao.DAOEventQueueEntity;
 import is.ejb.dl.dao.DAOInvitation;
@@ -41,7 +40,7 @@ import is.ejb.dl.dao.DAOWalletData;
 import is.ejb.dl.dao.DAOWalletPayoutCarrier;
 import is.ejb.dl.dao.DAOWalletTransaction;
 import is.ejb.dl.entities.AppUserEntity;
-import is.ejb.dl.entities.CloudtraxConfigurationEntity;
+
 import is.ejb.dl.entities.ConversionHistoryEntity;
 import is.ejb.dl.entities.EventQueueEntity;
 import is.ejb.dl.entities.InvitationEntity;

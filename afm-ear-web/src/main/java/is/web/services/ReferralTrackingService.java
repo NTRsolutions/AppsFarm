@@ -17,7 +17,7 @@ import is.ejb.bl.notificationSystems.gcm.GoogleNotificationSender;
 import is.ejb.bl.rewardSystems.radius.RadiusProvider;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAOAppUser;
-import is.ejb.dl.dao.DAOCloudtraxConfiguration;
+
 import is.ejb.dl.dao.DAOConversionHistory;
 import is.ejb.dl.dao.DAODenominationModel;
 import is.ejb.dl.dao.DAOOffer;
@@ -26,7 +26,6 @@ import is.ejb.dl.dao.DAORadiusConfiguration;
 import is.ejb.dl.dao.DAORealm;
 import is.ejb.dl.dao.DAOUserEvent;
 import is.ejb.dl.entities.AppUserEntity;
-import is.ejb.dl.entities.CloudtraxConfigurationEntity;
 import is.ejb.dl.entities.ConversionHistoryEntity;
 import is.ejb.dl.entities.DenominationModelEntity;
 import is.ejb.dl.entities.OfferEntity;
@@ -93,8 +92,7 @@ public class ReferralTrackingService {
     @Inject
 	private DAOConversionHistory daoConversionHistory;
 
-    @Inject
-	private DAOCloudtraxConfiguration daoCloudtraxConfiguration;
+
 
     @Inject
 	private DAORadiusConfiguration daoRadiusConfiguration;
@@ -195,7 +193,8 @@ public class ReferralTrackingService {
 				//------------------------ send reward request to reward partner -----------------------------
 				if(event.getRewardTypeName().equals(Application.REWARD_PROVIDER_AFA.toString())) {
 					//------------------------ send reward request to radius -----------------------------
-					return requestRewardRadius(event);//for testing: return requestRewardLocalTesting(event); 
+					//return requestRewardRadius(event);//for testing: return requestRewardLocalTesting(event); 
+					return "";
 				} 
 				else if(event.getRewardTypeName().equals(Application.REWARD_PROVIDER_AIR_REWARDZ_INDIA.toString())) {
 					//------------------------ send conversion notification to AR -----------------------------
@@ -456,106 +455,7 @@ public class ReferralTrackingService {
 		}
     }
 
-    //------------------------------------ issue reward request to Radius --------------------------------
-    private String requestRewardRadius(UserEventEntity event) {
-		try {
-			RealmEntity realm = daoRealm.findById(event.getRealmId());
-			String phoneNumber = event.getPhoneNumber();
-			
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, event.getRealmId(), 
-					LogStatus.OK, 
-					Application.REWARD_ACTIVITY+" "+Application.REWARD_REQUEST_ACTIVITY+" "+
-					Application.REWARD_REQUEST_IDENTIFIED+
-					" internalT: "+event.getInternalTransactionId()+
-					" issuing credit request for payout: "+event.getOfferPayout()+
-					" (in target currency: "+event.getRevenueValue()+
-					" phone: "+event.getPhoneNumber()+" adjusted: ("+phoneNumber+")"+
-					" rewardType: "+event.getRewardTypeName()+
-					" reward: "+event.getRewardValue()+
-					" reward currency: "+event.getRewardIsoCurrencyCode());
-			
-			//--------------------------- handle request to rewarding system ---------------------------------
-			CloudtraxConfigurationEntity ctraxConfig = daoCloudtraxConfiguration.findByNetworkName(event.getAfaNetworkName());
-			RadiusConfigurationEntity radiusConfig = daoRadiusConfiguration.findById(ctraxConfig.getRadiusServer1Id());
-			RadiusProvider radiusProvider = new RadiusProvider(radiusConfig);
-			AppUserEntity appUser = daoAppUser.findById(event.getUserId());
-
-			//if reached this stage - indicate that reward request was made
-			event.setRewardRequestDate(new Timestamp(System.currentTimeMillis()));
-			event.setRewardRequestStatus(RespStatusEnum.SUCCESS.toString());
-			event.setRewardRequestStatusMessage("OK");
-			daoUserEvent.createOrUpdate(event,2);
-
-			//issue reward request
-			RespStatusEnum rewardStatus = radiusProvider.addTime(appUser.getEmail(), (int)event.getRewardValue()); //assume reward value in this case corresponds to minutes
-
-			if(event.getRewardDate() != null) {
-				Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, realm.getId(), 
-						LogStatus.WARNING, 
-						Application.REWARD_ACTIVITY+" "+
-						Application.REWARD_RESPONSE_ACTIVITY+
-						" reward date already set for internal trans id: "+event.getInternalTransactionId()+": "+
-						" internalT: "+event.getInternalTransactionId()+
-						event.getRewardDate().toString()+" udpating with new time");
-			} 
-
-			if(rewardStatus.equals(RespStatusEnum.SUCCESS.toString())) { //update user event data
-				event.setRewardResponseStatus(RewardStatus.SUCCESS.toString());
-				event.setRewardResponseStatusMessage(RespStatusEnum.SUCCESS.toString());
-				event.setApproved(true);
-			} else {
-				event.setRewardResponseStatus(RewardStatus.FAILED.toString());
-				event.setRewardResponseStatusMessage(RespStatusEnum.FAILED.toString());
-				event.setApproved(false);
-			}
-
-			//--------------------------------- Reward Response handling starts ---------------------------
-    		String dataContent = "intercepted reward notification: "+
-					"internalTransactionId: "+event.getInternalTransactionId()+
-					" status: ["+rewardStatus.toString()+"]"+
-    				" statusMessage: [ Radius response: "+rewardStatus.toString()+"]";
-    		logger.info(dataContent);
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, realm.getId(), 
-					LogStatus.OK, 
-					Application.REWARD_ACTIVITY+" "+
-					Application.REWARD_RESPONSE_ACTIVITY+" "+
-					Application.REWARD_RESPONSE_IDENTIFIED+" "+dataContent);
-
-			//update reward date
-			event.setRewardDate(new Timestamp(System.currentTimeMillis()));
-			daoUserEvent.createOrUpdate(event,8);
-
-			//update conversion history (needed to filter out already clicked offers for particular user)
-			updateUserConversionHistory(event);
-
-			//notify user via sms if reward was successful
-			String smsMessageContent = "You have been rewarded "+event.getRewardValue()+
-					" minutes of free Internet access";
-			sendRewardNotificationSMS(event, realm, smsMessageContent);
-
-			//send correctly formatted response for supersonic (read manual about callbacks: http://documents.supersonicads.com/SupersonicAds%20-%20Publisher%20Integration.pdf)
-			return "{\"response\":\" status: "+event.getTransactionId()+":OK"+" code: "+RespCodesEnum.OK_NO_CONTENT+"\"}";
-			
-		} catch(Exception exc) {
-			exc.printStackTrace();
-			logger.severe(exc.toString());
-			Application.getElasticSearchLogger().indexLog(Application.REWARD_ACTIVITY, -1, 
-					LogStatus.ERROR, 
-					Application.REWARD_ACTIVITY+" "+
-					Application.REWARD_REQUEST_ACTIVITY+
-					" error during reward request for internal trans id: "+event.getInternalTransactionId()+": "+
-					" user phone number: "+event.getPhoneNumber()+
-					" error: "+exc.toString());
-			
-			event.setRewardResponseStatus(RewardStatus.FAILED.toString());
-			event.setRewardResponseStatusMessage(exc.toString());
-			event.setApproved(false);
-			event.setRewardDate(new Timestamp(System.currentTimeMillis()));
-			daoUserEvent.createOrUpdate(event,8);
-
-			return "{\"response\":\" status: "+RespStatusEnum.FAILED+" code: "+RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR+"\"}";
-		}
-    }
+ 
 
     //------------------------------------ issue reward request to GoAhead --------------------------------
     private String requestRewardGoAhead(UserEventEntity event) {
