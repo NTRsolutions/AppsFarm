@@ -107,6 +107,7 @@ public class AppUserEntity implements Serializable {
    
    private String activationCode;
    private String quidcoUserId;
+   private Timestamp attendanceLastBonusTime;
    
 	public int getId() {
 		return id;
@@ -444,6 +445,14 @@ public class AppUserEntity implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public Timestamp getAttendanceLastBonusTime() {
+		return attendanceLastBonusTime;
+	}
+
+	public void setAttendanceLastBonusTime(Timestamp attendanceLastBonusTime) {
+		this.attendanceLastBonusTime = attendanceLastBonusTime;
+	}
+
 	@Override
 	public String toString() {
 		return "AppUserEntity [id=" + id + ", altabelUserId=" + altabelUserId + ", realmId=" + realmId + ", fullName="
@@ -461,7 +470,8 @@ public class AppUserEntity implements Serializable {
 				+ ", pendingReferralsCounter=" + pendingReferralsCounter + ", fbInvitationCode=" + fbInvitationCode
 				+ ", mobileDetails=" + mobileDetails + ", overEighteen=" + overEighteen + ", videoConversionCounterVG="
 				+ videoConversionCounterVG + ", installConversionCounterVG=" + installConversionCounterVG
-				+ ", activationCode=" + activationCode + ", quidcoUserId=" + quidcoUserId + "]";
+				+ ", activationCode=" + activationCode + ", quidcoUserId=" + quidcoUserId + ", attendanceLastBonusTime="
+				+ attendanceLastBonusTime + "]";
 	}
 
 	

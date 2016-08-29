@@ -91,6 +91,7 @@ public class RewardTypeEntity implements Serializable {
 	private String walletStatusMessage;
 	private String spinnerStatusMessage;
 	
+	private double attendanceValue;
 	
 	@Lob
 	private String imageBannerContent; 
@@ -387,6 +388,14 @@ public class RewardTypeEntity implements Serializable {
 
 	public void setSpinnerStatusMessage(String spinnerStatusMessage) {
 		this.spinnerStatusMessage = spinnerStatusMessage;
+	}
+
+	public double getAttendanceValue() {
+		return attendanceValue;
+	}
+
+	public void setAttendanceValue(double attendanceValue) {
+		this.attendanceValue = attendanceValue;
 	}
 
 }

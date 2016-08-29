@@ -18,6 +18,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.google.gson.Gson;
 
+import is.ejb.bl.attendance.AttendanceManager;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
@@ -71,7 +72,9 @@ public class AppUserService {
 	private PhoneValidator phoneValidator;
 	@Inject
 	private APIHelper apiHelper;
-
+	@Inject
+	private AttendanceManager attendanceManager;
+	
 	@Path("/user/register")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -92,7 +95,8 @@ public class AppUserService {
 			}
 		}
 		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
-				Application.USER_REGISTRATION_ACTIVITY + "response: " + response + " for request: " + apiRequestDetails);
+				Application.USER_REGISTRATION_ACTIVITY + "response: " + response + " for request: "
+						+ apiRequestDetails);
 		return new Gson().toJson(response);
 	}
 
@@ -158,7 +162,9 @@ public class AppUserService {
 			appUser.setDeviceType(deviceType);
 			appUser.setRewardTypeName(getRewardType(applicationName, countryCode));
 			appUser.setRealmId(4);
-
+			appUser.setDeviceId((String) parameters.get("deviceId"));
+			appUser.setPhoneId((String) parameters.get("phoneId"));
+			appUser.setAttendanceLastBonusTime(new Timestamp(new Date().getTime()));
 			if (parameters.containsKey("firstName")) {
 				appUser.setFirstName((String) parameters.get("firstName"));
 			}
@@ -226,7 +232,6 @@ public class AppUserService {
 		validateLoginRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
 			executeUserLogin(apiRequestDetails, response);
-
 		}
 
 		Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
@@ -291,6 +296,7 @@ public class AppUserService {
 				}
 				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
+				attendanceManager.checkAttendance(appUser);
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
 			}

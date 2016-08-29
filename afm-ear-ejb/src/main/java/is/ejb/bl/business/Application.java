@@ -513,6 +513,8 @@ public class Application {
 	
 	public static final String REWARD_TICKET_ACTIVITY = "REWARD_TICKET_ACTIVITY";
 
+	//ATTENDANCE
+	public static final String ATTENDANCE_ACTIVITY = "ATTENDANCE_ACTIVITY";
 
 	
     private static Application app;
