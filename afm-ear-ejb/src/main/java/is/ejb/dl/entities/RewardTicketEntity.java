@@ -42,6 +42,7 @@ public class RewardTicketEntity {
 	private String comment;
 	private String ticketOwner;
 	private String hash;
+	private int realmId;
 
 	/***
 	 * Generate and set hash
@@ -172,6 +173,14 @@ public class RewardTicketEntity {
 		this.rewardId = rewardId;
 	}
 
+	public int getRealmId() {
+		return realmId;
+	}
+
+	public void setRealmId(int realmId) {
+		this.realmId = realmId;
+	}
+
 	public String getContent() {
 		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName + ", creditPoints="
 				+ creditPoints + ", requestDate=" + requestDate + ", processingDate=" + processingDate + ", closeDate="
@@ -185,7 +194,7 @@ public class RewardTicketEntity {
 				+ ", rewardId=" + rewardId + ", rewardType=" + rewardType + ", rewardCategory=" + rewardCategory
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
 				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
-				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + "]";
+				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + ", realmId=" + realmId + "]";
 	}
 
 }

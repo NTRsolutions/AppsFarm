@@ -1,0 +1,180 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+
+
+
+<h:form>
+	<p:panel header="Email templates" toggleable="false" closable="false"
+		toggleSpeed="500" closeSpeed="500" style="margin-top:0px;width:99%"
+		styleClass="single-node-stats-performance-panel">
+
+		<p:growl id="idEmailTemplateGrowl" showDetail="true" />
+		<p:dataTable id="idEmailTemplateTable" var="model" width="500"
+			style="width:800px;"
+			value="#{emailTemplatesBean.emailTemplateTableDataModelBean}"
+			rowKey="#{model.id}" selectionMode="single">
+
+
+
+			<p:column rendered="false" headerText="Id"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.id}" />
+			</p:column>
+			<p:column rendered="true" headerText="Name"
+				style="width:150px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.name}" />
+			</p:column>
+			<p:column rendered="true" headerText="Type"
+				style="width:150px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.type}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Title"
+				style="width:150px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.title}" />
+			</p:column>
+
+			<p:column rendered="true" headerText="Last Modified"
+				style="width:150px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.lastModifiedTime}" />
+			</p:column>
+
+
+
+			<p:column rendered="true" headerText="Action"
+				style="width:50px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+
+
+				<p:commandButton value="Setup" icon="ui-icon-search"
+					action="#{emailTemplatesBean.setEditModel(model)}"
+					style="margin-right:20px;"
+					oncomplete="widgetEditEmailTemplate.show()" update="@form"
+					process="@this" />
+				<p:commandButton value="Delete" icon="ui-icon-search"
+					action="#{emailTemplatesBean.deleteModel(model)}"
+					style="margin-right:20px;"
+					 update="@form"
+					process="@this" />
+			</p:column>
+
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="4">
+			<p:commandButton value="Create Email Template" icon="ui-icon-search"
+				update="@form" oncomplete="widgetCreateEmailTemplate.show()"
+				process="@this">
+			</p:commandButton>
+		</h:panelGrid>
+
+
+		<p:dialog id="idWidgetCreateEmailTemplate" width="800"
+			style="width:800px;" header="Create Email Template"
+			widgetVar="widgetCreateEmailTemplate" resizable="false"
+			showEffect="clip" hideEffect="fold" modal="false"
+			appendToBody="false">
+			<h:panelGrid columns="2" cellpadding="4">
+
+				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
+				<p:inputText size="50"
+					value="#{emailTemplatesBean.createModel.name}" />
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Type:" />
+				<p:selectOneMenu rendered="true" style="width:320px"
+					value="#{emailTemplatesBean.createModel.type}">
+					<f:selectItems value="#{emailTemplatesBean.getEmailTypes()}" />
+				</p:selectOneMenu>
+
+				<h:outputText styleClass="dialog-mediumFont" value="Title:" />
+				<p:inputText size="50"
+					value="#{emailTemplatesBean.createModel.title}" />
+
+				<h:outputText styleClass="dialog-mediumFont" value="Content:" />
+				<h:inputTextarea cols="80" rows="25" style="font-size:12px"
+					value="#{emailTemplatesBean.createModel.content}" />
+				<h:outputText styleClass="dialog-mediumFont" value="" />
+				<font size="1px"> Tags:<br /> {rewardName} - Reward name<br />
+					{rewardValue} - Reward value<br /> {rewardResult} - Placeholder
+					for reward codes <br /> All HTML Tags allowed
+				</font>
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Create" icon="ui-icon-search"
+					action="#{emailTemplatesBean.insertEmailTemplate()}" update="@form"
+					oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"
+					oncomplete="widgetCreateEmailTemplate.hide()"
+					action="#{emailTemplatesBean.refresh()}" update="@form" />
+
+			</h:panelGrid>
+
+		</p:dialog>
+
+		<p:dialog id="idWidgetEditEmailTemplate" width="800"
+			style="width:800px;" header="Edit Email Template"
+			widgetVar="widgetEditEmailTemplate" resizable="false"
+			showEffect="clip" hideEffect="fold" modal="false"
+			appendToBody="false">
+			<h:panelGrid columns="2" cellpadding="4">
+
+				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
+				<p:inputText size="50"
+					value="#{emailTemplatesBean.editModel.name}" />
+
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Type:" />
+				<p:selectOneMenu rendered="true" style="width:320px"
+					value="#{emailTemplatesBean.editModel.type}">
+					<f:selectItems value="#{emailTemplatesBean.getEmailTypes()}" />
+				</p:selectOneMenu>
+
+				<h:outputText styleClass="dialog-mediumFont" value="Title:" />
+				<p:inputText size="50"
+					value="#{emailTemplatesBean.editModel.title}" />
+
+				<h:outputText styleClass="dialog-mediumFont" value="Content:" />
+				<h:inputTextarea cols="80" rows="25" style="font-size:12px"
+					value="#{emailTemplatesBean.editModel.content}" />
+				<h:outputText styleClass="dialog-mediumFont" value="" />
+				<font size="1px"> Tags:<br /> {rewardName} - Reward name<br />
+					{rewardValue} - Reward value<br /> {rewardResult} - Placeholder
+					for reward codes <br /> All HTML Tags allowed
+				</font>
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Update" icon="ui-icon-search"
+					action="#{emailTemplatesBean.updateEmailTemplate()}" update="@form"
+					oncomplete="" />
+				<p:commandButton value="Close" icon="ui-icon-search"
+					oncomplete="widgetEditEmailTemplate.hide()"
+					action="#{emailTemplatesBean.refresh()}" update="@form" />
+
+			</h:panelGrid>
+
+		</p:dialog>
+
+
+
+
+
+
+	</p:panel>
+</h:form>
+
+
+</html>
+

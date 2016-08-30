@@ -121,6 +121,7 @@ public class DAOAppUser {
 			return query.getSingleResult();
 
 		} catch (NoResultException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

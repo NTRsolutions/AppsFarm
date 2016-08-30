@@ -3,6 +3,7 @@ package is.ejb.bl.system.mail;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.OfferProviderCodeNames;
 import is.ejb.bl.business.RespStatusEnum;
+import is.ejb.bl.email.EmailHolder;
 import is.ejb.bl.monitoring.operation.SystemOpsAnalyser;
 import is.ejb.bl.monitoring.operation.SystemOpsStatsHolder;
 import is.ejb.bl.monitoring.server.ServerStats;
@@ -104,139 +105,36 @@ public class MailManager {
 	private MonitoringSetupEntity mailBoxSetup;
 	private Mailer mailer = new Mailer();
 
-	public void sendEmail(RealmEntity realm, MailParamsHolder mailParamsHolder,
-			EmailType emailType) throws Exception {
+	public boolean sendEmail(RealmEntity realm, EmailHolder holder) throws Exception {
 
 		mailBoxSetup = daoMonitoringSetup.findByRealmId(realm.getId());
 		if (mailBoxSetup == null) {
-			Application.getElasticSearchLogger().indexLog(
-					Application.SYSTEM_MONITORING,
-					-1,
-					LogStatus.WARNING,
-					Application.SYSTEM_OPS_MONITORING
-							+ " aborting system monitoring for realm: "
-							+ realm.getId() + " name: " + realm.getName()
-							+ " no monitoring setup defined for this realm");
-			return;
+			Application.getElasticSearchLogger().indexLog(Application.SYSTEM_MONITORING, -1, LogStatus.WARNING,
+					Application.SYSTEM_OPS_MONITORING + " aborting system monitoring for realm: " + realm.getId()
+							+ " name: " + realm.getName() + " no monitoring setup defined for this realm");
+			return false;
 		}
 
-		// send status e-mail
-		try {
-			MailDataHolder mailDataHolder = null;
-			// pick email content template based on email type enum value
-			if (emailType.equals(EmailType.REGISTRATION_REWARDZ)) {
-				System.out.println("REWARDZ");
-				mailDataHolder = mailTemplatesHolder.getRegistrationEmailDHRewardz(mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("Welcome@airrewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			
-			if (emailType.equals(EmailType.REGISTRATION_GOAHEAD)) {
-				mailDataHolder = mailTemplatesHolder.getRegistrationEmailDHGoAhead(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@trippareward.com");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			
-			
-			if (emailType.equals(EmailType.REGISTRATION_CINETREATS)) {
-				mailDataHolder = mailTemplatesHolder.getRegistrationEmailDHCinetreats(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@cinetreats.co.uk");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			
-			if (emailType.equals(EmailType.PASSWORD_CHANGE)) {
-				mailDataHolder = mailTemplatesHolder.getPasswordChangeEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("Welcome@airrewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.PASSWORD_RECOVERY)) {
-				mailDataHolder = mailTemplatesHolder
-						.getPasswordRecoveryEmailDH(mailParamsHolder,
-								mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("Welcome@airrewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.REPORTING)) {
-				mailDataHolder = mailTemplatesHolder.getReportingEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("Welcome@airrewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.INVITATION)) {
-				mailDataHolder = mailTemplatesHolder.getInvitationEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("Welcome@airrewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			
-			if (emailType.equals(EmailType.TRIPPA_QUIDCO_REWARD_CASHBACK_SUCCESS)) {
-				mailDataHolder = mailTemplatesHolder.getTrippaQuidcoRewardCashbackSuccessEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@trippareward.com");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.TRIPPA_QUIDCO_REWARD_CASHBACK_TRACKED)) {
-				mailDataHolder = mailTemplatesHolder.getTrippaQuidcoRewardCashbackTrackedEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@trippareward.com");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.TRIPPA_QUIDCO_REWARD_AVAIBLE_TO_SPEND)) {
-				mailDataHolder = mailTemplatesHolder.getTrippaQuidcoRewardAvailableToSpendEmailDH(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@trippareward.com");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if(emailType.equals(EmailType.TRIPPA_QUIDCO_CREDIT_CARD_REGISTRATION)) {
-				mailDataHolder = mailTemplatesHolder.getTrippaQuidcoCreditCardRegistrationEmail(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@trippareward.com");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.SNAPDEAL_OFFER_APPROVED)){
-				mailDataHolder = mailTemplatesHolder.getSnapdealOfferApprovedEmail(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@aiirewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.SNAPDEAL_OFFER_CANCELLED)){
-				mailDataHolder = mailTemplatesHolder.getSnapdealOfferCancelledEmail(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@aiirewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			if (emailType.equals(EmailType.SNAPDEAL_OFFER_TRACKED)){
-				mailDataHolder = mailTemplatesHolder.getSnapdealOfferTrackedEmail(
-						mailParamsHolder, mailBoxSetup);
-				mailDataHolder.setEmailFromAddress("welcome@aiirewardz.net");
-				mailDataHolder.setEmailType(emailType.toString());
-			}
-			
-			dispatchMail(mailDataHolder); // dispatch mail
 
-			Application.getElasticSearchLogger().indexLog(
-					Application.SYSTEM_MONITORING,
-					realm.getId(),
-					LogStatus.OK,
-					Application.MAILER + " successfully sent email: "
-							+ emailType + " for realm: " + realm.getName()
-							+ " to email: "
-							+ mailParamsHolder.getEmailRecipientAddress());
+		try {
+			MailDataHolder mailDataHolder = new MailDataHolder();
+			mailDataHolder.setMailboxSetup(mailBoxSetup);
+			mailDataHolder.setEmailAddress(holder.getRecipent());
+			mailDataHolder.setEmailContent(holder.getContent());
+			mailDataHolder.setEmailFromAddress(mailBoxSetup.getMailFromAddress());
+			mailDataHolder.setEmailSubject(holder.getTitle());
+			mailDataHolder.setEmailType("NORMAL_EMAIL");
+			dispatchMail(mailDataHolder);
+
+			Application.getElasticSearchLogger().indexLog(Application.SYSTEM_MONITORING, realm.getId(), LogStatus.OK,
+					Application.MAILER + " successfully sent email: " + holder);
+			return true;
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			Application
-					.getElasticSearchLogger()
-					.indexLog(
-							Application.SYSTEM_MONITORING,
-							realm.getId(),
-							LogStatus.ERROR,
-							Application.MAILER
-									+ " error sending status report for monitoring setup for realm: "
-									+ realm.getName() + " error: "
-									+ exc.toString());
+			Application.getElasticSearchLogger().indexLog(Application.SYSTEM_MONITORING, realm.getId(), LogStatus.ERROR,
+					Application.MAILER + " error sending status report for monitoring setup for realm: "
+							+ realm.getName() + " error: " + exc.toString() + " for holder: " + holder);
+			return false;
 		}
 	}
 
@@ -245,8 +143,7 @@ public class MailManager {
 
 		try {
 			connection = connectionFactory.createConnection();
-			Session session = connection.createSession(false,
-					Session.AUTO_ACKNOWLEDGE);
+			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			MessageProducer messageProducer = session.createProducer(queue);
 			connection.start();
 			ObjectMessage message = session.createObjectMessage();
@@ -255,13 +152,8 @@ public class MailManager {
 		} catch (JMSException e) {
 			logger.severe(e.getMessage());
 			e.printStackTrace();
-			Application.getElasticSearchLogger().indexLog(
-					Application.SYSTEM_MONITORING,
-					-1,
-					LogStatus.ERROR,
-					Application.SYSTEM_MONITORING
-							+ " TIMER error sending email to JMS queue: "
-							+ e.toString());
+			Application.getElasticSearchLogger().indexLog(Application.SYSTEM_MONITORING, -1, LogStatus.ERROR,
+					Application.SYSTEM_MONITORING + " TIMER error sending email to JMS queue: " + e.toString());
 		} finally {
 			if (connection != null) {
 				try {
@@ -273,52 +165,5 @@ public class MailManager {
 		}
 	}
 
-	public void sendEmail(RealmEntity realmEntity, String recipient,
-			String title, String message) throws Exception {
-
-		mailBoxSetup = daoMonitoringSetup.findByRealmId(realmEntity.getId());
-		if (mailBoxSetup == null) {
-			Application.getElasticSearchLogger().indexLog(
-					Application.SYSTEM_MONITORING,
-					-1,
-					LogStatus.WARNING,
-					Application.SYSTEM_OPS_MONITORING
-							+ " aborting system monitoring for realm: "
-							+ realmEntity.getId() + " name: "
-							+ realmEntity.getName()
-							+ " no monitoring setup defined for this realm");
-			return;
-		}
-		try {
-		MailDataHolder holder = new MailDataHolder();
-		holder.setEmailAddress(recipient);
-		holder.setEmailSubject(title);
-		holder.setEmailContent(message);
-		holder.setMailboxSetup(mailBoxSetup);
-		
-		dispatchMail(holder); // dispatch mail
-
-		Application.getElasticSearchLogger().indexLog(
-				Application.SYSTEM_MONITORING,
-				realmEntity.getId(),
-				LogStatus.OK,
-				Application.MAILER + " successfully sent email: "
-						 + " for realm: " + realmEntity.getName()
-						+ " to email: "
-						+ holder.getEmailAddress());
-	} catch (Exception exc) {
-		exc.printStackTrace();
-		Application
-				.getElasticSearchLogger()
-				.indexLog(
-						Application.SYSTEM_MONITORING,
-						realmEntity.getId(),
-						LogStatus.ERROR,
-						Application.MAILER
-								+ " error sending status report for monitoring setup for realm: "
-								+ realmEntity.getName() + " error: "
-								+ exc.toString());
-	}
-
-	}
+	
 }

@@ -1,6 +1,7 @@
 package is.web.services.wallet.validators;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.faces.bean.ManagedBean;
 import javax.inject.Inject;
@@ -18,11 +19,14 @@ public class UsernamePasswordCombinationValidator implements APIValidator {
 	@Inject
 	private DAOAppUser daoAppUser;
 
+
+	
 	@Override
 	public boolean validate(HashMap<String, Object> parameters) {
 		try {
 			String username = (String) parameters.get("username");
 			String password = (String) parameters.get("password");
+
 			AppUserEntity appUser = daoAppUser.findByUsername(username);
 			String passwordHash = getPasswordHash(password);
 			if (appUser.getPassword().equals(passwordHash)){

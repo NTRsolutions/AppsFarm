@@ -326,11 +326,11 @@ public class UserService {
 				mailParamsHolder.setActivationLink(activationLink);
 
 				if (applicationName.toLowerCase().contains("goahead")) {
-					mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_GOAHEAD);
+					//mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_GOAHEAD);
 				} else if (applicationName.toLowerCase().contains("cine")) {
-					mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_CINETREATS);
+					//mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_CINETREATS);
 				} else {
-					mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_REWARDZ);
+					//mailManager.sendEmail(realm, mailParamsHolder, EmailType.REGISTRATION_REWARDZ);
 				}
 
 				boolean isReferralCodeValidationSuccessful = false;
@@ -810,8 +810,8 @@ public class UserService {
 				mailParamsHolder.setEmailRecipientAddress(appUser.getEmail());
 				mailParamsHolder.setEmailRecipientFullName(appUser.getFullName());
 				mailParamsHolder.setEmailRecipientNewPassword(newPassword);
-				mailManager.sendEmail(daoRealm.findById(appUser.getRealmId()), mailParamsHolder,
-						EmailType.PASSWORD_CHANGE);
+				//mailManager.sendEmail(daoRealm.findById(appUser.getRealmId()), mailParamsHolder,
+				//		EmailType.PASSWORD_CHANGE);
 
 				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 						Application.USER_UPDATE_ACTIVITY + " " + Application.USER_SUCCESSFULLY_UPDATED + " "
@@ -896,8 +896,8 @@ public class UserService {
 																			// unhashed
 																			// password
 																			// here
-				mailManager.sendEmail(daoRealm.findById(appUser.getRealmId()), mailParamsHolder,
-						EmailType.PASSWORD_RECOVERY);
+				//mailManager.sendEmail(daoRealm.findById(appUser.getRealmId()), mailParamsHolder,
+				//		EmailType.PASSWORD_RECOVERY);
 
 				Application.getElasticSearchLogger()
 						.indexLog(Application.USER_RESTORE_PASSWORD_ACTIVITY, -1, LogStatus.OK,

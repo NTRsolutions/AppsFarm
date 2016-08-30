@@ -332,7 +332,9 @@ public class SentinelTabBean implements Serializable {
         if (tabBean.getType().startsWith(SentinelTabs.TAB_REWARD_CATEGORIES)){
         	
 		}
-        
+        if (tabBean.getType().startsWith(SentinelTabs.TAB_EMAIL_TEMPLATES)){
+        	
+		}
         
 	}
 	

@@ -359,12 +359,15 @@
 							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
 							oncomplete="widgetEditTicketOwner.show()" />
 						<p:commandButton value="Send Credits Back To Wallet"
-							icon="ui-icon-person"
+							icon="ui-icon-seek-next"
 							actionListener="#{rewardTicketsBean.sendCreditsBackToWallet(ticket)}">
-							<p:confirm header="Confirmation" message="Are you sure want to transfer credits back to wallet?"
+							<p:confirm header="Confirmation"
+								message="Are you sure want to transfer credits back to wallet?"
 								icon="ui-icon-alert" />
 						</p:commandButton>
-
+						<p:commandButton value="Send Email" icon="ui-icon-mail-open"
+							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
+							oncomplete="widgetSendEmail.show()" />
 						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 							<p:commandButton value="Yes" type="button"
 								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -474,6 +477,47 @@
 				process="" oncomplete="widgetDialogRewardTicketLogs.hide()" />
 		</h:panelGrid>
 	</p:dialog>
+
+	<p:dialog id="idWidgetSendEmail" width="400" style="width:400px;"
+		header="Send Email" widgetVar="widgetSendEmail" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+		<h:panelGrid columns="2" cellpadding="4">
+
+			<h:outputText styleClass="dialog-mediumFont" value="Select template" />
+			<p:selectOneMenu rendered="true"
+				value="#{rewardTicketsBean.selectedEmailTemplate}">
+				<f:selectItems value="#{rewardTicketsBean.getEmailTemplates()}" />
+			</p:selectOneMenu>
+
+			<h:outputText styleClass="dialog-mediumFont" value="Reward result" />
+			<p:inputTextarea rows="6" cols="33"
+				value="#{rewardTicketsBean.emailRewardResult}" />
+		</h:panelGrid>
+
+		<p:commandButton value="Preview" icon="ui-icon-check"
+			actionListener="#{rewardTicketsBean.setupEmailPreview()}"
+			oncomplete="widgetEmailPreview.show()" />
+		<p:commandButton value="Send email" icon="ui-icon-mail-open"
+			actionListener="#{rewardTicketsBean.sendEmail()}"
+			oncomplete="widgetSendEmail.hide()" />
+		<p:commandButton value="Close" icon="ui-icon-close"
+			oncomplete="widgetSendEmail.hide()" />
+	</p:dialog>
+
+	<p:dialog id="idWidgetEmailPreview" width="800" style="width:800px;"
+		header="Email Preview" widgetVar="widgetEmailPreview"
+		resizable="false" showEffect="clip" hideEffect="fold" modal="false"
+		appendToBody="false">
+
+		<h:panelGrid id="idWidgetEmailPreviewGrid" columns="1" cellpadding="1">
+			<h:outputText styleClass="dialog-mediumFont" escape="false"
+				value="#{rewardTicketsBean.emailPreview}" />
+			<p:commandButton value="Close" icon="ui-icon-close"
+				oncomplete="widgetEmailPreview.hide()" />
+		</h:panelGrid>
+	</p:dialog>
+
+
 
 </h:form>
 

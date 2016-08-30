@@ -202,7 +202,7 @@ public class TimerReporting {
                 					MailParamsHolder mailParamsHolder = new MailParamsHolder();
                 					mailParamsHolder.setEmailRecipientAddress(realm.getReportingEmails());
                 					mailParamsHolder.setReports(listReports);
-                					managerMail.sendEmail(realm, mailParamsHolder, EmailType.REPORTING);
+                					//managerMail.sendEmail(realm, mailParamsHolder, EmailType.REPORTING);
             					}
         					} else {
             					Application.getElasticSearchLogger().indexLog(Application.REPORTING_ACTIVITY, realm.getId(), 

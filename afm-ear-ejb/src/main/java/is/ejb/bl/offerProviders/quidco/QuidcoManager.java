@@ -450,7 +450,7 @@ public class QuidcoManager {
 			}
 			MailParamsHolder mailParamsHolder = new MailParamsHolder();
 			mailParamsHolder.setEmailRecipientAddress(appUser.getEmail());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_CREDIT_CARD_REGISTRATION);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_CREDIT_CARD_REGISTRATION);
 			logger.info("Email with credit card registration has been sent.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -473,7 +473,7 @@ public class QuidcoManager {
 			mailParamsHolder.setRetailer(event.getOfferTitle());
 			mailParamsHolder.setPurchaseAmount("" + event.getProfilSplitFraction());
 			mailParamsHolder.setCashbackAmount("" + event.getCustomRewardValue());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_REWARD_CASHBACK_TRACKED);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_REWARD_CASHBACK_TRACKED);
 			logger.info("Email with quidco reward cashback tracked has been sent.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -496,7 +496,7 @@ public class QuidcoManager {
 			mailParamsHolder.setRetailer(event.getOfferTitle());
 			mailParamsHolder.setPurchaseAmount("" + event.getProfilSplitFraction());
 			mailParamsHolder.setCashbackAmount("" + event.getCustomRewardValue());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_REWARD_AVAIBLE_TO_SPEND);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.TRIPPA_QUIDCO_REWARD_AVAIBLE_TO_SPEND);
 			logger.info("Email with quidco reward available to spend email has been sent.");
 		} catch (Exception exception) {
 			exception.printStackTrace();

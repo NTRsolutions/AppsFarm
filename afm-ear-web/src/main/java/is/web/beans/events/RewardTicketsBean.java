@@ -26,6 +26,8 @@ import org.primefaces.model.SortOrder;
 
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
+import is.ejb.bl.email.EmailHolder;
+import is.ejb.bl.email.EmailManager;
 import is.ejb.bl.reporting.LogEntry;
 import is.ejb.bl.reporting.ReportingManager;
 import is.ejb.bl.reward.RewardTicketManager;
@@ -33,6 +35,7 @@ import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.dao.DAOUser;
+import is.ejb.dl.entities.EmailTemplateEntity;
 import is.ejb.dl.entities.RewardTicketEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
 import is.ejb.dl.entities.UserEntity;
@@ -56,6 +59,8 @@ public class RewardTicketsBean {
 	private RewardTicketManager rewardTicketManager;
 	@Inject
 	private DAOUser daoUser;
+	@Inject
+	private EmailManager emailManager;
 
 	private final String DEFAULT_FILTER_REWARD_NAME = "All";
 	private String filterRewardName = DEFAULT_FILTER_REWARD_NAME;
@@ -88,6 +93,10 @@ public class RewardTicketsBean {
 
 	private double sumCreditPoints = 0;
 	private String sumTotalRows = "";
+
+	private int selectedEmailTemplate = 0;
+	private String emailRewardResult = "";
+	private String emailPreview;
 
 	public RewardTicketsBean() {
 	}
@@ -274,7 +283,8 @@ public class RewardTicketsBean {
 		}
 		Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
 				"User: " + loginBean.getUser().getName() + " (" + loginBean.getUser().getEmail()
-						+ ") Updated  in ticket with id: " + selectedTicket.getId() + " hash: " + selectedTicket.getHash(),
+						+ ") Updated  in ticket with id: " + selectedTicket.getId() + " hash: "
+						+ selectedTicket.getHash(),
 				selectedTicket);
 		rewardTicketManager.updateTicket(selectedTicket);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Ticket updated"));
@@ -329,6 +339,54 @@ public class RewardTicketsBean {
 		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketComment");
 		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketStatus");
 		RequestContext.getCurrentInstance().update("tabView:idWidgetEditTicketOwner");
+	}
+
+	public List<SelectItem> getEmailTemplates() {
+		List<EmailTemplateEntity> emails = emailManager.getAllTemplates();
+		List<SelectItem> selectItems = new ArrayList<SelectItem>();
+		for (EmailTemplateEntity emailTemplateEntity : emails) {
+			selectItems.add(new SelectItem(emailTemplateEntity.getId(), emailTemplateEntity.getName()));
+		}
+		return selectItems;
+	}
+
+	public void setupEmailPreview(){
+		EmailHolder holder = emailManager.setupEmailTemplate(selectedEmailTemplate, selectedTicket, emailRewardResult);
+		logger.info("Email preview: " + emailPreview);
+		emailPreview = "";
+		emailPreview += "<br/>Title: " + holder.getTitle() +"<br/>";
+		emailPreview += "Recipent: <i> "+holder.getRecipent()+"</i><br/>";
+		emailPreview += "=====================================================================<br/><br/>";
+		emailPreview += holder.getContent();
+		
+		RequestContext.getCurrentInstance().update("tabView:idWidgetEmailPreviewGrid");
+		
+	}
+	
+	public void sendEmail(){
+		rewardTicketManager.sendEmail(selectedTicket, selectedEmailTemplate, emailRewardResult);
+		RequestContext.getCurrentInstance().execute("widgetSendEmail.hide()");
+		RequestContext.getCurrentInstance().execute("widgetEmailPreview.hide()");
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Email has been sent"));
+		refresh();
+		
+	}
+	
+
+	public int getSelectedEmailTemplate() {
+		return selectedEmailTemplate;
+	}
+
+	public void setSelectedEmailTemplate(int selectedEmailTemplate) {
+		this.selectedEmailTemplate = selectedEmailTemplate;
+	}
+
+	public String getEmailRewardResult() {
+		return emailRewardResult;
+	}
+
+	public void setEmailRewardResult(String emailRewardResult) {
+		this.emailRewardResult = emailRewardResult;
 	}
 
 	public String getSumTotalRows() {
@@ -521,6 +579,14 @@ public class RewardTicketsBean {
 
 	public void setRenderRewardCategoryColumn(boolean renderRewardCategoryColumn) {
 		this.renderRewardCategoryColumn = renderRewardCategoryColumn;
+	}
+
+	public String getEmailPreview() {
+		return emailPreview;
+	}
+
+	public void setEmailPreview(String emailPreview) {
+		this.emailPreview = emailPreview;
 	}
 
 }

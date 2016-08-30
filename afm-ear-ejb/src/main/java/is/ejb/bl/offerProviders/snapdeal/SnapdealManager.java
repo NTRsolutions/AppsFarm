@@ -561,7 +561,7 @@ public class SnapdealManager {
 			mailParamsHolder.setRetailer(event.getOfferTitle());
 			AppUserEntity appUser = getAppUserWithId(event.getUserId());
 			mailParamsHolder.setEmailRecipientAddress(appUser.getEmail());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_APPROVED);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_APPROVED);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -579,7 +579,7 @@ public class SnapdealManager {
 			mailParamsHolder.setRetailer(event.getOfferTitle());
 			AppUserEntity appUser = getAppUserWithId(event.getUserId());
 			mailParamsHolder.setEmailRecipientAddress(appUser.getEmail());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_CANCELLED);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_CANCELLED);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -597,7 +597,7 @@ public class SnapdealManager {
 			mailParamsHolder.setRetailer(event.getOfferTitle());
 			AppUserEntity appUser = getAppUserWithId(event.getUserId());
 			mailParamsHolder.setEmailRecipientAddress(appUser.getEmail());
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_TRACKED);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.SNAPDEAL_OFFER_TRACKED);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

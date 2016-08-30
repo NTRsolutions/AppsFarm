@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
+import is.ejb.bl.email.EmailHolder;
+import is.ejb.bl.email.EmailManager;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.wallet.WalletManager;
 import is.ejb.bl.wallet.WalletTransactionType;
@@ -33,7 +35,7 @@ public class RewardTicketManager {
 	@Inject
 	private DAOApplicationReward daoApplicationReward;
 	@Inject
-	private DAOWalletData daoWalletData;
+	private EmailManager emailManager;
 	@Inject
 	private Logger logger;
 
@@ -46,7 +48,7 @@ public class RewardTicketManager {
 			int rewardId = (Integer) parameters.get("rewardId");
 			AppUserEntity appUser = daoAppUser.findByUsername(username);
 			ApplicationRewardEntity reward = daoApplicationReward.findById(rewardId);
-
+			rewardTicket.setRealmId(appUser.getRealmId());
 			rewardTicket.setUserId(appUser.getId());
 			rewardTicket.setEmail(appUser.getEmail());
 			rewardTicket.setRewardName(reward.getRewardName());
@@ -221,6 +223,35 @@ public class RewardTicketManager {
 			daoRewardTickets.createOrUpdate(rewardTicket);
 		} catch (Exception exc) {
 			exc.printStackTrace();
+		}
+	}
+
+	public void sendEmail(RewardTicketEntity rewardTicket, int emailTemplateId, String rewardResult) {
+		try {
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK,
+					"Sending email for reward ticket id : " + rewardTicket.getId() + " hash: " + rewardTicket.getHash()
+							+ " using template id: " + emailTemplateId + " reward result " + rewardResult,
+					rewardTicket);
+			logger.info(
+					"Sending email for reward ticket id : " + rewardTicket.getId() + " hash: " + rewardTicket.getHash()
+							+ " using template id: " + emailTemplateId + " reward result " + rewardResult);
+
+			EmailHolder holder = emailManager.setupEmailTemplate(emailTemplateId, rewardTicket, rewardResult);
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK, "Email holder for reward ticket id : "
+					+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + "email holder: " + holder,
+					rewardTicket);
+
+			boolean result = emailManager.sendEmail(holder, rewardTicket.getRealmId());
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.OK, "Email sent with status: " + result
+					+ "reward ticket id : " + rewardTicket.getId() + " hash: " + rewardTicket.getHash(), rewardTicket);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.ERROR,
+					"Sending email for reward ticket id : " + rewardTicket.getId() + " hash: " + rewardTicket.getHash()
+							+ " using template id: " + emailTemplateId + " reward result " + rewardResult
+							+ " exception: " + exc.toString(),
+					rewardTicket);
 		}
 	}
 

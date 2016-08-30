@@ -168,7 +168,7 @@ public class InvitationService {
 			mailParamsHolder.setEmailRecipientAddress(emailInvited);
 			mailParamsHolder.setCode(invitationManager.getUserInvitationCode(daoAppUser, appUserInviting));
 			mailParamsHolder.setEmailInviting(emailInviting);
-			mailManager.sendEmail(realm, mailParamsHolder, EmailType.INVITATION);
+			//mailManager.sendEmail(realm, mailParamsHolder, EmailType.INVITATION);
 
 			//increment successful invitations counter for user the sent invitation
 			appUserInviting = daoAppUser.findByEmail(emailInviting);
