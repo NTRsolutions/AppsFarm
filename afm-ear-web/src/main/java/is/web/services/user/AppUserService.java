@@ -32,6 +32,7 @@ import is.web.services.APIValidator;
 import is.web.services.user.validators.AdvertisingIdValidator;
 import is.web.services.user.validators.ApplicationValidator;
 import is.web.services.user.validators.CountryCodeValidator;
+import is.web.services.user.validators.DeviceTokenValidator;
 import is.web.services.user.validators.DeviceTypeValidator;
 import is.web.services.user.validators.EmailDBValidator;
 import is.web.services.user.validators.EmailValidator;
@@ -70,6 +71,8 @@ public class AppUserService {
 	private DeviceValidator deviceValidator;
 	@Inject
 	private PhoneValidator phoneValidator;
+	@Inject
+	private DeviceTokenValidator deviceTokenValidator;
 	@Inject
 	private APIHelper apiHelper;
 	@Inject
@@ -164,7 +167,9 @@ public class AppUserService {
 			appUser.setRealmId(4);
 			appUser.setDeviceId((String) parameters.get("deviceId"));
 			appUser.setPhoneId((String) parameters.get("phoneId"));
+			appUser.setAndroidDeviceToken((String) parameters.get("androidDeviceToken"));
 			appUser.setAttendanceLastBonusTime(new Timestamp(new Date().getTime()));
+			
 			if (parameters.containsKey("firstName")) {
 				appUser.setFirstName((String) parameters.get("firstName"));
 			}
@@ -199,6 +204,7 @@ public class AppUserService {
 		validators.add(deviceTypeValidator);
 		validators.add(phoneValidator);
 		validators.add(deviceValidator);
+		validators.add(deviceTokenValidator);
 		return validators;
 	}
 
