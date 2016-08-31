@@ -15,6 +15,7 @@ import is.ejb.bl.conversionHistory.ConversionHistoryHolder;
 import is.ejb.bl.eventQueue.EventQueueManager;
 import is.ejb.bl.friends.UserFriendManager;
 import is.ejb.bl.notificationSystems.NotificationManager;
+import is.ejb.bl.notificationSystems.NotificationMessageDictionary;
 import is.ejb.bl.notificationSystems.apns.IOSNotificationSender;
 import is.ejb.bl.notificationSystems.gcm.GoogleNotificationSender;
 import is.ejb.bl.referral.ReferralManager;
@@ -150,8 +151,10 @@ public class RewardManager {
 					UserEventCategory.WALLET_PAY_IN.toString(), "", "", event.getIpAddress(), event.getCountryCode(),
 					event.isInstant(), event.getApplicationName(), event.isTestMode());
 
-			// issue notification
-			//notificationManager.sendWalletTopupNotification(event, true, isEventFromUserThatWasInviting);
+			String message = NotificationMessageDictionary.REWARD_MESSAGE;
+			message.replaceAll("\\{reward\\}", event.getRewardValue() + "");
+			message.replaceAll("\\{offer\\}", event.getOfferTitle());
+			notificationManager.sendNotification(appUser, message);
 
 		} catch (Exception exc) {
 			exc.printStackTrace();

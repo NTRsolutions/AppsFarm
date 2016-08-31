@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ejb.Asynchronous;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -87,11 +88,14 @@ public class AppUserService {
 		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 				Application.USER_REGISTRATION_ACTIVITY + " Received register request: " + apiRequestDetails);
 
-		APIResponse response = new APIResponse();
+		RegisterUserResponse response = new RegisterUserResponse();
 		validateRegisterRequest(apiRequestDetails, response);
 		if (response.getStatus() == null || !response.getStatus().equals(RespStatusEnum.FAILED)) {
-			if (insertUser(apiRequestDetails)) {
+			AppUserEntity insertedUser = insertUser(apiRequestDetails);
+			if (insertedUser !=  null){
 				apiHelper.setupSuccessResponse(response);
+				insertedUser.setPassword("");
+				response.setAppUserEntity(insertedUser);
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 
@@ -122,7 +126,7 @@ public class AppUserService {
 		}
 	}
 
-	private boolean insertUser(APIRequestDetails apiRequestDetails) {
+	private AppUserEntity insertUser(APIRequestDetails apiRequestDetails) {
 		try {
 			logger.info("** Inserting user to database **");
 			AppUserEntity appUser = prepareAppUserFromParameters(apiRequestDetails);
@@ -131,20 +135,20 @@ public class AppUserService {
 				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
 						LogStatus.ERROR, Application.USER_REGISTRATION_ACTIVITY
 								+ " Error occured when creating user object from details: " + apiRequestDetails);
-				return false;
+				return null;
 			}
 			daoAppUser.create(appUser);
 			logger.info("** User inserted ** ");
 			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_REGISTRATION_ACTIVITY + " User inserted to database: " + appUser.toString());
-			return true;
+			return appUser;
 		} catch (Exception exc) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
 					Application.USER_REGISTRATION_ACTIVITY + " Error occured when inserting user: " + exc.toString()
 							+ " for details: " + apiRequestDetails);
 
 			exc.printStackTrace();
-			return false;
+			return null;
 		}
 
 	}
@@ -268,6 +272,9 @@ public class AppUserService {
 		validators.add(usernameValidator);
 		validators.add(passwordValidator);
 		validators.add(advertisingIdValidator);
+		validators.add(deviceTokenValidator);
+		validators.add(deviceValidator);
+		validators.add(phoneValidator);
 		return validators;
 	}
 
@@ -285,7 +292,8 @@ public class AppUserService {
 		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
 		String username = (String) parameters.get("username");
 		String password = (String) parameters.get("password");
-		String advertisingId = (String) parameters.get("advertisingId");
+
+		
 		AppUserEntity appUser = getUser(username);
 		if (appUser == null) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.ERROR,
@@ -294,12 +302,8 @@ public class AppUserService {
 		} else {
 			String hashedPassword = getPasswordHash(password);
 			if (appUser.getPassword().equals(hashedPassword)) {
-				if (!appUser.getAdvertisingId().equals(advertisingId)) {
-					updateAdvertisingId(appUser, advertisingId);
-					Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
-							Application.USER_LOGIN_ACTIVITY + " updating user advertising id for request : "
-									+ apiRequestDetails);
-				}
+				appUser = updateAppUserDetailsIfNecessary(appUser,apiRequestDetails);
+				appUser.setPassword("");
 				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
 				attendanceManager.checkAttendance(appUser);
@@ -308,18 +312,57 @@ public class AppUserService {
 			}
 		}
 	}
-
-	private boolean updateAdvertisingId(AppUserEntity appUser, String advertisingId) {
-		try {
+	
+	
+	private AppUserEntity updateAppUserDetailsIfNecessary(AppUserEntity appUser,APIRequestDetails apiRequestDetails){
+		boolean isUpdate = false;
+		HashMap<String,Object> parameters = apiRequestDetails.getParameters();
+		String advertisingId = (String) parameters.get("advertisingId");
+		String androidDeviceToken = (String) parameters.get("androidDeviceToken");
+		String deviceId = (String) parameters.get("deviceId");
+		String phoneId = (String) parameters.get("phoneId");
+		if (!appUser.getAdvertisingId().equals(advertisingId)) {
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_LOGIN_ACTIVITY + " updating advertisingId for request : "
+							+ apiRequestDetails + " for appuser: " + appUser);
 			appUser.setAdvertisingId(advertisingId);
-			daoAppUser.createOrUpdate(appUser);
-			logger.info("Updated appUser with id: " + appUser.getId() + " advertisingId: " + advertisingId);
-			return true;
-		} catch (Exception exc) {
-			exc.printStackTrace();
-			return false;
+			logger.info("Updated advertisingId for appUser: " + appUser);
+			isUpdate = true;
 		}
-
+		if (!appUser.getAndroidDeviceToken().equals(androidDeviceToken)){
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_LOGIN_ACTIVITY + " updating android device token for request : "
+							+ apiRequestDetails + " for appuser: " + appUser);
+			appUser.setAndroidDeviceToken(androidDeviceToken);
+			logger.info("Updated android device token for appUser: " + appUser);
+			isUpdate = true;
+		}
+		
+		if (!appUser.getDeviceId().equals(deviceId)){
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_LOGIN_ACTIVITY + " updating device id for request : "
+							+ apiRequestDetails + " for appuser: " + appUser);
+			appUser.setDeviceId(deviceId);
+			logger.info("Updated device id for appUser: " + appUser);
+			isUpdate = true;
+		}
+		
+		if (!appUser.getPhoneId().equals(phoneId)){
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_LOGIN_ACTIVITY + " updating phone id for request : "
+							+ apiRequestDetails + " for appuser: " + appUser);
+			appUser.setPhoneId(phoneId);
+			logger.info("Updated phone id for appUser: " + appUser);
+			isUpdate = true;
+		}
+		
+		if (isUpdate){
+			daoAppUser.createOrUpdate(appUser);
+		}
+		return appUser;
 	}
+	
+
+	
 
 }
