@@ -84,7 +84,10 @@ public class FirebaseManager {
 		request.setTo(deviceToken);
 		FirebaseNotification notification = new FirebaseNotification();
 		notification.setBody(body);
+		notification.setTitle(title);
 		
+		request.setNotification(notification);
+		message.setRequest(request);
 		return message;
 		
 	}

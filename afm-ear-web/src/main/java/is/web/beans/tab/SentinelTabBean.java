@@ -84,10 +84,10 @@ public class SentinelTabBean implements Serializable {
 
 			
 			SingleTabBean tab = new SingleTabBean();
-			tab.setId("DefaultPage");
-			tab.setTitle("DefaultPage");
-			tab.setType(SentinelTabs.TAB_DEFAULT_PAGE);
-			tab.setPage("defaultPage.xhtml");
+			tab.setId("OfferWalls");
+			tab.setTitle("O	fferWalls");
+			tab.setType(SentinelTabs.TAB_OFFER_WALLS);
+			tab.setPage("setupOfferWalls.xhtml");
 			tabList.add(tab);
 
 			if (loggedUserRoleName.equals(UserRoles.SUPER_USER.toString())) {
