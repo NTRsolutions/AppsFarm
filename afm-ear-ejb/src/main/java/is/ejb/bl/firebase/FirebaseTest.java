@@ -32,7 +32,10 @@ public class FirebaseTest {
 		// Send post request
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-		String json = "{\"to\":\"e49ulsflPPE:APA91bGauuRTpDf928zmJOv9YndviJYX3Dl_HxRSuMXS2rEV0MIYDuMub3PG6BA0tu99vSVIywHS1fjuTvpVDXPTxEh4CfzBffVaHHEVIqBsAH2mAnkimtjPtSXQghuQctJnrx7Lzapm\",\"notification\":{\"title\":\"Yellow\",\"text\":\"Yellow\"}}";
+		//String json = "{\"to\":\"e49ulsflPPE:APA91bGauuRTpDf928zmJOv9YndviJYX3Dl_HxRSuMXS2rEV0MIYDuMub3PG6BA0tu99vSVIywHS1fjuTvpVDXPTxEh4CfzBffVaHHEVIqBsAH2mAnkimtjPtSXQghuQctJnrx7Lzapm\",\"notification\":{\"title\":\"Yellow\",\"text\":\"Yellow\"}}";
+		
+		
+		String json = "{\"to\":\"e49ulsflPPE:APA91bGauuRTpDf928zmJOv9YndviJYX3Dl_HxRSuMXS2rEV0MIYDuMub3PG6BA0tu99vSVIywHS1fjuTvpVDXPTxEh4CfzBffVaHHEVIqBsAH2mAnkimtjPtSXQghuQctJnrx7Lzapm\",\"notification\":{\"title\":\"AppsFarm\",\"text\":\"You have been rewarded with {value} for daily visiting!\"}}";
 		wr.writeBytes(json);
 		wr.flush();
 		wr.close();

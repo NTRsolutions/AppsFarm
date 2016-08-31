@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ public class AttendanceManager {
 	@Inject
 	private NotificationManager notificationManager;
 
+	@Asynchronous
 	public void checkAttendance(AppUserEntity appUser) {
 		try {
 			if (appUser != null) {
@@ -104,8 +106,8 @@ public class AttendanceManager {
 		Application.getElasticSearchLogger().indexLog(Application.ATTENDANCE_ACTIVITY, -1, LogStatus.OK,
 				Application.ATTENDANCE_ACTIVITY + " User id: " + appUser.getId()
 						+ " is being notified attendance bonus: " + attendanceValue);
-		String message = NotificationMessageDictionary.ATTENDANCE_BONUS.replace("\\{value\\}",
-				"" + attendanceValue + "points");
+		String message = NotificationMessageDictionary.ATTENDANCE_BONUS;
+		message = message.replaceAll("\\{reward\\}","" + attendanceValue + " points");
 		boolean result = notificationManager.sendNotification(appUser, message);
 		Application.getElasticSearchLogger().indexLog(Application.ATTENDANCE_ACTIVITY, -1, LogStatus.OK,
 				Application.ATTENDANCE_ACTIVITY + "Notified User id: " + appUser.getId() + " messgae:" + message + " result: " + result);

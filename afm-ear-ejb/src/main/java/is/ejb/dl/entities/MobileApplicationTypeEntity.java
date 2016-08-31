@@ -21,7 +21,7 @@ public class MobileApplicationTypeEntity {
 	private boolean versionCheck;
 	private String minimumVersion;
 	private String versionErrorMessage;
-	private String gcmKey;
+	private String firebaseKey;
 
 	
 	public Integer getId() {
@@ -66,11 +66,12 @@ public class MobileApplicationTypeEntity {
 	public void setVersionErrorMessage(String versionErrorMessage) {
 		this.versionErrorMessage = versionErrorMessage;
 	}
-	public String getGcmKey() {
-		return gcmKey;
+	public String getFirebaseKey() {
+		return firebaseKey;
 	}
-	public void setGcmKey(String gcmKey) {
-		this.gcmKey = gcmKey;
+	public void setFirebaseKey(String firebaseKey) {
+		this.firebaseKey = firebaseKey;
 	}
+
 	
 }

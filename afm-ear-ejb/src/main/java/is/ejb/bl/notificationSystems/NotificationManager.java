@@ -1,6 +1,8 @@
 package is.ejb.bl.notificationSystems;
 
 import is.ejb.bl.business.Application;
+import is.ejb.bl.firebase.FirebaseManager;
+import is.ejb.bl.firebase.FirebaseMessage;
 import is.ejb.bl.notificationSystems.gcm.GoogleNotificationSender;
 
 import is.ejb.bl.system.logging.LogStatus;
@@ -29,8 +31,10 @@ public class NotificationManager {
 	private DAOMobileApplicationType daoMobileApplicationType;
 
 	@Inject
-	NotificationMessageDictionary notificationMessageDictionary;
+	private NotificationMessageDictionary notificationMessageDictionary;
 
+	@Inject
+	private FirebaseManager firebaseManager;
 
 
 	public boolean sendNotification(AppUserEntity appUser, String message) {
@@ -40,7 +44,7 @@ public class NotificationManager {
 							+ appUser);
 			logger.info(" sending notification message: " + message + " to appUser:" + appUser);
 
-			String apiKey = getGCMAPIKey(appUser.getApplicationName());
+			String apiKey = getFirebaseKey(appUser.getApplicationName());
 			String deviceToken = appUser.getAndroidDeviceToken();
 			if (apiKey == null || apiKey.length() == 0) {
 				Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.ERROR,
@@ -57,12 +61,12 @@ public class NotificationManager {
 				return false;
 			}
 
-			GoogleNotificationSender gns = new GoogleNotificationSender(apiKey);
-			String strSendStatus = gns.sendMessage(deviceToken, message);
-
+			FirebaseMessage firebaseMessage = firebaseManager.prepareFirebaseMessage(apiKey, "AppsFarm", message, deviceToken);
+			boolean result = firebaseManager.sendMessage(firebaseMessage);
+			
 			Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.OK,
 					Application.NOTIFICATION_ACTIVITY + " sending notification message: " + message + " to appUser:"
-							+ appUser + " result: " + strSendStatus);
+							+ appUser + " result: " + result);
 			return true;
 
 		} catch (Exception exc) {
@@ -74,10 +78,10 @@ public class NotificationManager {
 		}
 	}
 
-	private String getGCMAPIKey(String applicationName) {
+	private String getFirebaseKey(String applicationName) {
 		try {
 			MobileApplicationTypeEntity application = daoMobileApplicationType.findByName(applicationName);
-			return application.getGcmKey();
+			return application.getFirebaseKey();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			return null;

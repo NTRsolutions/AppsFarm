@@ -2,7 +2,7 @@ package is.ejb.bl.firebase;
 
 public class FirebaseNotification {
 	private String title;
-	private String body;
+	private String text;
 	private String icon;
 	private String tag;
 	private String color;
@@ -17,11 +17,12 @@ public class FirebaseNotification {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getBody() {
-		return body;
+
+	public String getText() {
+		return text;
 	}
-	public void setBody(String body) {
-		this.body = body;
+	public void setText(String text) {
+		this.text = text;
 	}
 	public String getIcon() {
 		return icon;
@@ -73,11 +74,12 @@ public class FirebaseNotification {
 	}
 	@Override
 	public String toString() {
-		return "FirebaseNotification [title=" + title + ", body=" + body + ", icon=" + icon + ", tag=" + tag
+		return "FirebaseNotification [title=" + title + ", text=" + text + ", icon=" + icon + ", tag=" + tag
 				+ ", color=" + color + ", click_action=" + click_action + ", body_loc_key=" + body_loc_key
 				+ ", body_loc_args=" + body_loc_args + ", title_loc_key=" + title_loc_key + ", title_loc_args="
 				+ title_loc_args + "]";
 	}
+	
 	
 	
 	

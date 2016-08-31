@@ -54,10 +54,10 @@
 				<h:outputText value="#{model.versionErrorMessage}" />
 			</p:column>
 
-			<p:column rendered="true" headerText="GCM API Key"
+			<p:column rendered="true" headerText="Firebase Key"
 				style="width:250px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
-				<h:outputText value="#{model.gcmKey}" />
+				<h:outputText value="#{model.firebaseKey}" />
 			</p:column>
 
 			<p:column rendered="false" headerText="Realm id"
@@ -108,9 +108,9 @@
 				<p:inputText size="80"
 					value="#{networkSettingsBean.mobileApplicationTypeCreateModel.versionErrorMessage}" />
 
-				<h:outputText styleClass="dialog-mediumFont" value="GCM Key:" />
+				<h:outputText styleClass="dialog-mediumFont" value="Firebase Key:" />
 				<p:inputText size="80"
-					value="#{networkSettingsBean.mobileApplicationTypeCreateModel.gcmKey}" />
+					value="#{networkSettingsBean.mobileApplicationTypeCreateModel.firebaseKey}" />
 			</h:panelGrid>
 
 			<h:panelGrid columns="3" cellpadding="4">
@@ -154,9 +154,9 @@
 				<p:inputText size="70"
 					value="#{networkSettingsBean.mobileApplicationTypeEditModel.versionErrorMessage}" />
 				
-				<h:outputText styleClass="dialog-mediumFont" value="GCM API Key:" />
+				<h:outputText styleClass="dialog-mediumFont" value="Firebase Key:" />
 				<p:inputText size="70"
-					value="#{networkSettingsBean.mobileApplicationTypeEditModel.gcmKey}" />
+					value="#{networkSettingsBean.mobileApplicationTypeEditModel.firebaseKey}" />
 			</h:panelGrid>
 
 			<h:panelGrid columns="3" cellpadding="4">

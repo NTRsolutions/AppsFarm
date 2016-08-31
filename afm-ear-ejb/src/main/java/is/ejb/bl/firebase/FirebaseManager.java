@@ -28,9 +28,11 @@ public class FirebaseManager {
 
 	public boolean sendMessage(FirebaseMessage message) {
 		try {
-			HttpsURLConnection con = setupConnection(message);
+			HttpsURLConnection con = (HttpsURLConnection)setupConnection(message);
+			logger.info("Executing connection...");
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 			String json = gson.toJson(message.getRequest());
+			logger.info(json);
 			wr.writeBytes(json);
 			wr.flush();
 			wr.close();
@@ -65,6 +67,7 @@ public class FirebaseManager {
 			con.setRequestProperty("Authorization", "key=" + message.getApiKey());
 			con.setRequestProperty("Content-Type", "application/json");
 			con.setDoOutput(true);
+			logger.info("Setup firebase with apikey: " + message.getApiKey() );
 			return con;
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -83,7 +86,7 @@ public class FirebaseManager {
 		request.setDelay_while_idle(false);
 		request.setTo(deviceToken);
 		FirebaseNotification notification = new FirebaseNotification();
-		notification.setBody(body);
+		notification.setText(body);
 		notification.setTitle(title);
 		
 		request.setNotification(notification);
