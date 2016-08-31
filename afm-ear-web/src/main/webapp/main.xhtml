@@ -105,35 +105,34 @@
 					 <p:panelMenu style="width:190px;font-size: 80%;" expanded="true" >  
 						<p:submenu label="Advertising" rendered="#{acccessFilterBean.renderConfiguration}" expanded="true" >
 							<p:menuitem value="Live offers" actionListener="#{sentinelMenuBean.loadTab('tabGeneratedOffers')}" ajax="false"  expanded="true" />  
-							<p:menuitem value="Blocked offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false"  />
+							<p:menuitem rendered="false" value="Blocked offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false"  />
 							<p:menuitem value="Walls" actionListener="#{sentinelMenuBean.loadTab('tabOfferWalls')}" ajax="false"  />
 							<p:menuitem value="Feeds" actionListener="#{sentinelMenuBean.loadTab('tabAdProviders')}" ajax="false"  expanded="true" />  
 							<p:menuitem value="Filters" actionListener="#{sentinelMenuBean.loadTab('tabOfferFilters')}" ajax="false"  />
-							<p:menuitem value="Custom Rewarded Offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false" rendered="false" />
+							<p:menuitem rendered="false" value="Custom Rewarded Offers" actionListener="#{sentinelMenuBean.loadTab('tabBlockedOffers')}" ajax="false"  />
 						</p:submenu>
 					
 						<p:submenu label="Rewards" rendered="#{acccessFilterBean.renderConfiguration}" expanded="true" >
-							<p:menuitem value="Denomination Models" actionListener="#{sentinelMenuBean.loadTab('tabDenominationModels')}" ajax="false"  />
+							<p:menuitem value="Points" actionListener="#{sentinelMenuBean.loadTab('tabDenominationModels')}" ajax="false"  />
 							<p:menuitem rendered="false" value="Custom Denomination Models" actionListener="#{sentinelMenuBean.loadTab('tabCustomDenominationModels')}" ajax="false"  />
+							<p:menuitem value="Applications" actionListener="#{sentinelMenuBean.loadTab('tabMobileApplications')}" ajax="false" />
+							<p:menuitem value="Reward Types" actionListener="#{sentinelMenuBean.loadTab('tabSupportedRewardTypes')}" ajax="false"  />
+							<p:menuitem value="Reward Categories" actionListener="#{sentinelMenuBean.loadTab('tabRewardCategories')}" ajax="false" />
 							<p:menuitem value="Currencies" actionListener="#{sentinelMenuBean.loadTab('tabSupportedCurrencies')}" ajax="false"  />
 							<p:menuitem value="Countries" actionListener="#{sentinelMenuBean.loadTab('tabCountries')}" ajax="false"  />
-							<p:menuitem value="Reward Types" actionListener="#{sentinelMenuBean.loadTab('tabSupportedRewardTypes')}" ajax="false"  />
-							<p:menuitem value="Rewards" actionListener="#{sentinelMenuBean.loadTab('tabApplicationsReward')}" ajax="false"  />
-							<p:menuitem value="Reward Categories" actionListener="#{sentinelMenuBean.loadTab('tabRewardCategories')}" ajax="false" />
-							<p:menuitem value="Applications" actionListener="#{sentinelMenuBean.loadTab('tabMobileApplications')}" ajax="false" />
-							
+							<p:menuitem rendered="false" value="Rewards" actionListener="#{sentinelMenuBean.loadTab('tabApplicationsReward')}" ajax="false"  />
 						</p:submenu>
 
 						<p:submenu label="Reports" rendered="#{acccessFilterBean.renderUsers}" >
-							<p:menuitem value="User Clicks" actionListener="#{sentinelMenuBean.loadTab('tabEventBrowser')}" ajax="false"  />
-							<p:menuitem value="Reward Tickets" actionListener="#{sentinelMenuBean.loadTab('tabRewardTickets')}" ajax="false"  />
-							<p:menuitem value="Wallet Transactions" actionListener="#{sentinelMenuBean.loadTab('tabWalletTransactions')}" ajax="false" />
-							<p:menuitem value="Stats" actionListener="#{sentinelMenuBean.loadTab('tabProviderReport')}" ajax="false"  />
+							<p:menuitem rendered="false" value="User Clicks" actionListener="#{sentinelMenuBean.loadTab('tabEventBrowser')}" ajax="false"  />
+							<p:menuitem rendered="false" value="Reward Tickets" actionListener="#{sentinelMenuBean.loadTab('tabRewardTickets')}" ajax="false"  />
+							<p:menuitem rendered="false" value="Wallet Transactions" actionListener="#{sentinelMenuBean.loadTab('tabWalletTransactions')}" ajax="false" />
+							<p:menuitem rendered="false" value="Stats" actionListener="#{sentinelMenuBean.loadTab('tabProviderReport')}" ajax="false"  />
 
 							<p:menuitem value="Application Users" actionListener="#{sentinelMenuBean.loadTab('tabDisplayAppUsers')}" ajax="false"  />
-							<p:menuitem value="Reward Wallet Tool" actionListener="#{sentinelMenuBean.loadTab('tabRewardUser')}" ajax="false" rendered="false" />
+							<p:menuitem rendered="false" value="Reward Wallet Tool" actionListener="#{sentinelMenuBean.loadTab('tabRewardUser')}" ajax="false"  />
+							
 							<p:menuitem rendered="false" value="Reward Spin Tool" actionListener="#{sentinelMenuBean.loadTab('tabRewardSpin')}" ajax="false" />
-
 							<p:menuitem rendered="false" value="Quidco" actionListener="#{sentinelMenuBean.loadTab('tabQuidcoEventBrowser')}" ajax="false"  />
 							<p:menuitem rendered="false" value="Snapdeals" actionListener="#{sentinelMenuBean.loadTab('tabSnapdealEventBrowser')}" ajax="false"  />
 							<p:menuitem rendered="false" value="Conversion Charts" actionListener="#{sentinelMenuBean.loadTab('tabConversionStats')}" ajax="false"  />
@@ -157,9 +156,9 @@
 						<p:submenu label="Setup" rendered="#{acccessFilterBean.renderUsers}" >
 							<p:menuitem value="General" actionListener="#{sentinelMenuBean.loadTab('tabNetworkSettings')}" ajax="false" />
 							<p:menuitem value="Accounts" actionListener="#{sentinelMenuBean.loadTab('tabManageUsers')}" ajax="false"  />
-							<p:menuitem value="Wallet" actionListener="#{sentinelMenuBean.loadTab('tabWalletSettings')}" ajax="false" />
+							<p:menuitem rendered="false" value="Wallet" actionListener="#{sentinelMenuBean.loadTab('tabWalletSettings')}" ajax="false" />
 							<p:menuitem value="Callback Servers" actionListener="#{sentinelMenuBean.loadTab('tabCallbackServers')}" ajax="false" />
-							<p:menuitem value="Email Templates" actionListener="#{sentinelMenuBean.loadTab('tabEmailTemplates')}" ajax="false" />
+							<p:menuitem rendered="false" value="Email Templates" actionListener="#{sentinelMenuBean.loadTab('tabEmailTemplates')}" ajax="false" />
 	
 						    <p:menuitem rendered="false" value="Video gamification" actionListener="#{sentinelMenuBean.loadTab('tabVideoGamificationSettings')}" ajax="false" />
 						    <p:menuitem rendered="false" value="Spinner gamification" actionListener="#{sentinelMenuBean.loadTab('tabSpinnerGamificationSettings')}" ajax="false" />
