@@ -28,6 +28,7 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.email.EmailHolder;
 import is.ejb.bl.email.EmailManager;
+import is.ejb.bl.notificationSystems.NotificationMessageDictionary;
 import is.ejb.bl.reporting.LogEntry;
 import is.ejb.bl.reporting.ReportingManager;
 import is.ejb.bl.reward.RewardTicketManager;
@@ -97,6 +98,7 @@ public class RewardTicketsBean {
 	private int selectedEmailTemplate = 0;
 	private String emailRewardResult = "";
 	private String emailPreview;
+	private String notification = "";
 
 	public RewardTicketsBean() {
 	}
@@ -350,28 +352,51 @@ public class RewardTicketsBean {
 		return selectItems;
 	}
 
-	public void setupEmailPreview(){
+	public void setupEmailPreview() {
 		EmailHolder holder = emailManager.setupEmailTemplate(selectedEmailTemplate, selectedTicket, emailRewardResult);
 		logger.info("Email preview: " + emailPreview);
 		emailPreview = "";
-		emailPreview += "<br/>Title: " + holder.getTitle() +"<br/>";
-		emailPreview += "Recipent: <i> "+holder.getRecipent()+"</i><br/>";
+		emailPreview += "<br/>Title: " + holder.getTitle() + "<br/>";
+		emailPreview += "Recipent: <i> " + holder.getRecipent() + "</i><br/>";
 		emailPreview += "=====================================================================<br/><br/>";
 		emailPreview += holder.getContent();
-		
+
 		RequestContext.getCurrentInstance().update("tabView:idWidgetEmailPreviewGrid");
-		
+
 	}
-	
-	public void sendEmail(){
+
+	public void sendEmail() {
 		rewardTicketManager.sendEmail(selectedTicket, selectedEmailTemplate, emailRewardResult);
 		RequestContext.getCurrentInstance().execute("widgetSendEmail.hide()");
 		RequestContext.getCurrentInstance().execute("widgetEmailPreview.hide()");
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Email has been sent"));
 		refresh();
-		
+
 	}
-	
+
+	public void setupTicketNotification(RewardTicketEntity rewardTicket) {
+		setSelectedTicket(rewardTicket);
+		notification = NotificationMessageDictionary.TICKET_MESSAGE;
+		notification = notification.replaceAll("\\{reward\\}", rewardTicket.getRewardName());
+		
+		RequestContext.getCurrentInstance().update("tabView:idWidgetTicketNotification");
+		RequestContext.getCurrentInstance().update("tabView:idWidgetTicketNotificationPreviewGrid");
+	}
+
+	public void sendNotification() {
+		logger.info("Sending notification...");;
+		RequestContext.getCurrentInstance().execute("widgetTicketNotification.hide()");
+		boolean result = rewardTicketManager.sendNotification(selectedTicket, notification);
+		logger.info("Sending notification result: " + result);
+		if (result) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Success", "Notification has been sent"));
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Error", "Error occured. Notification has not been sent"));
+		}
+		refresh();
+	}
 
 	public int getSelectedEmailTemplate() {
 		return selectedEmailTemplate;
@@ -587,6 +612,14 @@ public class RewardTicketsBean {
 
 	public void setEmailPreview(String emailPreview) {
 		this.emailPreview = emailPreview;
+	}
+
+	public String getNotification() {
+		return notification;
+	}
+
+	public void setNotification(String notification) {
+		this.notification = notification;
 	}
 
 }

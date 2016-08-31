@@ -368,12 +368,21 @@
 						<p:commandButton value="Send Email" icon="ui-icon-mail-open"
 							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
 							oncomplete="widgetSendEmail.show()" />
+
+						<p:commandButton value="Send Notification" icon="ui-icon-print"
+							actionListener="#{rewardTicketsBean.setupTicketNotification(ticket)}"
+							oncomplete="widgetTicketNotification.show()">
+
+						</p:commandButton>
 						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 							<p:commandButton value="Yes" type="button"
 								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 							<p:commandButton value="No" type="button"
 								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 						</p:confirmDialog>
+
+
+
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:panelGrid>
@@ -515,6 +524,23 @@
 			<p:commandButton value="Close" icon="ui-icon-close"
 				oncomplete="widgetEmailPreview.hide()" />
 		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog id="idWidgetTicketNotification" width="600"
+		style="width:600px;" header="Ticket Notification"
+		widgetVar="widgetTicketNotification" resizable="false"
+		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
+
+		<h:panelGrid id="idWidgetTicketNotificationPreviewGrid" columns="1"
+			cellpadding="1">
+
+			<p:inputText size="200" value="#{rewardTicketsBean.notification}" />
+		</h:panelGrid>
+		<p:commandButton value="Close" icon="ui-icon-close"
+				oncomplete="widgetTicketNotification.hide()" />
+			<p:commandButton value="Send notification" icon="ui-icon-mail-open"
+				actionListener="#{rewardTicketsBean.sendNotification()}"
+				oncomplete="widgetTicketNotification.hide()" />
 	</p:dialog>
 
 

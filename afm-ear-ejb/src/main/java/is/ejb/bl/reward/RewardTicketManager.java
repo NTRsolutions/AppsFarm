@@ -12,6 +12,7 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.email.EmailHolder;
 import is.ejb.bl.email.EmailManager;
+import is.ejb.bl.notificationSystems.NotificationManager;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.wallet.WalletManager;
 import is.ejb.bl.wallet.WalletTransactionType;
@@ -36,6 +37,8 @@ public class RewardTicketManager {
 	private DAOApplicationReward daoApplicationReward;
 	@Inject
 	private EmailManager emailManager;
+	@Inject
+	private NotificationManager notificationManager;
 	@Inject
 	private Logger logger;
 
@@ -252,6 +255,24 @@ public class RewardTicketManager {
 							+ " using template id: " + emailTemplateId + " reward result " + rewardResult
 							+ " exception: " + exc.toString(),
 					rewardTicket);
+		}
+	}
+
+	public boolean sendNotification(RewardTicketEntity rewardTicket, String notificationMessage) {
+		try {
+			AppUserEntity appUser = daoAppUser.findById(rewardTicket.getUserId());
+			boolean result = notificationManager.sendNotification(appUser, notificationMessage);
+			Application.getElasticSearchLogger().indexRewardTicket(
+					LogStatus.OK, "Sending notification: " + notificationMessage + " for reward ticket id : "
+							+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + " result: " + result,
+					rewardTicket);
+			return true;
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.ERROR,
+					"Error occured during sending notification: " + notificationMessage + " for reward ticket id : "
+							+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + " error: " + exc.toString(),rewardTicket);
+			return false;
 		}
 	}
 
