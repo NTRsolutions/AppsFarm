@@ -176,16 +176,16 @@ ul.ui-menu-child {
 
 					<p:submenu label="Reports"
 						rendered="#{acccessFilterBean.renderUsers}">
-						<p:menuitem rendered="true" value="User Clicks"
+						<p:menuitem rendered="false" value="User Clicks"
 							actionListener="#{sentinelMenuBean.loadTab('tabEventBrowser')}"
 							ajax="false" />
-						<p:menuitem rendered="true" value="Reward Tickets"
+						<p:menuitem rendered="false" value="Reward Tickets"
 							actionListener="#{sentinelMenuBean.loadTab('tabRewardTickets')}"
 							ajax="false" />
-						<p:menuitem rendered="true" value="Wallet Transactions"
+						<p:menuitem rendered="false" value="Wallet Transactions"
 							actionListener="#{sentinelMenuBean.loadTab('tabWalletTransactions')}"
 							ajax="false" />
-						<p:menuitem rendered="true" value="Stats"
+						<p:menuitem rendered="false" value="Stats"
 							actionListener="#{sentinelMenuBean.loadTab('tabProviderReport')}"
 							ajax="false" />
 
