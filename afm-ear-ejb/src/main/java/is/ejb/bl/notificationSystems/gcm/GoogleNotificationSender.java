@@ -64,6 +64,7 @@ public class GoogleNotificationSender {
     String status;
     if (devices.isEmpty()) {
       status = "Message ignored as there is no device registered!";
+      logger.info(status);
     } else {
       // NOTE: check below is for demonstration purposes; a real application
       // could always send a multicast, even for just one recipient
@@ -72,11 +73,11 @@ public class GoogleNotificationSender {
         message = new Message.Builder()
         .dryRun(false)
         .addData("alert", messageContent) //you have been reward ... - message displayed to user
-        .addData("category", "[adbroker]")
         .build();
 
         Result result = sender.send(message, registrationId, 5);
         status = "Sent message to one device: " + result;
+        logger.info(status);
       } else {
         // send a multicast message using JSON
         // must split in chunks of 1000 devices (GCM limit)
@@ -96,12 +97,16 @@ public class GoogleNotificationSender {
         }
         status = "Asynchronously sending " + tasks + " multicast messages to " +
             total + " devices";
+        logger.info(status);
       }
     }
   
     if(message!=null) {
+    	 logger.info("Send message: "+message.toString()+" status is: "+status.toString());
     	return "Send message: "+message.toString()+" status is: "+status.toString();
+    	
     } else {
+    	logger.info("Error creating message, unable to send it");
     	return "Error creating message, unable to send it";
     }
   }

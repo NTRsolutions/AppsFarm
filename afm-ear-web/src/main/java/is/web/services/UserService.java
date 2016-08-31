@@ -8,7 +8,6 @@ import is.ejb.bl.conversionHistory.ConversionHistoryEntry;
 import is.ejb.bl.conversionHistory.ConversionHistoryHolder;
 import is.ejb.bl.crashReport.CrashReportManager;
 import is.ejb.bl.notificationSystems.NotificationManager;
-import is.ejb.bl.notificationSystems.NotificationType;
 import is.ejb.bl.offerWall.content.IndividualOfferWall;
 import is.ejb.bl.offerWall.content.Offer;
 import is.ejb.bl.referral.ReferralManager;

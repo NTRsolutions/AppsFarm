@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import is.ejb.bl.business.Application;
+import is.ejb.bl.notificationSystems.NotificationManager;
+import is.ejb.bl.notificationSystems.NotificationMessageDictionary;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAORewardType;
@@ -32,6 +34,9 @@ public class AttendanceManager {
 	@Inject
 	private Logger logger;
 
+	@Inject
+	private NotificationManager notificationManager;
+
 	public void checkAttendance(AppUserEntity appUser) {
 		try {
 			if (appUser != null) {
@@ -51,7 +56,9 @@ public class AttendanceManager {
 						+ currentTime);
 
 				if (lastBonusTime == null || currentTime.after(lastBonusTimePlusOneDay)) {
-					sendUserAttendanceBonus(appUser);
+					double attendanceValue = getAttendaceValue(appUser.getRewardTypeName());
+					sendUserAttendanceBonus(appUser,attendanceValue);
+					notifyUser(appUser,attendanceValue);
 				}
 			}
 		} catch (Exception exc) {
@@ -69,7 +76,7 @@ public class AttendanceManager {
 		}
 	}
 
-	public void sendUserAttendanceBonus(AppUserEntity appUser) {
+	public void sendUserAttendanceBonus(AppUserEntity appUser,double attendanceValue) {
 		try {
 
 			WalletDataEntity walletData = daoWalletData.findByUserId(appUser.getId());
@@ -77,7 +84,7 @@ public class AttendanceManager {
 				walletData = new WalletDataEntity();
 				walletData.setUserId(appUser.getId());
 			}
-			double attendanceValue = getAttendaceValue(appUser.getRewardTypeName());
+			
 			walletData.setBalance(walletData.getBalance() + attendanceValue);
 			daoWalletData.createOrUpdate(walletData);
 
@@ -91,5 +98,18 @@ public class AttendanceManager {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+	}
+
+	private void notifyUser(AppUserEntity appUser, double attendanceValue) {
+		Application.getElasticSearchLogger().indexLog(Application.ATTENDANCE_ACTIVITY, -1, LogStatus.OK,
+				Application.ATTENDANCE_ACTIVITY + " User id: " + appUser.getId()
+						+ " is being notified attendance bonus: " + attendanceValue);
+		String message = NotificationMessageDictionary.ATTENDANCE_BONUS.replace("\\{value\\}",
+				"" + attendanceValue + "points");
+		boolean result = notificationManager.sendNotification(appUser, message);
+		Application.getElasticSearchLogger().indexLog(Application.ATTENDANCE_ACTIVITY, -1, LogStatus.OK,
+				Application.ATTENDANCE_ACTIVITY + "Notified User id: " + appUser.getId() + " messgae:" + message + " result: " + result);
+		logger.info( "Notified User id: " + appUser.getId() + " messgae:" + message + " result: " + result);
+
 	}
 }

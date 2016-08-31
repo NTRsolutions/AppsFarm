@@ -389,7 +389,7 @@ public class SnapdealManager {
 					Application.SNAPDEAL_REPORT_TIMER + "Event with internalT: " + detail.getAffiliateSubId1()
 							+ " updated. " + event.toString());
 
-			notificationManager.sendRewardNotification(event, true, false);
+			//notificationManager.sendRewardNotification(event, true, false);
 			updateConversionHistory(event);
 			indexSnapdealConversion(event);
 

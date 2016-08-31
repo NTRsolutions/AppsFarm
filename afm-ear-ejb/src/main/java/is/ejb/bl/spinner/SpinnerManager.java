@@ -520,7 +520,7 @@ public class SpinnerManager {
 			spinnerData.setLastDailyBonus(timestamp);
 			log(LogStatus.OK, "Setting last daily bonus time " + timestamp + " for :" + appUser.getId());
 			daoSpinnerData.createOrUpdate(spinnerData);
-			notificationManager.sendSpinnerDailyBonusNotification(appUser);
+			//notificationManager.sendSpinnerDailyBonusNotification(appUser);
 
 		} catch (Exception exc) {
 			exc.printStackTrace();

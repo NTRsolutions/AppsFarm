@@ -615,9 +615,9 @@ public class ConverstionTrackingService {
 																								// successful
 																								// notification
 					// internal method to handle notifications
-					notificationManager.sendRewardNotification(event, true, false);
+					//notificationManager.sendRewardNotification(event, true, false);
 				} else {
-					notificationManager.sendRewardNotification(event, false, false);
+					//notificationManager.sendRewardNotification(event, false, false);
 				}
 
 				if (event.getUserEventCategory().equals(UserEventCategory.INVITE.toString())) {

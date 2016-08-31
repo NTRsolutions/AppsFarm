@@ -213,21 +213,19 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.5</version>
 		</dependency>
-		
-		<!-- 
-			Added for quidco-sdk
-		 -->
-				<dependency>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-lang3</artifactId>
-					<version>3.0</version>
-				</dependency>
-				
-				<dependency>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-collections4</artifactId>
-					<version>4.1</version>
-				</dependency>
+
+		<!-- Added for quidco-sdk -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -296,7 +294,7 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/sigar.jar</systemPath>
 		</dependency>
-		
+
 		<!-- quidco sdk -->
 		<dependency>
 			<groupId>com.bluepodmedia</groupId>
@@ -305,7 +303,7 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/quidco-sdk.jar</systemPath>
 		</dependency>
-		
+
 		<!-- java mail for sending e-mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -347,6 +345,21 @@
 			<artifactId>zendesk-java-client</artifactId>
 			<version>0.2.4</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-server-sdk</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.22.0</version>
+		</dependency>
+
 
 	</dependencies>
 

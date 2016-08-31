@@ -91,7 +91,7 @@ public class ReferralManager {
 			boolean detectedReferralAbuser = referralAbuseDetector.checkInvitation(invitation);
 			if (detectedReferralAbuser) {
 
-				notificationManager.sendReferralAbuseNotification(invitation);
+				//notificationManager.sendReferralAbuseNotification(invitation);
 
 				invitation.setValid(false); // if inviation is invalid - it will
 											// not trigger reward in the future!
@@ -203,7 +203,7 @@ public class ReferralManager {
 			boolean detectedReferralAbuser = referralAbuseDetector.checkInvitation(invitation);
 			if (detectedReferralAbuser) {
 
-				notificationManager.sendReferralAbuseNotification(invitation);
+				//notificationManager.sendReferralAbuseNotification(invitation);
 				Application.getElasticSearchLogger().indexLog(
 						Application.INVITATION_ABUSE_DETECTOR_CHECK,
 						-1,
@@ -289,7 +289,7 @@ public class ReferralManager {
 								LogStatus.ERROR,
 								Application.INVITATION_ACTIVITY + " " + Application.INVITATION_ACTIVITY_ABORTED + " " + "invited user not activated"
 										+ invitedUser.getPhoneNumber());
-						notificationManager.sendNoActivatedAccountNotification(invitation);
+						//notificationManager.sendNoActivatedAccountNotification(invitation);
 
 					} else {
 
@@ -301,7 +301,7 @@ public class ReferralManager {
 									LogStatus.ERROR,
 									Application.INVITATION_ACTIVITY + " " + Application.INVITATION_ACTIVITY_ABORTED + " "
 											+ "inviting user exceeded limit" + invitedUser.getPhoneNumber());
-							notificationManager.sendExceededLimitNotification(invitation);
+							//notificationManager.sendExceededLimitNotification(invitation);
 
 						} else {
 

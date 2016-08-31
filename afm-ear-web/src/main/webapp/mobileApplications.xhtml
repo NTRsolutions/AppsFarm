@@ -54,7 +54,7 @@
 				<h:outputText value="#{model.versionErrorMessage}" />
 			</p:column>
 
-			<p:column rendered="true" headerText="GCM Key"
+			<p:column rendered="true" headerText="GCM API Key"
 				style="width:250px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.gcmKey}" />
@@ -154,7 +154,7 @@
 				<p:inputText size="70"
 					value="#{networkSettingsBean.mobileApplicationTypeEditModel.versionErrorMessage}" />
 				
-				<h:outputText styleClass="dialog-mediumFont" value="GCM Key:" />
+				<h:outputText styleClass="dialog-mediumFont" value="GCM API Key:" />
 				<p:inputText size="70"
 					value="#{networkSettingsBean.mobileApplicationTypeEditModel.gcmKey}" />
 			</h:panelGrid>

@@ -197,6 +197,9 @@ public class SentinelMenuBean implements Serializable  {
 			tabBean.addTab(SentinelTabs.TAB_EMAIL_TEMPLATES,"EmailTemplates","emailTemplates.xhtml","");
 		}
 		
+		else if(tabType.equals(SentinelTabs.TAB_DEFAULT_PAGE)) { 
+			tabBean.addTab(SentinelTabs.TAB_DEFAULT_PAGE,"DefaultPage","defaultPage.xhtml","");
+		}
 
 		//to be deleted in future
 		else if(tabType.equals(SentinelTabs.TAB_SENTINEL_AUTOREGISTER)) { 

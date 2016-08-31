@@ -517,6 +517,9 @@ public class Application {
 	public static final String ATTENDANCE_ACTIVITY = "ATTENDANCE_ACTIVITY";
 
 	
+	//NOTIFICATION
+	public static final String NOTIFICATION_ACTIVITY = "NOTIFICATION_ACTIVITY";
+	
     private static Application app;
     private String overrideServerName = null;
     private String firmwarePath = null;

@@ -257,9 +257,9 @@ public class RewardTrackingService {
 			// if reward wasn't issued via vouchers
 			if (isVoucherRewardIssued == false) {
 				if (event.getRewardResponseStatus().equals(RewardStatus.SUCCESS.toString())) {
-					notificationManager.sendRewardNotification(event, true, false);
+					//notificationManager.sendRewardNotification(event, true, false);
 				} else {
-					notificationManager.sendRewardNotification(event, false, false);
+					//notificationManager.sendRewardNotification(event, false, false);
 				}
 			}
 
@@ -417,7 +417,7 @@ public class RewardTrackingService {
 				event.setMobileAppNotificationStatus(new Timestamp(new Date().getTime()).toString());
 				event.setMobileAppNotificationStatusMessage("Vouchers sent via Donkey successfully");
 				daoUserEvent.createOrUpdate(event, 0);
-				notificationManager.sendVouchers(appUser, voucherCodesList);
+				//notificationManager.sendVouchers(appUser, voucherCodesList);
 			}
 			else{
 				logger.info("Cant issue voucher reward because event is null");

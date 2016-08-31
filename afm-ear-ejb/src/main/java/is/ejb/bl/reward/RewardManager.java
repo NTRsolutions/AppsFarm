@@ -156,7 +156,7 @@ public class RewardManager {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			// issue notification
-			notificationManager.sendWalletTopupNotification(event, false, isEventFromUserThatWasInviting);
+			
 			logger.severe(exc.toString());
 			Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, realm.getId(),
 					LogStatus.ERROR,

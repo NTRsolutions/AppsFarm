@@ -104,8 +104,11 @@ public class SentinelTabs {
 	//rewardCategories.xhtml
 	public static final String TAB_REWARD_CATEGORIES = "tabRewardCategories";
 	
-	//tabEmailTemplates.xhtml
+	//emailTemplates.xhtml
 	public static final String TAB_EMAIL_TEMPLATES = "tabEmailTemplates";
+	
+	//defaultPage.xhtml
+	public static final String TAB_DEFAULT_PAGE = "tabDefaultPage";
 	
 	
 	//-------------------------------------- domain config -------------------------------------
