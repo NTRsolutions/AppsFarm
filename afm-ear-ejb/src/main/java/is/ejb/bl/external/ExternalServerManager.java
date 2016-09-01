@@ -27,7 +27,7 @@ public class ExternalServerManager {
 		try {
 			return daoExternalServerAddress.findAll();
 		} catch (Exception exception) {
-			exception.toString();
+			logger.info(exception.toString());
 			return new ArrayList<ExternalServerAddressEntity>();
 		}
 	}
@@ -36,7 +36,7 @@ public class ExternalServerManager {
 		try {
 			return daoExternalServerAddress.findByExternalServerType(type);
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			logger.info(exception.toString());
 			return null;
 		}
 	}
@@ -86,7 +86,7 @@ public class ExternalServerManager {
 			daoExternalServerAddress.delete(entity);
 			return true;
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			logger.info(exception.toString());
 			return false;
 		}
 	}

@@ -100,8 +100,8 @@ public class TestManager {
         	BufferedReader in = null;
         	try {
     			//String urlParameters = realm.getTestModeUrl()+"/ab/svc/v1/conversion/"+event.getInternalTransactionId()+"/"+providerTransactionId;
-    			String urlParameters = realm.getTestModeUrl()+"/ab/svc/v1/conversion?internalTransactionId="+event.getInternalTransactionId()+"&offerProviderTransactionId="+providerTransactionId;
-    			
+    			String urlParameters = realm.getTestModeUrl()+"/afm/svc/v1/conversion?internalTransactionId="+event.getInternalTransactionId()+"&offerProviderTransactionId="+providerTransactionId;
+    			logger.info("Executing url: " + urlParameters);
     			URL testUrl = new URL(urlParameters);
     	        urlConnection = (HttpURLConnection)testUrl.openConnection();
     	        urlConnection.setConnectTimeout(realm.getConnectionTimeout() * 1000);
@@ -114,6 +114,7 @@ public class TestManager {
     	        while ((inputLine = in.readLine()) != null) {
     	        	reqResponse = inputLine;
     	        }
+    	        logger.info("Result: " + reqResponse);
         	} finally {
         		if(in != null) {
         			in.close();

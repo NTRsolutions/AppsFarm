@@ -103,20 +103,23 @@ public class RewardManager {
 			boolean isEventFromUserThatWasInviting) {
 
 		try {
+			logger.info("Request reward for : " + event + " realm: " + realm);
 			requestWalletTopup(realm, event, isEventFromUserThatWasInviting);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		return "{\"response\":\" status: " + RespStatusEnum.SUCCESS + " " + event.getTransactionId() + ":OK" + " code: "
-				+ RespCodesEnum.OK_NO_CONTENT + "\"}";
+		return getSuccessfullResponse(event);
 
 	}
 
+	private String getSuccessfullResponse(UserEventEntity event) {
+		return "{\"response\":\" status: " + RespStatusEnum.SUCCESS + " " + event.getTransactionId() + ":OK" + " code: "
+				+ RespCodesEnum.OK_NO_CONTENT + "\"}";
+	}
+
 	private void requestWalletTopup(RealmEntity realm, UserEventEntity event, boolean isEventFromUserThatWasInviting) {
-
+		AppUserEntity appUser = null;
 		try {
-
-			// topup user balance with reward value provided in the event object
 			Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, realm.getId(),
 					LogStatus.OK,
 					Application.WALLET_PAY_IN + " " + " performing wallet topup for user: " + event.getEmail() + " "
@@ -125,14 +128,11 @@ public class RewardManager {
 							+ " reward name: " + event.getRewardName() + " internalT: "
 							+ event.getInternalTransactionId());
 
-		
-			AppUserEntity appUser = daoAppUser.findById(event.getUserId());
+			appUser = daoAppUser.findById(event.getUserId());
 			walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION, event.getRewardValue(),
 					"Reward for event id: " + event.getId() + " internalTransactionId: "
 							+ event.getInternalTransactionId());
-			
-
-			// update event that reward request and response was successful
+			logger.info("Reward completed to wallet");
 			event.setRewardRequestDate(new Timestamp(System.currentTimeMillis()));
 			event.setRewardRequestStatus(RespStatusEnum.SUCCESS.toString());
 			event.setRewardRequestStatusMessage("OK");
@@ -141,7 +141,7 @@ public class RewardManager {
 			event.setRewardResponseStatusMessage("OK");
 
 			daoUserEvent.createOrUpdate(event, 2);
-
+			logger.info("User event updated");
 			// create wallet payin es log
 			Application.getElasticSearchLogger().indexWalletTransaction(realm.getId(), event.getPhoneNumber(), "",
 					event.getDeviceType(), event.getOfferId(), event.getOfferSourceId(), event.getOfferTitle(),
@@ -151,22 +151,25 @@ public class RewardManager {
 					UserEventCategory.WALLET_PAY_IN.toString(), "", "", event.getIpAddress(), event.getCountryCode(),
 					event.isInstant(), event.getApplicationName(), event.isTestMode());
 
-			String message = NotificationMessageDictionary.REWARD_MESSAGE;
-			message.replaceAll("\\{reward\\}", event.getRewardValue() + "");
-			message.replaceAll("\\{offer\\}", event.getOfferTitle());
-			notificationManager.sendNotification(appUser, message);
+			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_MESSAGE);
 
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			// issue notification
-			
-			logger.severe(exc.toString());
+			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_ERROR_MESSAGE);
 			Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, realm.getId(),
 					LogStatus.ERROR,
 					Application.WALLET_PAY_IN + " " + Application.WALLET_TRANSACTION_ACTIVITY_ABORTED + " internalT: "
 							+ event.getInternalTransactionId() + " status: " + RespStatusEnum.FAILED + "  code: "
 							+ RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR + Arrays.toString(exc.getStackTrace()));
 		}
+	}
+
+	private void sendNotification(AppUserEntity appUser, UserEventEntity event, String message) {
+		logger.info("Sending notification: " + message + " event: " + event + " appUser: " + appUser);
+		message = message.replaceAll("\\{reward\\}", event.getRewardValue() + "points ");
+		message = message.replaceAll("\\{offer\\}", event.getOfferTitle());
+		notificationManager.sendNotification(appUser, message);
+
 	}
 
 	/**

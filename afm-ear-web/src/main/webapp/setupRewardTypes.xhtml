@@ -127,7 +127,7 @@
 		</h:panelGrid>
 	</p:dialog>
 
-	<!-- edit currency element -->
+	
 	<p:dialog header="Edit selected reward type"
 		widgetVar="widgetRewardTypeEditDialog" resizable="false"
 		showEffect="clip" hideEffect="fold" modal="false" appendToBody="false">
@@ -164,6 +164,9 @@
 				value="Attendance Value: " />
 			<p:inputText size="35"
 				value="#{offerRewardTypesBean.editedRewardType.attendanceValue}" />
+			<h:outputText styleClass="dialog-mediumFont" value="Test mode:" />
+			<p:selectBooleanCheckbox
+				value="#{offerRewardTypesBean.editedRewardType.testMode}" />
 			<h:outputText styleClass="dialog-mediumFont" value="Wall status:" />
 			<p:selectBooleanCheckbox
 				value="#{offerRewardTypesBean.editedRewardType.wallStatus}" />

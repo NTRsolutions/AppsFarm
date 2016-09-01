@@ -190,7 +190,9 @@ public class ClickService {
 			event.setOfferRedirectUrl(saltedOfferUrl);
 			event.setRealmId(realmId);
 			event.setIpAddress(ipAddress);
+			
 			boolean isTestModeEnabled = testManager.isTestModeEnabledForRewardType(realm, event);
+			logger.info("Checking test mode: " +realm + " result" +isTestModeEnabled);
 			event.setTestMode(isTestModeEnabled);
 			daoUserEvent.create(event);
 
@@ -516,7 +518,7 @@ public class ClickService {
 		String url = parameters.containsKey("url") ? (String) parameters.get("url") : null;
 		String adProviderCodeName = parameters.containsKey("adProviderCodeName")
 				? (String) parameters.get("adProviderCodeName") : null;
-		String offerTitle = parameters.containsKey("title") ? (String) parameters.get("title") : null;
+		String offerTitle = parameters.containsKey("offerTitle") ? (String) parameters.get("offerTitle") : null;
 		String affiliateId = parameters.containsKey("affiliateId") ? (String) parameters.get("affiliateId") : null;
 		offer.setInternalNetworkId(internalNetworkId);
 		offer.setId(offerId);
