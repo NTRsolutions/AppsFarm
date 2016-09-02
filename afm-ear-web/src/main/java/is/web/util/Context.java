@@ -4,7 +4,6 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.ApplicationBootstraper;
 import is.ejb.dl.dao.DAOUser;
 import is.ejb.dl.entities.UserEntity;
-import is.web.beans.system.status.StatsManager;
 import is.web.servlets.ESController;
 
 import java.io.File;

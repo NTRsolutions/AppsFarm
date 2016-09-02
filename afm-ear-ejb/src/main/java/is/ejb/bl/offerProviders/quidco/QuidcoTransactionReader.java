@@ -13,17 +13,11 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.bluepodmedia.sdk.quidco.offer.OfferManager;
-import com.bluepodmedia.sdk.quidco.offer.dto.Activity;
-import com.bluepodmedia.sdk.quidco.offer.dto.ActivityState;
-import com.bluepodmedia.sdk.quidco.offer.dto.ActivityStates;
-import com.bluepodmedia.sdk.quidco.offer.dto.Delta;
-import com.bluepodmedia.sdk.quidco.offer.utils.DeltaEntity;
 
 @Stateless
 public class QuidcoTransactionReader {
 
-	private OfferManager offerManager;
+/*	private OfferManager offerManager;
 
 	@Inject
 	private Logger logger;
@@ -121,6 +115,6 @@ public class QuidcoTransactionReader {
 			exception.printStackTrace();
 			return null;
 		}
-	}
+	}*/
 
 }

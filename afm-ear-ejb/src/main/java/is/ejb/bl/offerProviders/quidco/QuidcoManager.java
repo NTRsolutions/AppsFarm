@@ -30,11 +30,11 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.bluepodmedia.sdk.quidco.offer.dto.ActivityState;
+
 
 @Stateless
 public class QuidcoManager {
-
+/*
 	@Inject
 	private Logger logger;
 
@@ -502,5 +502,5 @@ public class QuidcoManager {
 			exception.printStackTrace();
 		}
 	}
-
+*/
 }

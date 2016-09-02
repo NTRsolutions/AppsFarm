@@ -3,7 +3,7 @@ package is.ejb.bl.monitoring.operation;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.bl.monitoring.server.ServerStats;
-import is.ejb.bl.monitoring.server.ServerStatusMonitor;
+
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.mail.MailDataHolder;
 import is.ejb.bl.system.mail.Mailer;
@@ -47,7 +47,7 @@ public class SystemOpsMonitor {
 	private MonitoringSetupEntity monitoringSetup;
 	private Mailer mailer = new Mailer();
 	private SystemOpsAnalyser systemOpsAnalyser; //for retrieving KPIs from data storage (ES mostly)
-	private ServerStatusMonitor serverStatusMonitor;
+	//private ServerStatusMonitor serverStatusMonitor;
 	private boolean isServerMonitoringEnabled;
 	public void monitor(RealmEntity realm, int monitoringInterval, boolean isServerMonitoringEnabled) throws Exception {
     	monitoringSetup = daoMonitoringSetup.findByRealmId(realm.getId());
@@ -182,8 +182,8 @@ public class SystemOpsMonitor {
     	ServerStats serverStats = null;
     	if(isServerMonitoringEnabled) {
         	try {
-            	serverStatusMonitor = new ServerStatusMonitor(100);
-            	serverStats = serverStatusMonitor.regenerateStats();
+            //	serverStatusMonitor = new ServerStatusMonitor(100);
+            	//serverStats = serverStatusMonitor.regenerateStats();
         	} catch(Exception exc) {
         		serverStats = new ServerStats();
         		

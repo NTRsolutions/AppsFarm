@@ -24,10 +24,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import com.bluepodmedia.sdk.quidco.MobileHeaders;
-import com.bluepodmedia.sdk.quidco.error.QuidcoException;
-import com.bluepodmedia.sdk.quidco.user.UserManager;
-import com.bluepodmedia.sdk.quidco.utils.QDevice;
 import com.google.gson.Gson;
 
 @Path("/")
@@ -59,7 +55,7 @@ public class QuidcoService {
 	@Produces("application/json")
 	@Path("/v1/quidcoTransaction/")
 	public String quidcoTransactionReadTest() {
-		quidcoTransactionReader.loadTransactions();
+		//quidcoTransactionReader.loadTransactions();
 		return "{}";
 	}
 
@@ -114,7 +110,7 @@ public class QuidcoService {
 
 			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(userId));
 			if (appUser != null) {
-				quidcoManager.sendQuidcoCreditCardRegistrationEmail(appUser);
+				//quidcoManager.sendQuidcoCreditCardRegistrationEmail(appUser);
 				Response successResponse = new Response().getSuccessResponse();
 				return gson.toJson(successResponse);
 			} else {

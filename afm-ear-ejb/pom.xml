@@ -286,23 +286,6 @@
 			<version>1.9</version>
 		</dependency>
 
-		<!-- hyperic sigar for collecting system performance stats -->
-		<dependency>
-			<groupId>org.hyperic</groupId>
-			<artifactId>sigar</artifactId>
-			<version>1.6.4</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/sigar.jar</systemPath>
-		</dependency>
-
-		<!-- quidco sdk -->
-		<dependency>
-			<groupId>com.bluepodmedia</groupId>
-			<artifactId>quidco-sdk</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/quidco-sdk.jar</systemPath>
-		</dependency>
 
 		<!-- java mail for sending e-mail -->
 		<dependency>

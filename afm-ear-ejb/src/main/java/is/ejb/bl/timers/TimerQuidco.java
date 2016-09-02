@@ -6,7 +6,7 @@ import is.ejb.bl.business.BlockedOfferType;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.bl.crf.CRFManager;
 import is.ejb.bl.monitoring.server.ServerStats;
-import is.ejb.bl.monitoring.server.ServerStatusMonitor;
+
 import is.ejb.bl.offerFilter.BlockedOffer;
 import is.ejb.bl.offerFilter.BlockedOffers;
 import is.ejb.bl.offerFilter.SerDeBlockedOffers;
@@ -154,7 +154,7 @@ public class TimerQuidco {
     				Application.getElasticSearchLogger().indexLog(Application.QUIDCO, -1, 
     						LogStatus.OK, 
     						Application.QUIDCO_GET_DELTA+" TIMER triggered - retrieving delta transactions from quidco");
-    				quidcoTransactionReader.loadTransactions();
+    				//quidcoTransactionReader.loadTransactions();
     	        } else {
     				Application.getElasticSearchLogger().indexLog(Application.QUIDCO, -1, 
     						LogStatus.OK, 
