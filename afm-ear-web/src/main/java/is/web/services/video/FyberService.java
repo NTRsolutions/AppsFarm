@@ -30,6 +30,9 @@ public class FyberService {
 		System.out.println(info.toString());
 		System.out.println(info.getPath());
 		System.out.println(info.getAbsolutePath());
+		System.out.println(info.getQueryParameters());
+		System.out.println(info.getPathParameters());
+		System.out.println(info.getRequestUri());
 		return Response.accepted().build();
 	}
 	
