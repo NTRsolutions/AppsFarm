@@ -1,5 +1,7 @@
 package is.web.services.video;
 
+import java.util.logging.Logger;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -27,6 +29,8 @@ public class FyberService {
 	@Inject
 	private VideoManager videoManager;
 	
+	@Inject
+	private Logger logger;
 	@Path("/video/fyber/reward")
 	@GET
 	public Response rewardCallback(@QueryParam("uid") String uid, @QueryParam("amount") int amount,
@@ -43,6 +47,8 @@ public class FyberService {
 		
 		Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
 				Application.VIDEO_REWARD_ACTIVITY + "Received video callback request from ipAddress: "
+						+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
+		logger.info("Received video callback request from ipAddress: "
 						+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
 		videoManager.issueReward(data);
 		
