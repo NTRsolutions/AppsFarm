@@ -33,10 +33,13 @@ public class FyberService {
 	private Logger logger;
 	@Path("/video/fyber/reward")
 	@GET
-	public Response rewardCallback(@QueryParam("uid") String uid, @QueryParam("amount") int amount,
+	public Response rewardCallback(@Context UriInfo ui,@QueryParam("uid") String uid, @QueryParam("amount") int amount,
 			@QueryParam("currency_id") String currencyId, @QueryParam("currency_name") String currencyName,
 			@QueryParam("pub1") String userId,@QueryParam("pub2") String username) {
 
+		System.out.println(ui.getQueryParameters().toString());
+		System.out.println("PUB1: " + userId);
+		System.out.println(" PUB2:" + username);
 		VideoCallbackData data = new VideoCallbackData();
 		data.setAmount(amount);
 		data.setCurrencyId(currencyId);
