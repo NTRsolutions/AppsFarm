@@ -77,6 +77,10 @@ public class VideoManager {
 				return;
 			}
 			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data.getUserId()));
+			System.out.println("appUser: " + appUser);
+			System.out.println("username : " + appUser.getUsername());
+			System.out.println("email: " + appUser.getEmail());
+			System.out.println("realmid: " + appUser.getRealmId());
 			UserEventEntity event = createVideoEvent(appUser, data);
 
 			RealmEntity realm = daoRealm.findById(event.getId());

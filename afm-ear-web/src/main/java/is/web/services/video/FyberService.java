@@ -33,7 +33,7 @@ public class FyberService {
 	private Logger logger;
 	@Path("/video/fyber/reward")
 	@GET
-	public Response rewardCallback(@Context UriInfo ui,@QueryParam("uid") String uid, @QueryParam("amount") int amount,
+	public Response rewardCallback(@Context UriInfo ui,@QueryParam("uid") String uid,@QueryParam("sid") String sid, @QueryParam("amount") int amount,
 			@QueryParam("currency_id") String currencyId, @QueryParam("currency_name") String currencyName,
 			@QueryParam("pub1") String userId,@QueryParam("pub2") String username) {
 
@@ -44,7 +44,7 @@ public class FyberService {
 		data.setAmount(amount);
 		data.setCurrencyId(currencyId);
 		data.setCurrencyName(currencyName);
-		data.setUid(uid);
+		data.setUid(sid);
 		data.setUserId(userId);
 		data.setUsername(username);
 		
