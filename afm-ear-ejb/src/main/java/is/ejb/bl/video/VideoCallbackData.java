@@ -7,6 +7,7 @@ public class VideoCallbackData {
 	private int amount;
 	private String currencyId;
 	private String currencyName;
+	private String transactionId;
 	public String getUserId() {
 		return userId;
 	}
@@ -43,12 +44,19 @@ public class VideoCallbackData {
 	public void setCurrencyName(String currencyName) {
 		this.currencyName = currencyName;
 	}
+	public String getTransactionId() {
+		return transactionId;
+	}
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
 	@Override
 	public String toString() {
 		return "VideoCallbackData [userId=" + userId + ", username=" + username + ", uid=" + uid + ", amount=" + amount
-				+ ", currencyId=" + currencyId + ", currencyName=" + currencyName + "]";
+				+ ", currencyId=" + currencyId + ", currencyName=" + currencyName + ", transactionId=" + transactionId
+				+ "]";
 	}
-	
+
 	
 	
 }

@@ -62,6 +62,7 @@ public class VideoManager {
 	@Inject
 	private DAORealm daoRealm;
 
+	
 	@Inject
 	private ExternalServerManager externalServerManager;
 
@@ -103,7 +104,16 @@ public class VideoManager {
 		try {
 			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data.getUserId()));
 			if (appUser != null && appUser.getUsername().equals(data.getUsername())) {
-				return true;
+				if (daoUserEvent.findByInternalTransactionIdSafe(data.getTransactionId()) == null){
+					logger.info("Transaction id unique");
+					return true;
+				} else {
+					logger.info("Transaction id not unique");
+					return false;
+				}
+				
+				
+				
 			} else {
 				return false;
 			}
@@ -122,7 +132,7 @@ public class VideoManager {
 		System.out.println(user.getDeviceType());
 		event.setAdProviderCodeName("FYBER");
 		event.setDeviceType(user.getDeviceType());
-		event.setInternalTransactionId("FYBER:" + data.getUid());
+		event.setInternalTransactionId("FYBER:" + data.getTransactionId());
 		event.setPhoneNumber(user.getPhoneNumber());
 		event.setPhoneNumberExt(user.getPhoneNumberExtension());
 		event.setRewardTypeName(user.getRewardTypeName()); // needed

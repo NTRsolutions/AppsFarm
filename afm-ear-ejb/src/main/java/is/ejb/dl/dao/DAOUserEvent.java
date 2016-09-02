@@ -134,6 +134,7 @@ public class DAOUserEvent {
 	}
 
 	public UserEventEntity findByInternalTransactionId(String internalTransactionId) throws Exception {
+
 		TypedQuery<UserEventEntity> query = em.createQuery(
 				"SELECT o FROM UserEventEntity o WHERE o.internalTransactionId = ?1", UserEventEntity.class);
 
@@ -144,6 +145,25 @@ public class DAOUserEvent {
 		else
 			return list.get(0);
 	}
+	
+	public UserEventEntity findByInternalTransactionIdSafe(String internalTransactionId)  {
+		try{
+		TypedQuery<UserEventEntity> query = em.createQuery(
+				"SELECT o FROM UserEventEntity o WHERE o.internalTransactionId = ?1", UserEventEntity.class);
+
+		query.setParameter(1, internalTransactionId);
+		List<UserEventEntity> list = query.getResultList();
+		if (list.size() == 0)
+			return null;
+		else
+			return list.get(0);
+		}
+		catch (Exception exc){
+			exc.printStackTrace();
+			return null;
+		}
+	}
+
 
 	public UserEventEntity findByPhone(String phoneNumber) throws Exception {
 		TypedQuery<UserEventEntity> query = em.createQuery("SELECT o FROM UserEventEntity o WHERE o.phoneNumber = ?1",

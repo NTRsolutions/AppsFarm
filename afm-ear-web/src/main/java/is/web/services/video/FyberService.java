@@ -35,11 +35,12 @@ public class FyberService {
 	@GET
 	public Response rewardCallback(@Context UriInfo ui,@QueryParam("uid") String uid,@QueryParam("sid") String sid, @QueryParam("amount") int amount,
 			@QueryParam("currency_id") String currencyId, @QueryParam("currency_name") String currencyName,
-			@QueryParam("pub1") String userId,@QueryParam("pub2") String username) {
+			@QueryParam("pub1") String userId,@QueryParam("pub2") String username,@QueryParam("pub3") String transactionId ) {
 
 		System.out.println(ui.getQueryParameters().toString());
 		System.out.println("PUB1: " + userId);
 		System.out.println(" PUB2:" + username);
+		System.out.println(" PUB3:" + transactionId);
 		VideoCallbackData data = new VideoCallbackData();
 		data.setAmount(amount);
 		data.setCurrencyId(currencyId);
@@ -47,6 +48,7 @@ public class FyberService {
 		data.setUid(sid);
 		data.setUserId(userId);
 		data.setUsername(username);
+		data.setTransactionId(transactionId);
 		
 		Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
 				Application.VIDEO_REWARD_ACTIVITY + "Received video callback request from ipAddress: "
