@@ -83,7 +83,7 @@ public class VideoManager {
 			System.out.println("realmid: " + appUser.getRealmId());
 			UserEventEntity event = createVideoEvent(appUser, data);
 
-			RealmEntity realm = daoRealm.findById(event.getId());
+			RealmEntity realm = daoRealm.findById(appUser.getRealmId());
 			daoUserEvent.createOrUpdate(event, 0);
 			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
 					Application.VIDEO_REWARD_ACTIVITY + "Issuing reward for video: " + data.toString()
@@ -142,6 +142,8 @@ public class VideoManager {
 		event.setUserEventCategory(UserEventCategory.VIDEO.toString());
 		event.setEmail(user.getEmail());
 		event.setInstant(false);
+		
+		System.out.println("Event: " + event.toString());
 		return event;
 	}
 
