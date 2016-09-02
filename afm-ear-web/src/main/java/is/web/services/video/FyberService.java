@@ -31,7 +31,7 @@ public class FyberService {
 	@GET
 	public Response rewardCallback(@QueryParam("uid") String uid, @QueryParam("amount") int amount,
 			@QueryParam("currency_id") String currencyId, @QueryParam("currency_name") String currencyName,
-			@QueryParam("pub0") String userId,@QueryParam("pub1") String username) {
+			@QueryParam("pub1") String userId,@QueryParam("pub2") String username) {
 
 		VideoCallbackData data = new VideoCallbackData();
 		data.setAmount(amount);
