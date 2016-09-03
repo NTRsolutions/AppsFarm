@@ -33,15 +33,22 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-@Stateless
+@Startup
+@Singleton
 public class VideoManager {
 
 	@Inject
@@ -62,22 +69,61 @@ public class VideoManager {
 	@Inject
 	private DAORealm daoRealm;
 
-	
 	@Inject
 	private ExternalServerManager externalServerManager;
 
+	private List<VideoCallbackData> dataToProcessList = Collections
+			.synchronizedList(new ArrayList<VideoCallbackData>());
+
+	public synchronized void addData(VideoCallbackData data) {
+		synchronized (dataToProcessList) {
+			logger.info("Added data: " + data);
+			dataToProcessList.add(data);
+			logger.info("There is " + dataToProcessList.size()
+					+ " after inserting");
+		}
+	}
+
+	public synchronized List<VideoCallbackData> getData() {
+		List<VideoCallbackData> dataProcessList;
+		synchronized (dataToProcessList) {
+			logger.info("There is " + dataToProcessList.size()
+					+ " elements to process");
+			dataProcessList = new ArrayList<VideoCallbackData>(
+					dataToProcessList);
+			Iterator<VideoCallbackData> iter = dataToProcessList.iterator();
+			while (iter.hasNext()) {
+				VideoCallbackData data = iter.next();
+				logger.info("Removing data: " + data);
+				iter.remove();
+			}
+		}
+		logger.info("Returning elements to process:" + dataProcessList.size());
+		return dataProcessList;
+
+	}
+
 	public void issueReward(VideoCallbackData data) {
 		try {
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
-					Application.VIDEO_REWARD_ACTIVITY + "Issuing reward for video: " + data.toString());
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.OK,
+					Application.VIDEO_REWARD_ACTIVITY
+							+ "Issuing reward for video: " + data.toString());
 
 			boolean validation = validateRequest(data);
 			if (!validation) {
-				Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.ERROR,
-						Application.VIDEO_REWARD_ACTIVITY + "Validation failed for: " + data.toString());
+				Application.getElasticSearchLogger().indexLog(
+						Application.VIDEO_REWARD_ACTIVITY,
+						-1,
+						LogStatus.ERROR,
+						Application.VIDEO_REWARD_ACTIVITY
+								+ "Validation failed for: " + data.toString());
 				return;
 			}
-			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data.getUserId()));
+			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data
+					.getUserId()));
 			System.out.println("appUser: " + appUser);
 			System.out.println("username : " + appUser.getUsername());
 			System.out.println("email: " + appUser.getEmail());
@@ -85,35 +131,44 @@ public class VideoManager {
 			UserEventEntity event = createVideoEvent(appUser, data);
 
 			RealmEntity realm = daoRealm.findById(appUser.getRealmId());
-			daoUserEvent.createOrUpdate(event, 0);
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
-					Application.VIDEO_REWARD_ACTIVITY + "Issuing reward for video: " + data.toString()
+			daoUserEvent.create(event);
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.OK,
+					Application.VIDEO_REWARD_ACTIVITY
+							+ "Issuing reward for video: " + data.toString()
 							+ " created event: " + event);
-			logEvent(event,realm);
+			logEvent(event, realm);
 			rewardManager.issueReward(realm, event, null, false);
 
 		} catch (Exception exc) {
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
-					Application.VIDEO_REWARD_ACTIVITY + "Error occured while issuing reward for: " + data.toString()
-							+ " error:" + exc.toString());
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.OK,
+					Application.VIDEO_REWARD_ACTIVITY
+							+ "Error occured while issuing reward for: "
+							+ data.toString() + " error:" + exc.toString());
 			exc.printStackTrace();
 		}
 	}
 
 	private boolean validateRequest(VideoCallbackData data) {
 		try {
-			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data.getUserId()));
-			if (appUser != null && appUser.getUsername().equals(data.getUsername())) {
-				if (daoUserEvent.findByInternalTransactionIdSafe(data.getTransactionId()) == null){
+			AppUserEntity appUser = daoAppUser.findById(Integer.parseInt(data
+					.getUserId()));
+			if (appUser != null
+					&& appUser.getUsername().equals(data.getUsername())) {
+				if (daoUserEvent.findByInternalTransactionIdSafe(data
+						.getTransactionId()) == null) {
 					logger.info("Transaction id unique");
 					return true;
 				} else {
 					logger.info("Transaction id not unique");
 					return false;
 				}
-				
-				
-				
+
 			} else {
 				return false;
 			}
@@ -123,16 +178,30 @@ public class VideoManager {
 		}
 	}
 
-	private UserEventEntity createVideoEvent(AppUserEntity user, VideoCallbackData data) {
+	private String generateInternalTransactionId(VideoCallbackData data) {
+		String internalTransactionId = "";
+		
+			internalTransactionId = DigestUtils.sha1Hex(data.getCurrencyName() + Math.random() * 100000 + System.currentTimeMillis()
+					+ data.getTransactionId() + data.getUid());
+			if (internalTransactionId.length() > 32) {
+				internalTransactionId = internalTransactionId.substring(0, 31);
+			}
+
+		return internalTransactionId;
+	}
+
+	private UserEventEntity createVideoEvent(AppUserEntity user,
+			VideoCallbackData data) {
 		UserEventEntity event = new UserEventEntity();
 		event.setIosDeviceToken(user.getiOSDeviceToken());
 		event.setAndroidDeviceToken(user.getAndroidDeviceToken());
 		event.setUserId(user.getId());
-		event.setOfferId("FYBER:" + data.getUid());
+		// event.setOfferId("FYBER:" + data.getUid());
 		System.out.println(user.getDeviceType());
 		event.setAdProviderCodeName("FYBER");
 		event.setDeviceType(user.getDeviceType());
-		event.setInternalTransactionId("FYBER:" + data.getTransactionId());
+		event.setTransactionId("FYBER:" + data.getTransactionId());
+		event.setInternalTransactionId(generateInternalTransactionId(data));
 		event.setPhoneNumber(user.getPhoneNumber());
 		event.setPhoneNumberExt(user.getPhoneNumberExtension());
 		event.setRewardTypeName(user.getRewardTypeName()); // needed
@@ -152,7 +221,7 @@ public class VideoManager {
 		event.setUserEventCategory(UserEventCategory.VIDEO.toString());
 		event.setEmail(user.getEmail());
 		event.setInstant(false);
-		
+
 		System.out.println("Event: " + event.toString());
 		return event;
 	}
@@ -160,63 +229,89 @@ public class VideoManager {
 	private void logEvent(UserEventEntity event, RealmEntity realm) {
 		// add conversion event to conversion index in es (imitate click so that
 		// conversion rate is in balance)
-		Application.getElasticSearchLogger().indexUserClick(realm.getId(), event.getPhoneNumber(), "",
-				event.getDeviceType(), event.getOfferId(), event.getOfferSourceId(), event.getOfferTitle(),
-				event.getAdProviderCodeName(), event.getRewardTypeName(), event.getOfferPayoutInTargetCurrency(),
-				event.getRewardValue(), event.getRewardIsoCurrencyCode(), event.getProfitValue(), realm.getName(), "",
-				UserEventType.click.toString(), event.getInternalTransactionId(), "",
-				UserEventCategory.VIDEO.toString(), "", "", "", event.getCountryCode(), event.isInstant(),
+		Application.getElasticSearchLogger().indexUserClick(realm.getId(),
+				event.getPhoneNumber(), "", event.getDeviceType(),
+				event.getOfferId(), event.getOfferSourceId(),
+				event.getOfferTitle(), event.getAdProviderCodeName(),
+				event.getRewardTypeName(),
+				event.getOfferPayoutInTargetCurrency(), event.getRewardValue(),
+				event.getRewardIsoCurrencyCode(), event.getProfitValue(),
+				realm.getName(), "", UserEventType.click.toString(),
+				event.getInternalTransactionId(), "",
+				UserEventCategory.VIDEO.toString(), "", "", "",
+				event.getCountryCode(), event.isInstant(),
 				event.getApplicationName(), "", // gaid
 				"", // idfa
 				event.isTestMode(), 0, "");
 
 		// add conversion event to conversion index in es (imitate conversion so
 		// that conversion rate is in balance)
-		Application.getElasticSearchLogger().indexUserClick(realm.getId(), event.getPhoneNumber(), "",
-				event.getDeviceType(), event.getOfferId(), event.getOfferSourceId(), event.getOfferTitle(),
-				event.getAdProviderCodeName(), event.getRewardTypeName(), event.getOfferPayoutInTargetCurrency(),
-				event.getRewardValue(), event.getRewardIsoCurrencyCode(), event.getProfitValue(), realm.getName(), "",
-				UserEventType.conversion.toString(), event.getInternalTransactionId(), "",
-				UserEventCategory.VIDEO.toString(), "", "", "", event.getCountryCode(), event.isInstant(),
+		Application.getElasticSearchLogger().indexUserClick(realm.getId(),
+				event.getPhoneNumber(), "", event.getDeviceType(),
+				event.getOfferId(), event.getOfferSourceId(),
+				event.getOfferTitle(), event.getAdProviderCodeName(),
+				event.getRewardTypeName(),
+				event.getOfferPayoutInTargetCurrency(), event.getRewardValue(),
+				event.getRewardIsoCurrencyCode(), event.getProfitValue(),
+				realm.getName(), "", UserEventType.conversion.toString(),
+				event.getInternalTransactionId(), "",
+				UserEventCategory.VIDEO.toString(), "", "", "",
+				event.getCountryCode(), event.isInstant(),
 				event.getApplicationName(), "", // gaid
 				"", // idfa
 				event.isTestMode(), 0, "");
 
 	}
 
-	public boolean validateVideoRewardRequest(RealmEntity realmEntity, String email, String rewardValue, String eventId,
-			String itemName, String offerTitle, String applicationId, String adProvider, String rewardTypeName,
-			String ipAddress) throws Exception {
+	public boolean validateVideoRewardRequest(RealmEntity realmEntity,
+			String email, String rewardValue, String eventId, String itemName,
+			String offerTitle, String applicationId, String adProvider,
+			String rewardTypeName, String ipAddress) throws Exception {
 
-		String dataContent = "email:" + email + " rewardValue:" + rewardValue + " eventId: " + eventId + " itemName:"
-				+ itemName + " offerTite:" + offerTitle + " appicationId: " + applicationId + " adProvder: "
-				+ adProvider + " rewardTypeName: " + rewardTypeName + " ipAddress: " + ipAddress;
+		String dataContent = "email:" + email + " rewardValue:" + rewardValue
+				+ " eventId: " + eventId + " itemName:" + itemName
+				+ " offerTite:" + offerTitle + " appicationId: "
+				+ applicationId + " adProvder: " + adProvider
+				+ " rewardTypeName: " + rewardTypeName + " ipAddress: "
+				+ ipAddress;
 
 		boolean isWhiteListed = false;
-		if (externalServerManager.isServerAddressListed(ipAddress, ExternalServerType.SUPERSONIC)) {
+		if (externalServerManager.isServerAddressListed(ipAddress,
+				ExternalServerType.SUPERSONIC)) {
 			isWhiteListed = true;
 		}
 
 		if (isWhiteListed) {
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
-					Application.VIDEO_REWARD_ACTIVITY + " video is from valid source" + dataContent);
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.OK,
+					Application.VIDEO_REWARD_ACTIVITY
+							+ " video is from valid source" + dataContent);
 
 			return true;
 		}
 
 		else {
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.ERROR,
-					Application.VIDEO_REWARD_ACTIVITY + " " + Application.VIDEO_REWARD_ACTIVITY_ABORTED
-							+ Application.ERROR_SERVER_NOT_WHITE_LISTED + " status: " + RespStatusEnum.FAILED + " "
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.ERROR,
+					Application.VIDEO_REWARD_ACTIVITY + " "
+							+ Application.VIDEO_REWARD_ACTIVITY_ABORTED
+							+ Application.ERROR_SERVER_NOT_WHITE_LISTED
+							+ " status: " + RespStatusEnum.FAILED + " "
 							+ dataContent);
 
 			throw new Exception(Application.ERROR_SERVER_NOT_WHITE_LISTED);
 		}
 	}
 
-	public void processVideoRewardRequest(RealmEntity realm, String email, String rewardValue, String eventId,
-			String itemName, String offerTitle, String applicationId, String adProvider, String rewardTypeName,
-			String ipAddress, AppUserEntity user) throws Exception {
+	public void processVideoRewardRequest(RealmEntity realm, String email,
+			String rewardValue, String eventId, String itemName,
+			String offerTitle, String applicationId, String adProvider,
+			String rewardTypeName, String ipAddress, AppUserEntity user)
+			throws Exception {
 
 		// determine payout and currency code via rewardType and denomination
 		// model settings
@@ -229,9 +324,10 @@ public class VideoManager {
 		double profitTargetCurrencyValue = getVideoPayoutValueByGeo(userCountryCode)[2];
 		String rewardTargetCurrencyCode = getRewardCurrencyCodeByGeo(userCountryCode);
 
-		String internalTransactionId = DigestUtils
-				.sha1Hex(user.getId() + Math.random() * 100000 + System.currentTimeMillis() + user.getPhoneNumber()
-						+ user.getPhoneNumberExtension() + user.getEmail());
+		String internalTransactionId = DigestUtils.sha1Hex(user.getId()
+				+ Math.random() * 100000 + System.currentTimeMillis()
+				+ user.getPhoneNumber() + user.getPhoneNumberExtension()
+				+ user.getEmail());
 
 		// generate event object and pesrsist it in db
 		UserEventEntity event = new UserEventEntity();
@@ -266,16 +362,25 @@ public class VideoManager {
 		event.setInstant(false); // not instant as we recharge the wallet
 
 		try {
-			RewardTypeEntity rewardTypeEntity = daoRewardType.findByRealmIdAndName(realm.getId(), rewardTypeName);
+			RewardTypeEntity rewardTypeEntity = daoRewardType
+					.findByRealmIdAndName(realm.getId(), rewardTypeName);
 			event.setApplicationName(rewardTypeEntity.getApplicationType());
 		} catch (Exception exc) {
 			// create event representing conversion
-			Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.ERROR,
-					Application.VIDEO_REWARD_ACTIVITY_ERROR + " " + " email: " + user.getEmail() + " country code: "
-							+ userCountryCode + " rewardTypeName: " + rewardTypeName + " internalT: "
-							+ internalTransactionId + " rewardTargetCurrencyValue: " + event.getRewardValue()
-							+ " rewardTargetCurrencyCode: " + event.getOfferPayoutIsoCurrencyCode() + " error: "
-							+ exc.toString());
+			Application.getElasticSearchLogger().indexLog(
+					Application.VIDEO_REWARD_ACTIVITY,
+					-1,
+					LogStatus.ERROR,
+					Application.VIDEO_REWARD_ACTIVITY_ERROR + " " + " email: "
+							+ user.getEmail() + " country code: "
+							+ userCountryCode + " rewardTypeName: "
+							+ rewardTypeName + " internalT: "
+							+ internalTransactionId
+							+ " rewardTargetCurrencyValue: "
+							+ event.getRewardValue()
+							+ " rewardTargetCurrencyCode: "
+							+ event.getOfferPayoutIsoCurrencyCode()
+							+ " error: " + exc.toString());
 		}
 
 		// NOT USED AS IT WOULD SLOW DOWN THE SYSTEM calculate video offer
@@ -283,35 +388,52 @@ public class VideoManager {
 		// event = offerRewardCalculationManager.calculateOfferReward(event);
 
 		// create event representing conversion
-		Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
-				Application.VIDEO_REWARD_ACTIVITY + " " + " email: " + user.getEmail() + " country code: "
-						+ userCountryCode + " rewardTypeName: " + rewardTypeName + " internalT: "
-						+ internalTransactionId + " rewardTargetCurrencyValue: " + event.getRewardValue()
-						+ " rewardTargetCurrencyCode: " + event.getOfferPayoutIsoCurrencyCode());
+		Application.getElasticSearchLogger().indexLog(
+				Application.VIDEO_REWARD_ACTIVITY,
+				-1,
+				LogStatus.OK,
+				Application.VIDEO_REWARD_ACTIVITY + " " + " email: "
+						+ user.getEmail() + " country code: " + userCountryCode
+						+ " rewardTypeName: " + rewardTypeName + " internalT: "
+						+ internalTransactionId
+						+ " rewardTargetCurrencyValue: "
+						+ event.getRewardValue()
+						+ " rewardTargetCurrencyCode: "
+						+ event.getOfferPayoutIsoCurrencyCode());
 
 		event = daoUserEvent.createOrUpdate(event, 1);
 		// rewardManager.createUserConversionHistory(event);
 
 		// add conversion event to conversion index in es (imitate click so that
 		// conversion rate is in balance)
-		Application.getElasticSearchLogger().indexUserClick(realm.getId(), event.getPhoneNumber(), "",
-				event.getDeviceType(), event.getOfferId(), event.getOfferSourceId(), event.getOfferTitle(),
-				event.getAdProviderCodeName(), event.getRewardTypeName(), event.getOfferPayoutInTargetCurrency(),
-				event.getRewardValue(), event.getRewardIsoCurrencyCode(), event.getProfitValue(), realm.getName(), "",
-				UserEventType.click.toString(), event.getInternalTransactionId(), "",
-				UserEventCategory.VIDEO.toString(), "", "", ipAddress, event.getCountryCode(), event.isInstant(),
+		Application.getElasticSearchLogger().indexUserClick(realm.getId(),
+				event.getPhoneNumber(), "", event.getDeviceType(),
+				event.getOfferId(), event.getOfferSourceId(),
+				event.getOfferTitle(), event.getAdProviderCodeName(),
+				event.getRewardTypeName(),
+				event.getOfferPayoutInTargetCurrency(), event.getRewardValue(),
+				event.getRewardIsoCurrencyCode(), event.getProfitValue(),
+				realm.getName(), "", UserEventType.click.toString(),
+				event.getInternalTransactionId(), "",
+				UserEventCategory.VIDEO.toString(), "", "", ipAddress,
+				event.getCountryCode(), event.isInstant(),
 				event.getApplicationName(), "", // gaid
 				"", // idfa
 				event.isTestMode(), 0, "");
 
 		// add conversion event to conversion index in es (imitate conversion so
 		// that conversion rate is in balance)
-		Application.getElasticSearchLogger().indexUserClick(realm.getId(), event.getPhoneNumber(), "",
-				event.getDeviceType(), event.getOfferId(), event.getOfferSourceId(), event.getOfferTitle(),
-				event.getAdProviderCodeName(), event.getRewardTypeName(), event.getOfferPayoutInTargetCurrency(),
-				event.getRewardValue(), event.getRewardIsoCurrencyCode(), event.getProfitValue(), realm.getName(), "",
-				UserEventType.conversion.toString(), event.getInternalTransactionId(), "",
-				UserEventCategory.VIDEO.toString(), "", "", ipAddress, event.getCountryCode(), event.isInstant(),
+		Application.getElasticSearchLogger().indexUserClick(realm.getId(),
+				event.getPhoneNumber(), "", event.getDeviceType(),
+				event.getOfferId(), event.getOfferSourceId(),
+				event.getOfferTitle(), event.getAdProviderCodeName(),
+				event.getRewardTypeName(),
+				event.getOfferPayoutInTargetCurrency(), event.getRewardValue(),
+				event.getRewardIsoCurrencyCode(), event.getProfitValue(),
+				realm.getName(), "", UserEventType.conversion.toString(),
+				event.getInternalTransactionId(), "",
+				UserEventCategory.VIDEO.toString(), "", "", ipAddress,
+				event.getCountryCode(), event.isInstant(),
 				event.getApplicationName(), "", // gaid
 				"", // idfa
 				event.isTestMode(), 0, "");
@@ -349,6 +471,17 @@ public class VideoManager {
 			return new double[] { 0.01, 0.05, 0.05 };
 		} else
 			return new double[] { 0.01, 0.01, 0.01 }; // payout|reward|revenue
+	}
+
+	public void processData() {
+		logger.info("***** PROCESSING VIDEO REWARDS *****");
+		List<VideoCallbackData> data = this.getData();
+		logger.info("Processing :" + data.size() + " elements");
+		for (VideoCallbackData callbackData : data) {
+			logger.info("Processing data: " + data);
+			this.issueReward(callbackData);
+		}
+
 	}
 
 }

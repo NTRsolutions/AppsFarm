@@ -2,6 +2,7 @@ package is.web.services.video;
 
 import java.util.logging.Logger;
 
+import javax.ejb.Asynchronous;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -35,12 +36,14 @@ public class FyberService {
 	@GET
 	public Response rewardCallback(@Context UriInfo ui,@QueryParam("uid") String uid,@QueryParam("sid") String sid, @QueryParam("amount") int amount,
 			@QueryParam("currency_id") String currencyId, @QueryParam("currency_name") String currencyName,
-			@QueryParam("pub1") String userId,@QueryParam("pub2") String username,@QueryParam("pub3") String transactionId ) {
+			@QueryParam("pub1") String userId,@QueryParam("pub2") String username,@QueryParam("pub3") String transactionId ,
+			@QueryParam("_trans_id_") String transId) {
 
 		System.out.println(ui.getQueryParameters().toString());
 		System.out.println("PUB1: " + userId);
 		System.out.println(" PUB2:" + username);
 		System.out.println(" PUB3:" + transactionId);
+		System.out.println("TRANSID: " + transId);
 		VideoCallbackData data = new VideoCallbackData();
 		data.setAmount(amount);
 		data.setCurrencyId(currencyId);
@@ -48,16 +51,21 @@ public class FyberService {
 		data.setUid(sid);
 		data.setUserId(userId);
 		data.setUsername(username);
-		data.setTransactionId(transactionId);
+		data.setTransactionId(transId);
 		
 		Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
 				Application.VIDEO_REWARD_ACTIVITY + "Received video callback request from ipAddress: "
 						+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
 		logger.info("Received video callback request from ipAddress: "
 						+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
+		videoManager.addData(data);
+	
+		return Response.ok().build();
+	}
+	@Asynchronous
+	public void issueReward(VideoCallbackData data){
 		videoManager.issueReward(data);
 		
-		return Response.accepted().build();
 	}
 	
 	/*@Path("/video/fyber/reward")
