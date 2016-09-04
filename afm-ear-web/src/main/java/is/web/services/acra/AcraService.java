@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import is.ejb.bl.acra.AcraReport;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.system.logging.LogStatus;
 
@@ -30,13 +29,11 @@ public class AcraService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registerUser(final AcraReport acraReport) {
-		
-		logger.info(context.getQueryParameters().toString());
-		logger.info("Received acra report:" + acraReport);
+	public Response registerUser(final String json) {
+		logger.info(json);
 		
 		Application.getElasticSearchLogger().indexLog(Application.ACRA_ERROR_REPORT, -1, LogStatus.OK,
-				Application.ACRA_ERROR_REPORT + " Received acra report: " +acraReport.toString());
+				Application.ACRA_ERROR_REPORT + "\n\n" +json);
 		return Response.accepted().build();
 	}
 }
