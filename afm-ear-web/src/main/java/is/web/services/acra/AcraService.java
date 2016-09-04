@@ -29,9 +29,7 @@ public class AcraService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registerUser(final String json) {
-		logger.info(json);
-		
+	public Response saveReport(final String json) {
 		Application.getElasticSearchLogger().indexLog(Application.ACRA_ERROR_REPORT, -1, LogStatus.OK,
 				Application.ACRA_ERROR_REPORT + "\n\n" +json);
 		return Response.accepted().build();
