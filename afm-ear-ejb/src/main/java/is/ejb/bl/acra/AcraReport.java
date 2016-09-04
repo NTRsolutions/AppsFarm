@@ -1,5 +1,6 @@
 package is.ejb.bl.acra;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class AcraReport {
@@ -12,7 +13,7 @@ public class AcraReport {
 	private AcraBuild BUILD;
 	private AcraCrashConfiguration CRASH_CONFIGURATION;
 	private AcraCustomData CUSTOM_DATA;
-	private List<String> DEVICE_FEATURES;
+	private HashMap<String,String> DEVICE_FEATURES;
 	private List<AcraDisplay> DISPLAY;
 	private String DUMPSYS_MEMINFO;
 	private AcraEnvironment ENVIRONMENT;
@@ -25,10 +26,10 @@ public class AcraReport {
 	private String PHONE_MODEL;
 	private String PRODUCT;
 	private String REPORT_ID;
-	private List<String> SETTINGS_GLOBAL;
+	private HashMap<String,String> SETTINGS_GLOBAL;
 	private AcraSettingsSecure SETTINGS_SECURE;
 	private AcraSettingsSystem SETTINGS_SYSTEM;
-	private List<String> SHARED_PREFERENCES;
+	private HashMap<String,String> SHARED_PREFERENCES;
 	private String STACK_TRACE;
 	private long TOTAL_MEM_SIZE;
 	private String USER_APP_START_DATE;
@@ -82,10 +83,10 @@ public class AcraReport {
 	public void setCUSTOM_DATA(AcraCustomData cUSTOM_DATA) {
 		CUSTOM_DATA = cUSTOM_DATA;
 	}
-	public List<String> getDEVICE_FEATURES() {
+	public HashMap<String, String> getDEVICE_FEATURES() {
 		return DEVICE_FEATURES;
 	}
-	public void setDEVICE_FEATURES(List<String> dEVICE_FEATURES) {
+	public void setDEVICE_FEATURES(HashMap<String, String> dEVICE_FEATURES) {
 		DEVICE_FEATURES = dEVICE_FEATURES;
 	}
 	public List<AcraDisplay> getDISPLAY() {
@@ -160,10 +161,10 @@ public class AcraReport {
 	public void setREPORT_ID(String rEPORT_ID) {
 		REPORT_ID = rEPORT_ID;
 	}
-	public List<String> getSETTINGS_GLOBAL() {
+	public HashMap<String, String> getSETTINGS_GLOBAL() {
 		return SETTINGS_GLOBAL;
 	}
-	public void setSETTINGS_GLOBAL(List<String> sETTINGS_GLOBAL) {
+	public void setSETTINGS_GLOBAL(HashMap<String, String> sETTINGS_GLOBAL) {
 		SETTINGS_GLOBAL = sETTINGS_GLOBAL;
 	}
 	public AcraSettingsSecure getSETTINGS_SECURE() {
@@ -178,10 +179,10 @@ public class AcraReport {
 	public void setSETTINGS_SYSTEM(AcraSettingsSystem sETTINGS_SYSTEM) {
 		SETTINGS_SYSTEM = sETTINGS_SYSTEM;
 	}
-	public List<String> getSHARED_PREFERENCES() {
+	public HashMap<String, String> getSHARED_PREFERENCES() {
 		return SHARED_PREFERENCES;
 	}
-	public void setSHARED_PREFERENCES(List<String> sHARED_PREFERENCES) {
+	public void setSHARED_PREFERENCES(HashMap<String, String> sHARED_PREFERENCES) {
 		SHARED_PREFERENCES = sHARED_PREFERENCES;
 	}
 	public String getSTACK_TRACE() {
@@ -229,6 +230,7 @@ public class AcraReport {
 				+ ", TOTAL_MEM_SIZE=" + TOTAL_MEM_SIZE + ", USER_APP_START_DATE=" + USER_APP_START_DATE
 				+ ", USER_CRASH_DATE=" + USER_CRASH_DATE + ", USER_EMAIL=" + USER_EMAIL + "]";
 	}
+	
 	
 	
 	
