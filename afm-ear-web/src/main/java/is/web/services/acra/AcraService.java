@@ -30,6 +30,8 @@ public class AcraService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response saveReport(final String json) {
+		logger.info(json);
+		
 		Application.getElasticSearchLogger().indexLog(Application.ACRA_ERROR_REPORT, -1, LogStatus.OK,
 				Application.ACRA_ERROR_REPORT + "\n\n" +json);
 		return Response.accepted().build();
