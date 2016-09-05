@@ -108,6 +108,7 @@ public class AppUserEntity implements Serializable {
    private String activationCode;
    private String quidcoUserId;
    private Timestamp attendanceLastBonusTime;
+   private boolean guest;
    
 	public int getId() {
 		return id;
@@ -456,6 +457,14 @@ public class AppUserEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "AppUserEntity [id=" + id + "]";
+	}
+
+	public boolean isGuest() {
+		return guest;
+	}
+
+	public void setGuest(boolean guest) {
+		this.guest = guest;
 	}
 
 	

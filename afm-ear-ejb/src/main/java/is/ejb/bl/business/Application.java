@@ -27,6 +27,7 @@ import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.security.SecurityManager;
 import is.ejb.bl.timers.TimerStartupConfig;
 import is.ejb.dl.dao.DAOAdProvider;
+import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOBlockedOffers;
 import is.ejb.dl.dao.DAOCurrencyCode;
 import is.ejb.dl.dao.DAOCustomDenominationModel;
@@ -84,6 +85,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.hibernate.SessionFactory;
 import org.rosuda.REngine.Rserve.RConnection;
 
 import com.hazelcast.client.HazelcastClient;
@@ -148,6 +150,10 @@ public class Application {
 
 	@Inject
 	private DAOMonitoringSetup daoMonitoringSetup; 
+	
+	@Inject
+	private DAOAppUser daoAppUser;
+	
 	MonitoringSetupEntity monitoringSetup = null;
 
 	private static Client esClient = null; //es client connection used for analytics (we keep one for the whole system)
@@ -627,6 +633,10 @@ public class Application {
         app.initESConnectors();
         app.createDefaultRealm();
         
+        
+        
+        
+        
         //System.setProperty("http.keepAlive","false"); //enforce connections to be closed
     }
 
@@ -694,7 +704,8 @@ public class Application {
     	Application.getElasticSearchLogger().indexLog("ES", -1, LogStatus.OK, "ESClient successfully initialised by Application class...");
     	getESClient(); //init es connector used for analytics
     }
-
+   
+	
     public void createDefaultRealm() {
     	
     	RealmEntity realm = null;
@@ -704,6 +715,12 @@ public class Application {
     	
         try {
         	//create default realm
+        	if (daoAppUser.findGuest() == null){
+        		logger.info("**** INSERTING GUEST USER *****");
+        		daoAppUser.insertGuest();
+        		logger.info("****GUEST INSERTED****");
+        	}
+        	
             realm = daoRealm.findByName("BPM");
             if(realm == null) {
 

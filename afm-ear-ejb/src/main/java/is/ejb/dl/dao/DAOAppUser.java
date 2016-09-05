@@ -109,8 +109,7 @@ public class DAOAppUser {
 			return null;
 		}
 	}
-	
-	
+
 	public AppUserEntity findByUsername(String username) throws Exception {
 		try {
 			TypedQuery<AppUserEntity> query = em.createQuery("SELECT o FROM AppUserEntity o WHERE o.username = ?1",
@@ -304,13 +303,37 @@ public class DAOAppUser {
 			TypedQuery<AppUserEntity> query = em.createQuery("SELECT o FROM AppUserEntity o WHERE o.quidcoUserId = ?1",
 					AppUserEntity.class);
 
-			query.setParameter(1, ""+id);
+			query.setParameter(1, "" + id);
 
 			return query.getSingleResult();
 
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+
+	public AppUserEntity findGuest() {
+		try {
+			TypedQuery<AppUserEntity> query = em.createQuery("SELECT o FROM AppUserEntity o WHERE o.guest = ?1",
+					AppUserEntity.class);
+
+			query.setParameter(1, true);
+
+			List<AppUserEntity> list = query.getResultList();
+			if (list.size() == 0)
+				return null;
+			else
+				return list.get(0);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			return null;
+		}
+	}
+
+	public void insertGuest() {
+		String sqlString = "INSERT INTO `afm`.`AppUser` (`id`, `activationCode`, `advertisingId`, `ageRange`, `altabelUserId`, `androidDeviceToken`, `applicationName`, `attendanceLastBonusTime`, `countryCode`, `deviceId`, `deviceType`, `email`, `fbInvitationCode`, `firstName`, `fullName`, `gender`, `guest`, `iOSDeviceToken`, `idfa`, `installConversionCounterVG`, `lastName`, `locale`, `mac`, `male`, `mobileDetails`, `numberOfSuccessfulInvitations`, `overEighteen`, `password`, `pendingReferralsCounter`, `phoneId`, `phoneNumber`, `phoneNumberExtension`, `quidcoUserId`, `realmId`, `referralCode`, `registrationTime`, `rewardTypeName`, `secretQuestion`, `securityAnswer`, `successfulInstallConversions`, `successfulReferralsCounter`, `systemInfo`, `username`, `videoConversionCounterVG`) VALUES ('1', '1', '1', '1', '1', '1', 'AppsFarm', '2016-09-05 00:00:00', 'GB', '1', 'Android', 'appsfarm@appsfarm.com', '1', '1', '1', '1', b'1', '1', '1', '1', '1', '1', '1', b'1', '1', '1', b'1', 'asdoojijioiojeiouo82380wehnuwfenfwenowfoiw', '1', '1', '1', '1', '1', '4', '1', '2016-09-05 00:00:00', 'AppsFarm-GB', '1', '1', '1', '1', '1', 'appsfarm', '1');";
+		Query query = em.createNativeQuery(sqlString);
+		System.out.println("RESULT: " + query.executeUpdate());
 	}
 
 }
