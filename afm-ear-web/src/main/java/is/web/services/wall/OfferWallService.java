@@ -102,6 +102,7 @@ public class OfferWallService {
 			Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
 							+ " identifying available offer walls for request: " + details + "ipAddress: " + ipAddress);
+			logger.info("identifying available offer walls for request: " + details + "ipAddress: " + ipAddress);
 			if (!userValidator.validate(details.getParameters())) {
 				apiHelper.setupFailedResponseForError(response, userValidator.getInvalidValueErrorCode());
 			} else {
@@ -125,6 +126,8 @@ public class OfferWallService {
 				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " "
 						+ "aborting as no user found under following request: " + userId);
 
+		logger.info("realm:" + appUser.getRealmId() + " countryCode: " + appUser.getCountryCode() + " deviceType: "
+				+ appUser.getDeviceType() + " rewardTypeName: " + appUser.getRewardTypeName());
 		List<OfferWallEntity> listOffers = daoOfferWall.findAllByRealmIdAndActiveAndCountryAndDevice(
 				appUser.getRealmId(), true, appUser.getCountryCode(), appUser.getDeviceType(),
 				appUser.getRewardTypeName());
@@ -135,7 +138,7 @@ public class OfferWallService {
 		Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.OK,
 				Application.COW_SELECTION_ACTIVITY + " " + Application.COW_IDS_SELECTION + " " + "selected offer walls:"
 						+ listOffers.size());
-
+		logger.info("selected offer walls:" + listOffers.size());
 		apiHelper.setupSuccessResponse(response);
 		response.setIds(getWallIds(listOffers));
 	}
@@ -187,7 +190,7 @@ public class OfferWallService {
 		Integer userId = (Integer) details.getParameters().get("userId");
 		AppUserEntity appUser = daoAppUser.findById(userId);
 		RealmEntity realm = daoRealm.findById(appUser.getRealmId());
-		if (realm == null){
+		if (realm == null) {
 			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INVALID_USER_DATA);
 			Application.getElasticSearchLogger().indexLog(Application.COW_SELECTION_ACTIVITY, -1, LogStatus.ERROR,
 					Application.COW_SELECTION_ACTIVITY + " " + Application.COW_SELECTION_BY_ID
@@ -225,8 +228,6 @@ public class OfferWallService {
 
 		}
 	}
-	
-	
 
 	private OfferWallContent filterWalls(AppUserEntity appUser, String ipAddress, OfferWallEntity offerWall)
 			throws Exception {
