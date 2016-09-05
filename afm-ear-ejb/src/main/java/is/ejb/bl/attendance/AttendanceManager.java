@@ -39,9 +39,11 @@ public class AttendanceManager {
 	private NotificationManager notificationManager;
 
 	@Asynchronous
-	public void checkAttendance(AppUserEntity appUser) {
+	public void checkAttendance(AppUserEntity givenAppUser) {
 		try {
+			AppUserEntity appUser = selectAppUser(givenAppUser.getId());
 			if (appUser != null) {
+				
 				Timestamp lastBonusTime = appUser.getAttendanceLastBonusTime();
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTimeInMillis(lastBonusTime.getTime());
@@ -66,6 +68,17 @@ public class AttendanceManager {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+	}
+	
+	private AppUserEntity selectAppUser(int id){
+		AppUserEntity appUser = null;
+		try{
+			appUser = daoAppUser.findById(id);
+			logger.info("Appuser selected with id: " + id);
+		}catch (Exception exc){
+			exc.printStackTrace();
+		}
+		return appUser;
 	}
 
 	private double getAttendaceValue(String rewardType) {
