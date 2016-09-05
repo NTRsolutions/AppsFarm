@@ -310,10 +310,11 @@ public class AppUserService {
 			String hashedPassword = getPasswordHash(password);
 			if (appUser.getPassword().equals(hashedPassword)) {
 				appUser = updateAppUserDetailsIfNecessary(appUser, apiRequestDetails);
+				attendanceManager.checkAttendance(appUser);
 				appUser.setPassword("");
 				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
-				attendanceManager.checkAttendance(appUser);
+				
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
 			}
