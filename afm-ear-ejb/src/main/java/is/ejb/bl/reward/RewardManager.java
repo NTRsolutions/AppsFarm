@@ -166,7 +166,7 @@ public class RewardManager {
 
 	private void sendNotification(AppUserEntity appUser, UserEventEntity event, String message) {
 		logger.info("Sending notification: " + message + " event: " + event + " appUser: " + appUser);
-		message = message.replaceAll("\\{reward\\}", event.getRewardValue() + "points ");
+		message = message.replaceAll("\\{reward\\}", event.getRewardValue() + " points ");
 		message = message.replaceAll("\\{offer\\}", event.getOfferTitle());
 		notificationManager.sendNotification(appUser, message);
 
