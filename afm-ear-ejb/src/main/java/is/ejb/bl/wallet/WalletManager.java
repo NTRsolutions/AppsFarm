@@ -158,7 +158,11 @@ public class WalletManager {
 			if (appUser != null) {
 				walletData = daoWalletData.findByUserId(appUser.getId());
 				if (walletData == null) {
-					walletData = insertWalletData(appUser);
+					logger.info("Wallet not existing...");
+					insertWalletData(appUser);
+					walletData = getWalletData(appUser);
+				} else {
+					logger.info("Wallet existing...");
 				}
 			}
 		} catch (Exception exc) {
@@ -176,7 +180,7 @@ public class WalletManager {
 		WalletDataEntity walletData = new WalletDataEntity();
 		walletData.setUserId(appUser.getId());
 		walletData.setIsoCurrencyCode(appUser.getCountryCode());
-		daoWalletData.createOrUpdate(walletData);
+		daoWalletData.create(walletData);
 		Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, -1, LogStatus.OK,
 				Application.WALLET_TRANSACTION_ACTIVITY + " inserted new walletData for appUser: " + appUser);
 		logger.info(" inserted new walletData for appUser: " + appUser);
