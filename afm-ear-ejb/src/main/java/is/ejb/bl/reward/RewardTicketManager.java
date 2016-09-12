@@ -66,6 +66,19 @@ public class RewardTicketManager {
 			rewardTicket.setRewardType(reward.getRewardType());
 			rewardTicket.generateHash();
 
+			rewardTicket.setSendByPost(reward.isSendByPost());
+			if (reward.isSendByPost()){
+				PersonalDetailsEntity personalDetails = daoPersonalDetails.findByUserId(appUser.getId());
+				String personalDetailsText = "Personal Details:\nName: " + personalDetails.getName();
+				personalDetailsText += "\nSurname: " + personalDetails.getSurname();
+				personalDetailsText += "\nHouse number: " + personalDetails.getHouseNumber();
+				personalDetailsText += "\nStreet: " + personalDetails.getStreet();
+				personalDetailsText += "\nPost Code: " + personalDetails.getPostCode();
+				personalDetailsText += "\nCountry: " + personalDetails.getCountry();
+				rewardTicket.setPersonalDetails(personalDetailsText);
+			}
+			
+			
 			daoRewardTickets.createOrUpdate(rewardTicket);
 			if (!substractRewardAmountFromWallet(appUser, rewardTicket)) {
 				markRewardTicketAsFailed(rewardTicket, "Can't substract reward amount from user wallet.");
@@ -132,7 +145,7 @@ public class RewardTicketManager {
 					rewardTicket);
 
 			boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION,
-					rewardTicket.getCreditPoints(), "Reward credit from reward ticket with id: " + rewardTicket.getId()
+					rewardTicket.getCreditPoints(), "Reward credit back from reward ticket with id: " + rewardTicket.getId()
 							+ " hash: " + rewardTicket.getHash());
 
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,

@@ -43,6 +43,8 @@ public class RewardTicketEntity {
 	private String ticketOwner;
 	private String hash;
 	private int realmId;
+	private boolean isSendByPost;
+	private String personalDetails;
 
 	/***
 	 * Generate and set hash
@@ -181,6 +183,24 @@ public class RewardTicketEntity {
 		this.realmId = realmId;
 	}
 
+	public boolean isSendByPost() {
+		return isSendByPost;
+	}
+
+	public void setSendByPost(boolean isSendByPost) {
+		this.isSendByPost = isSendByPost;
+	}
+
+	
+
+	public String getPersonalDetails() {
+		return personalDetails;
+	}
+
+	public void setPersonalDetails(String personalDetails) {
+		this.personalDetails = personalDetails;
+	}
+
 	public String getContent() {
 		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName + ", creditPoints="
 				+ creditPoints + ", requestDate=" + requestDate + ", processingDate=" + processingDate + ", closeDate="
@@ -194,7 +214,8 @@ public class RewardTicketEntity {
 				+ ", rewardId=" + rewardId + ", rewardType=" + rewardType + ", rewardCategory=" + rewardCategory
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
 				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
-				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + ", realmId=" + realmId + "]";
+				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + ", realmId=" + realmId + ", isSendByPost="
+				+ isSendByPost + ", personalDetails=" + personalDetails + "]";
 	}
 
 }

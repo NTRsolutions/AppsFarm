@@ -88,6 +88,8 @@ public class RewardTicketsBean {
 	private boolean renderRewardIdColumn = false;
 	private boolean renderRewardTypeColumn = true;
 	private boolean renderRewardCategoryColumn = true;
+	private boolean renderSendByPost = true;
+	private boolean renderPersonalDetails = false;
 	private LazyDataModel<RewardTicketEntity> rewardTicketsLazy;
 	private RewardTicketEntity selectedTicket = new RewardTicketEntity();
 	private List<LogEntry> logs = new ArrayList<>();
@@ -620,6 +622,22 @@ public class RewardTicketsBean {
 
 	public void setNotification(String notification) {
 		this.notification = notification;
+	}
+
+	public boolean isRenderSendByPost() {
+		return renderSendByPost;
+	}
+
+	public void setRenderSendByPost(boolean renderSendByPost) {
+		this.renderSendByPost = renderSendByPost;
+	}
+
+	public boolean isRenderPersonalDetails() {
+		return renderPersonalDetails;
+	}
+
+	public void setRenderPersonalDetails(boolean renderPersonalDetails) {
+		this.renderPersonalDetails = renderPersonalDetails;
 	}
 
 }
