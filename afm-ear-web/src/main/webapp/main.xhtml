@@ -160,7 +160,7 @@ ul.ui-menu-child {
 						<p:menuitem value="Reward Types"
 							actionListener="#{sentinelMenuBean.loadTab('tabSupportedRewardTypes')}"
 							ajax="false" />
-						<p:menuitem value="Reward Categories"
+						<p:menuitem rendered="false" value="Reward Categories"
 							actionListener="#{sentinelMenuBean.loadTab('tabRewardCategories')}"
 							ajax="false" />
 						<p:menuitem value="Currencies"
@@ -169,7 +169,7 @@ ul.ui-menu-child {
 						<p:menuitem value="Countries"
 							actionListener="#{sentinelMenuBean.loadTab('tabCountries')}"
 							ajax="false" />
-						<p:menuitem rendered="false" value="Rewards"
+						<p:menuitem value="Rewards"
 							actionListener="#{sentinelMenuBean.loadTab('tabApplicationsReward')}"
 							ajax="false" />
 					</p:submenu>

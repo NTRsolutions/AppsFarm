@@ -16,8 +16,8 @@
 		styleClass="single-node-stats-performance-panel">
 
 		<p:growl id="idApplicationReward" showDetail="true" />
-		<p:dataTable id="idApplicationRewardTable" var="model" width="500"
-			style="width:500px;"
+		<p:dataTable id="idApplicationRewardTable" var="model" width="100%"
+			style="width:100%"
 			value="#{applicationRewardBean.applicationRewardTableDataModel}"
 			rowKey="#{model.id}" selectionMode="single">
 
@@ -29,30 +29,36 @@
 				<h:outputText value="#{model.id}" />
 			</p:column>
 			<p:column rendered="true" headerText="Name"
-				style="width:50px;text-align:left; font-weight:bold;"
+				style="width:100px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.rewardName}" />
 			</p:column>
 			<p:column rendered="true" headerText="Value"
-				style="width:50px;text-align:left; font-weight:bold;"
+				style="width:100px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.rewardValue}" />
 			</p:column>
 
-			<p:column rendered="true" headerText="Application"
-				style="width:50px;text-align:left; font-weight:bold;"
+			<p:column rendered="true" headerText="Discount"
+				style="width:100px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
-				<h:outputText value="#{model.applicationName}" />
+				<h:outputText value="#{model.discount}" />
 			</p:column>
-
-			<p:column rendered="true" headerText="Reward Category"
-				style="width:50px;text-align:left; font-weight:bold;"
+			
+			<p:column rendered="true" headerText="Send by Post"
+				style="width:100px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
-				<h:outputText value="#{model.rewardCategory}" />
+				<h:outputText value="#{model.sendByPost}" />
+			</p:column>
+			
+			<p:column rendered="true" headerText="Logo"
+				style="width:100px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.logo}" />
 			</p:column>
 
 			<p:column rendered="true" headerText="Reward Type"
-				style="width:50px;text-align:left; font-weight:bold;"
+				style="width:100px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.rewardType}" />
 			</p:column>
@@ -79,38 +85,23 @@
 		</h:panelGrid>
 
 
-		<p:dialog id="idWidgetCreateApplicationReward" width="500"
-			style="width:500px;" header="Create mobile application reward"
+		<p:dialog id="idWidgetCreateApplicationReward" width="600"
+			style="width:600px;" header="Create mobile application reward"
 			widgetVar="widgetCreateApplicationReward" resizable="false"
 			showEffect="clip" hideEffect="fold" modal="false"
 			appendToBody="false">
 			<h:panelGrid columns="2" cellpadding="4">
 
 				<h:outputText styleClass="dialog-mediumFont" value="Reward name:" />
-				<p:inputText size="30"
+				<p:inputText size="60"
 					value="#{applicationRewardBean.createModel.rewardName}" />
 
 
 				<h:outputText styleClass="dialog-mediumFont" value="Reward value:" />
-				<p:inputText size="30"
+				<p:inputText size="60"
 					value="#{applicationRewardBean.createModel.rewardValue}" />
 
-				<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Application:" />
-				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.createModel.applicationName}">
-					<f:selectItems
-						value="#{applicationRewardBean.mobileAppSelectItemList}" />
-				</p:selectOneMenu>
-
-				<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Reward Category:" />
-				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.createModel.rewardCategory}">
-					<f:selectItems
-						value="#{applicationRewardBean.rewardCategoryList}" />
-				</p:selectOneMenu>
-
+				
 				<h:outputText rendered="true" styleClass="dialog-mediumFont"
 					value="Reward Type:" />
 				<p:selectOneMenu rendered="true"
@@ -118,7 +109,16 @@
 					<f:selectItems value="#{applicationRewardBean.rewardTypesList}" />
 				</p:selectOneMenu>
 
+				<h:outputText styleClass="dialog-mediumFont" value="Reward logo URL:" />
+				<p:inputText size="60"
+					value="#{applicationRewardBean.createModel.logo}" />
 
+				<h:outputText styleClass="dialog-mediumFont" value="Reward discount:" />
+				<p:inputText size="60"
+					value="#{applicationRewardBean.createModel.discount}" />
+			
+				<h:outputText styleClass="dialog-mediumFont" value="Reward send by post: " />
+        		<p:selectBooleanCheckbox value="#{applicationRewardBean.createModel.sendByPost}" />
 
 			</h:panelGrid>
 
@@ -135,44 +135,40 @@
 		</p:dialog>
 
 
-		<p:dialog id="idWidgetEditApplicationReward" width="500"
-			style="width:500px;" header="Edit mobile application reward"
+		<p:dialog id="idWidgetEditApplicationReward" width="600"
+			style="width:600px;" header="Edit mobile application reward"
 			widgetVar="widgetEditApplicationReward" resizable="false"
 			showEffect="clip" hideEffect="fold" modal="false"
 			appendToBody="false">
 			<h:panelGrid columns="2" cellpadding="4">
 
 				<h:outputText styleClass="dialog-mediumFont" value="Reward name:" />
-				<p:inputText size="30"
+				<p:inputText size="60"
 					value="#{applicationRewardBean.editModel.rewardName}" />
 
 
 				<h:outputText styleClass="dialog-mediumFont" value="Reward value:" />
-				<p:inputText size="30"
+				<p:inputText size="60"
 					value="#{applicationRewardBean.editModel.rewardValue}" />
 
-				<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Application:" />
-				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.editModel.applicationName}">
-					<f:selectItems
-						value="#{applicationRewardBean.mobileAppSelectItemList}" />
-				</p:selectOneMenu>
-					<h:outputText rendered="true" styleClass="dialog-mediumFont"
-					value="Reward Category:" />
-				<p:selectOneMenu rendered="true"
-					value="#{applicationRewardBean.editModel.rewardCategory}">
-					<f:selectItems
-						value="#{applicationRewardBean.rewardCategoryList}" />
-				</p:selectOneMenu>
-
+				
 				<h:outputText rendered="true" styleClass="dialog-mediumFont"
 					value="Reward Type:" />
 				<p:selectOneMenu rendered="true"
 					value="#{applicationRewardBean.editModel.rewardType}">
-					<f:selectItems
-						value="#{applicationRewardBean.rewardTypesList}" />
+					<f:selectItems value="#{applicationRewardBean.rewardTypesList}" />
 				</p:selectOneMenu>
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward logo URL:" />
+				<p:inputText size="60"
+					value="#{applicationRewardBean.editModel.logo}" />
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward discount:" />
+				<p:inputText size="60"
+					value="#{applicationRewardBean.editModel.discount}" />
+			
+				<h:outputText styleClass="dialog-mediumFont" value="Reward send by post: " />
+        		<p:selectBooleanCheckbox value="#{applicationRewardBean.editModel.sendByPost}" />
 
 			</h:panelGrid>
 

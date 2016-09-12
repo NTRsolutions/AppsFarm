@@ -101,11 +101,8 @@ public class RewardService {
 			logger.info("Validation OK");
 			String rewardType = (String) parameters.get("rewardType");
 			List<ApplicationRewardEntity> applicationRewards = daoApplicationReward.findByRewardType(rewardType);
-			List<RewardCategoryEntity> allRewardCategories = daoRewardCategory.getAll();
-			List<RewardCategoryEntity> rewardCategoriesFiltered = filterCategories(applicationRewards,
-					allRewardCategories);
+			
 			apiHelper.setupSuccessResponse(response);
-			response.setCategories(rewardCategoriesFiltered);
 			response.setRewards(applicationRewards);
 
 		} catch (Exception exc) {
@@ -124,20 +121,7 @@ public class RewardService {
 		return validators;
 	}
 
-	private List<RewardCategoryEntity> filterCategories(List<ApplicationRewardEntity> applicationRewards,
-			List<RewardCategoryEntity> allRewardCategories) {
-		List<RewardCategoryEntity> categories = new ArrayList<RewardCategoryEntity>();
-		for (ApplicationRewardEntity applicationReward : applicationRewards) {
-			for (RewardCategoryEntity category : allRewardCategories) {
-				if (category.getName().equals(applicationReward.getRewardCategory())) {
-					if (!categories.contains(category.getName())) {
-						categories.add(category);
-					}
-				}
-			}
-		}
-		return categories;
-	}
+	
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

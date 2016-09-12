@@ -16,87 +16,62 @@ public class ApplicationRewardEntity {
 	private int id;
 	private String rewardName;
 	private double rewardValue;
-	private int applicationId;
-	private String applicationName;
 	private int realmId;
-	private String rewardCategory;
 	private String rewardType;
-	
-	
-
+	private String logo;
+	private String discount;
+	private boolean isSendByPost;
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public String getRewardName() {
 		return rewardName;
 	}
-
 	public void setRewardName(String rewardName) {
 		this.rewardName = rewardName;
 	}
-
 	public double getRewardValue() {
 		return rewardValue;
 	}
-
 	public void setRewardValue(double rewardValue) {
 		this.rewardValue = rewardValue;
 	}
-
-	public String getApplicationName() {
-		return applicationName;
-	}
-
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
-	}
-
+	
 	public int getRealmId() {
 		return realmId;
 	}
-
 	public void setRealmId(int realmId) {
 		this.realmId = realmId;
 	}
-
-	public int getApplicationId() {
-		return applicationId;
-	}
-
-	public void setApplicationId(int applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	
-
-	public String getRewardCategory() {
-		return rewardCategory;
-	}
-
-	public void setRewardCategory(String rewardCategory) {
-		this.rewardCategory = rewardCategory;
-	}
-
 	public String getRewardType() {
 		return rewardType;
 	}
-
 	public void setRewardType(String rewardType) {
 		this.rewardType = rewardType;
 	}
-
-	@Override
-	public String toString() {
-		return "ApplicationRewardEntity [id=" + id + ", rewardName=" + rewardName + ", rewardValue=" + rewardValue
-				+ ", applicationId=" + applicationId + ", applicationName=" + applicationName + ", realmId=" + realmId
-				+ ", rewardCategory=" + rewardCategory + ", rewardType=" + rewardType + "]";
+	public String getLogo() {
+		return logo;
 	}
-
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
+	public String getDiscount() {
+		return discount;
+	}
+	public void setDiscount(String discount) {
+		this.discount = discount;
+	}
+	public boolean isSendByPost() {
+		return isSendByPost;
+	}
+	public void setSendByPost(boolean isSendByPost) {
+		this.isSendByPost = isSendByPost;
+	}
+	
+	
 	
 	
 	

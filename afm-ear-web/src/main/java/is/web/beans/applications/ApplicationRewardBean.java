@@ -213,9 +213,6 @@ public class ApplicationRewardBean {
 				return;
 			}
 
-			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType
-					.findByName(editModel.getApplicationName());
-			editModel.setApplicationId(applicationTypeEntity.getId());
 			editModel.setRealmId(loginBean.getUser().getRealm().getId());
 			logger.info(editModel.toString());
 			daoApplicationReward.createOrUpdate(editModel);
@@ -253,16 +250,6 @@ public class ApplicationRewardBean {
 				return;
 			}
 
-			// System.out.println(createModel);
-
-			MobileApplicationTypeEntity applicationTypeEntity = daoApplicationType
-					.findByName(createModel.getApplicationName());
-
-			// System.out.println("***********");
-			// System.out.println("***********");
-			// System.out.println("***********");
-
-			createModel.setApplicationId(applicationTypeEntity.getId());
 			createModel.setRealmId(loginBean.getUser().getRealm().getId());
 
 			daoApplicationReward.create(createModel);

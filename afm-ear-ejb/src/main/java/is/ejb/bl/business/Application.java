@@ -525,6 +525,8 @@ public class Application {
 	
 	//NOTIFICATION
 	public static final String NOTIFICATION_ACTIVITY = "NOTIFICATION_ACTIVITY";
+
+	public static final String PERSONAL_DETAILS = "PERSONAL_DETAILS";
 	
     private static Application app;
     private String overrideServerName = null;

@@ -18,10 +18,12 @@ import is.ejb.bl.wallet.WalletManager;
 import is.ejb.bl.wallet.WalletTransactionType;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOApplicationReward;
+import is.ejb.dl.dao.DAOPersonalDetails;
 import is.ejb.dl.dao.DAORewardTickets;
 import is.ejb.dl.dao.DAOWalletData;
 import is.ejb.dl.entities.AppUserEntity;
 import is.ejb.dl.entities.ApplicationRewardEntity;
+import is.ejb.dl.entities.PersonalDetailsEntity;
 import is.ejb.dl.entities.RewardTicketEntity;
 import is.ejb.dl.entities.WalletDataEntity;
 
@@ -29,6 +31,8 @@ import is.ejb.dl.entities.WalletDataEntity;
 public class RewardTicketManager {
 	@Inject
 	private DAORewardTickets daoRewardTickets;
+	@Inject
+	private DAOPersonalDetails daoPersonalDetails;
 	@Inject
 	private WalletManager walletManager;
 	@Inject
@@ -60,7 +64,6 @@ public class RewardTicketManager {
 			rewardTicket.setRequestDate(new Timestamp(System.currentTimeMillis()));
 			rewardTicket.setStatus(RewardTicketStatus.AWAITING_PROCESSING);
 			rewardTicket.setRewardType(reward.getRewardType());
-			rewardTicket.setRewardCategory(reward.getRewardCategory());
 			rewardTicket.generateHash();
 
 			daoRewardTickets.createOrUpdate(rewardTicket);
@@ -271,9 +274,70 @@ public class RewardTicketManager {
 			exc.printStackTrace();
 			Application.getElasticSearchLogger().indexRewardTicket(LogStatus.ERROR,
 					"Error occured during sending notification: " + notificationMessage + " for reward ticket id : "
-							+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + " error: " + exc.toString(),rewardTicket);
+							+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + " error: " + exc.toString(),
+					rewardTicket);
 			return false;
 		}
+	}
+
+	public PersonalDetailsEntity getPersonalDetails(String username) {
+		PersonalDetailsEntity userDetails = null;
+		try {
+			Application.getElasticSearchLogger()
+			.indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.OK,
+					Application.PERSONAL_DETAILS + " Selecting personal details for username: " + username);
+			AppUserEntity appUser = daoAppUser.findByUsername(username);
+			userDetails = this.daoPersonalDetails.findByUserId(appUser.getId());
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger()
+			.indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.ERROR,
+					Application.PERSONAL_DETAILS + " Selecting personal details for username: " + username + " error: " + exc.toString());
+		}
+		logger.info("Personal details for username: " + username +" " + userDetails);
+		Application.getElasticSearchLogger()
+		.indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.OK,
+				Application.PERSONAL_DETAILS + " Personal details for username: " + username +" " + userDetails);
+		return userDetails;
+	}
+
+	public void createOrUpdateUserPersonalDetails(HashMap<String, Object> parameters) {
+		try {
+			logger.info("Create or update personal details from parameters: " + parameters );
+			Application.getElasticSearchLogger().indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.OK,
+					Application.PERSONAL_DETAILS + "Create or update personal details from parameters: " + parameters );
+			String username = (String) parameters.get("username");
+			PersonalDetailsEntity personalDetails = getPersonalDetails(username);
+			if (personalDetails == null){
+				personalDetails = new PersonalDetailsEntity();
+				logger.info("Personal details created since there is no details in db.");
+				
+			}
+			String name = (String) parameters.get("name");
+			String surname = (String) parameters.get("surname");
+			String street = (String) parameters.get("street");
+			String houseNumber = (String) parameters.get("houseNumber");
+			String country = (String) parameters.get("country");
+			String postCode = (String) parameters.get("postCode");
+			
+			AppUserEntity appUser = daoAppUser.findByUsername(username);
+			personalDetails.setUserId(appUser.getId());
+			personalDetails.setName(name);
+			personalDetails.setSurname(surname);
+			personalDetails.setStreet(street);
+			personalDetails.setHouseNumber(houseNumber);
+			personalDetails.setCountry(country);
+			personalDetails.setPostCode(postCode);
+			
+			daoPersonalDetails.createOrUpdate(personalDetails);
+			Application.getElasticSearchLogger().indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.OK,
+					Application.PERSONAL_DETAILS + "Create or update personal details from parameters: " + parameters + " object: " + personalDetails );
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.PERSONAL_DETAILS, -1, LogStatus.ERROR,
+					Application.PERSONAL_DETAILS + "Create or update personal details from parameters: " + parameters + " error: " + exc.toString());
+		}
+
 	}
 
 }

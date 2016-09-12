@@ -485,13 +485,13 @@ public class NetworkSettingsBean implements Serializable {
 			}
 
 			// update application reward application name
-			List<ApplicationRewardEntity> applicationRewardType = daoApplicationReward.findAll();
+			/*List<ApplicationRewardEntity> applicationRewardType = daoApplicationReward.findAll();
 			for (ApplicationRewardEntity rewardEntity : applicationRewardType) {
 				if (rewardEntity.getApplicationId() == mobileApplicationTypeEditModel.getId()) {
 					rewardEntity.setApplicationName(mobileApplicationTypeEditModel.getName());
 					daoApplicationReward.createOrUpdate(rewardEntity);
 				}
-			}
+			}*/
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Application type updated."));

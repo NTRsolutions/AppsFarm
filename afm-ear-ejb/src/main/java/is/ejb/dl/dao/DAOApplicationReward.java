@@ -46,20 +46,7 @@ public class DAOApplicationReward {
 		   } 
 	   }
 	   
-	   public List<ApplicationRewardEntity>  findByApplicationName(String applicationName) throws Exception {
-		   try
-		   {
-			   TypedQuery<ApplicationRewardEntity > query = em.createQuery(
-				        "SELECT o FROM ApplicationRewardEntity  o WHERE o.applicationName = ?1", ApplicationRewardEntity .class);
-
-			   query.setParameter(1, applicationName);
-
-			   return query.getResultList(); 
-			   
-		   } catch(NoResultException e) {
-			   return null;
-		   } 
-	   }
+	 
 	   
 	   
 	   public List<ApplicationRewardEntity> findAll() throws Exception {
