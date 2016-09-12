@@ -125,6 +125,7 @@ public class ApplicationService {
 			RewardTypeEntity rewardType = daoRewardType.findByName(rewardTypeName);
 			applicationConfiguration.setAttendanceValue(rewardType.getAttendanceValue());
 			applicationConfiguration.setCurrencyCode(rewardType.getCountryCode());
+			applicationConfiguration.setVideoRewardAmount(rewardType.getVideoRewardAmount());
 			
 		} catch (Exception exc) {
 			exc.printStackTrace();

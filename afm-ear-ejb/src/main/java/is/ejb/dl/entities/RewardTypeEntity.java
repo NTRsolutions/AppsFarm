@@ -92,9 +92,10 @@ public class RewardTypeEntity implements Serializable {
 	private String spinnerStatusMessage;
 	
 	private double attendanceValue;
+	private double videoRewardAmount;
 	
-	@Lob
 	private String imageBannerContent; 
+	
 	
 	
 	public int getId() {
@@ -396,6 +397,14 @@ public class RewardTypeEntity implements Serializable {
 
 	public void setAttendanceValue(double attendanceValue) {
 		this.attendanceValue = attendanceValue;
+	}
+
+	public double getVideoRewardAmount() {
+		return videoRewardAmount;
+	}
+
+	public void setVideoRewardAmount(double videoRewardAmount) {
+		this.videoRewardAmount = videoRewardAmount;
 	}
 
 }

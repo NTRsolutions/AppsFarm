@@ -99,7 +99,7 @@ public class OfferRewardTypesBean implements Serializable {
 			listRewardTypes = daoRewardType.findAllByRealmId(realm.getId());
 			rewardTypeDataModelBean = new RewardTypeDataModelBean(
 					listRewardTypes);
-			updateImageBannerDataTable(editedRewardType);
+			//updateImageBannerDataTable(editedRewardType);
 			countries = daoCountries.getAll();
 			
 		} catch (Exception e) {
@@ -179,7 +179,7 @@ public class OfferRewardTypesBean implements Serializable {
 
 	public void setEditedRewardType(RewardTypeEntity rewardType) {
 		this.editedRewardType = rewardType;
-		updateImageBannerDataTable(rewardType);
+		//updateImageBannerDataTable(rewardType);
 		RequestContext.getCurrentInstance().update("tabView:idEditRewardType");
 	}
 
@@ -339,7 +339,7 @@ public class OfferRewardTypesBean implements Serializable {
 				.serializaeImageBanners(rewardTypeImageBannerList);
 		editedRewardType.setImageBannerContent(jsonContent);
 		updateSelectedRewardType();
-		updateImageBannerDataTable(editedRewardType);
+		//updateImageBannerDataTable(editedRewardType);
 		RequestContext.getCurrentInstance().execute(
 				"widgetAddImageBannerDialog.hide()");
 		clearInputs();

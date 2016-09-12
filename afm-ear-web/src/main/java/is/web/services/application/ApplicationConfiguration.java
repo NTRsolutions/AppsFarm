@@ -10,6 +10,7 @@ public class ApplicationConfiguration {
 
 	private double attendanceValue;
 	private String currencyCode;
+	private double videoRewardAmount;
 	
 	public double getAttendanceValue() {
 		return attendanceValue;
@@ -25,6 +26,14 @@ public class ApplicationConfiguration {
 
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
+	}
+
+	public double getVideoRewardAmount() {
+		return videoRewardAmount;
+	}
+
+	public void setVideoRewardAmount(double videoRewardAmount) {
+		this.videoRewardAmount = videoRewardAmount;
 	}
 	
 	

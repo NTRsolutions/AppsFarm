@@ -1,4 +1,4 @@
-package is.web.services;
+/*package is.web.services;
 
 import is.ejb.bl.business.Application;
 import is.ejb.bl.business.CountryCode;
@@ -246,3 +246,4 @@ public class VideoWallService {
 	}
 
 }
+*/
