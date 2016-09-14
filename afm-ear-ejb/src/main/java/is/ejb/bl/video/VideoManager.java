@@ -227,7 +227,7 @@ public class VideoManager {
 		double reward = model.getVideoPayout() * model.getVideoPointsMultipler() * (1-profitSplitFraction);
 		double profit = model.getVideoPayout() * model.getVideoPointsMultipler() * profitSplitFraction;
 		double revenue = model.getVideoPayout() * model.getVideoCommisonPercentage() - reward;
-		double payoutInTargetCC = model.getVideoPointsMultipler() * model.getCommisionPercentage();
+		double payoutInTargetCC = model.getVideoPayout() * model.getVideoCommisonPercentage();
 		event.setOfferPayout(model.getVideoPayout());
 		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
 		event.setOfferPayoutInTargetCurrency(payoutInTargetCC);
