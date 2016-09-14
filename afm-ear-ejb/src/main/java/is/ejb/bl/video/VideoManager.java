@@ -223,17 +223,22 @@ public class VideoManager {
 		event.setRewardTypeName(user.getRewardTypeName()); // needed
 		event.setRealmId(user.getRealmId());
 		event.setOfferTitle("VIDEO OFFER");
+		double payoutInTarget = model.getVideoPayout() * model.getVideoPointsMultipler();
 		double profitSplitFraction = model.getCommisionPercentage() / 100;
-		double reward = model.getVideoPayout() * model.getVideoPointsMultipler() * (1-profitSplitFraction);
 		double profit = model.getVideoPayout() * model.getVideoPointsMultipler() * profitSplitFraction;
-		double revenue = model.getVideoPayout() * model.getVideoCommisonPercentage() - reward;
-		double payoutInTargetCC = model.getVideoPayout() * model.getVideoCommisonPercentage();
+		double reward = payoutInTarget - profit;
+		System.out.println("*********");
+		System.out.println("pay: " + payoutInTarget);
+		System.out.println("Profit split: " + profitSplitFraction);
+		System.out.println("Profit: " + profit);
+		System.out.println("Reward: " +reward);
+		
 		event.setOfferPayout(model.getVideoPayout());
 		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
-		event.setOfferPayoutInTargetCurrency(payoutInTargetCC);
+		event.setOfferPayoutInTargetCurrency(payoutInTarget);
 		event.setRewardIsoCurrencyCode(model.getTargetPayoutCurrencyCode());
 		event.setRewardValue(reward);
-		event.setRevenueValue(revenue);
+		event.setRevenueValue(profit);
 		event.setProfitValue(profit);
 		event.setProfilSplitFraction(profitSplitFraction);
 		event.setClickDate(new Timestamp(System.currentTimeMillis()));
