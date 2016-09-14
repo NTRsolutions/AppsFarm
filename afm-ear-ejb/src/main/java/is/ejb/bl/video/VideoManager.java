@@ -224,15 +224,9 @@ public class VideoManager {
 		event.setRealmId(user.getRealmId());
 		event.setOfferTitle("VIDEO OFFER");
 		double payoutInTarget = model.getVideoPayout() * model.getVideoPointsMultipler();
-		double profitSplitFraction = model.getCommisionPercentage() / 100;
+		double profitSplitFraction = model.getVideoCommisonPercentage() / 100;
 		double profit = model.getVideoPayout() * model.getVideoPointsMultipler() * profitSplitFraction;
-		double reward = payoutInTarget - profit;
-		System.out.println("*********");
-		System.out.println("pay: " + payoutInTarget);
-		System.out.println("Profit split: " + profitSplitFraction);
-		System.out.println("Profit: " + profit);
-		System.out.println("Reward: " +reward);
-		
+		double reward = payoutInTarget - profit;	
 		event.setOfferPayout(model.getVideoPayout());
 		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
 		event.setOfferPayoutInTargetCurrency(payoutInTarget);
