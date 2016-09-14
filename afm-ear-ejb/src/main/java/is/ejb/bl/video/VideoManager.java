@@ -223,14 +223,15 @@ public class VideoManager {
 		event.setRewardTypeName(user.getRewardTypeName()); // needed
 		event.setRealmId(user.getRealmId());
 		event.setOfferTitle("VIDEO OFFER");
-		event.setOfferPayout(model.getVideoPayout());
-		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
-		event.setOfferPayoutInTargetCurrency(model.getVideoPayout());
-		event.setRewardIsoCurrencyCode(model.getTargetPayoutCurrencyCode());
 		double profitSplitFraction = model.getCommisionPercentage() / 100;
 		double reward = model.getVideoPayout() * model.getVideoPointsMultipler() * (1-profitSplitFraction);
 		double profit = model.getVideoPayout() * model.getVideoPointsMultipler() * profitSplitFraction;
 		double revenue = model.getVideoPayout() * model.getVideoCommisonPercentage() - reward;
+		double payoutInTargetCC = model.getVideoPointsMultipler() * model.getCommisionPercentage();
+		event.setOfferPayout(model.getVideoPayout());
+		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
+		event.setOfferPayoutInTargetCurrency(payoutInTargetCC);
+		event.setRewardIsoCurrencyCode(model.getTargetPayoutCurrencyCode());
 		event.setRewardValue(reward);
 		event.setRevenueValue(revenue);
 		event.setProfitValue(profit);
