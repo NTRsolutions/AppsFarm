@@ -15,6 +15,7 @@ import is.ejb.bl.reward.RewardManager;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOConversionHistory;
+import is.ejb.dl.dao.DAODenominationModel;
 import is.ejb.dl.dao.DAOExternalServerAddress;
 import is.ejb.dl.dao.DAOInvitation;
 import is.ejb.dl.dao.DAORealm;
@@ -22,6 +23,7 @@ import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.dao.DAOUserEvent;
 import is.ejb.dl.entities.AppUserEntity;
 import is.ejb.dl.entities.ConversionHistoryEntity;
+import is.ejb.dl.entities.DenominationModelEntity;
 import is.ejb.dl.entities.ExternalServerAddressEntity;
 import is.ejb.dl.entities.InvitationEntity;
 import is.ejb.dl.entities.RealmEntity;
@@ -72,6 +74,9 @@ public class VideoManager {
 	@Inject
 	private ExternalServerManager externalServerManager;
 
+	@Inject
+	private DAODenominationModel daoDenominationModel;
+	
 	private List<VideoCallbackData> dataToProcessList = Collections
 			.synchronizedList(new ArrayList<VideoCallbackData>());
 
@@ -202,12 +207,12 @@ public class VideoManager {
 
 	private UserEventEntity createVideoEvent(AppUserEntity user,
 			VideoCallbackData data) {
-		RewardTypeEntity rewardType = getRewardType(user.getRewardTypeName());
+		
+		DenominationModelEntity model = getDenominationModel(user.getRewardTypeName());
 		UserEventEntity event = new UserEventEntity();
 		event.setIosDeviceToken(user.getiOSDeviceToken());
 		event.setAndroidDeviceToken(user.getAndroidDeviceToken());
 		event.setUserId(user.getId());
-		// event.setOfferId("FYBER:" + data.getUid());
 		System.out.println(user.getDeviceType());
 		event.setAdProviderCodeName("FYBER");
 		event.setDeviceType(user.getDeviceType());
@@ -218,14 +223,18 @@ public class VideoManager {
 		event.setRewardTypeName(user.getRewardTypeName()); // needed
 		event.setRealmId(user.getRealmId());
 		event.setOfferTitle("VIDEO OFFER");
-		event.setOfferPayout(rewardType.getVideoRewardAmount() * 2);
-		event.setOfferPayoutIsoCurrencyCode("GBP");
-		event.setOfferPayoutInTargetCurrency(data.getAmount());
-		event.setRewardIsoCurrencyCode(data.getCurrencyName());
-		event.setRewardValue(rewardType.getVideoRewardAmount());
-		event.setRevenueValue(50);
-		event.setProfitValue(rewardType.getVideoRewardAmount());
-		event.setProfilSplitFraction(0);
+		event.setOfferPayout(model.getVideoPayout());
+		event.setOfferPayoutIsoCurrencyCode(model.getVideoSourcePayoutCurrencyCode());
+		event.setOfferPayoutInTargetCurrency(model.getVideoPayout());
+		event.setRewardIsoCurrencyCode(model.getTargetPayoutCurrencyCode());
+		double profitSplitFraction = model.getCommisionPercentage() / 100;
+		double reward = model.getVideoPayout() * model.getVideoPointsMultipler() * (1-profitSplitFraction);
+		double profit = model.getVideoPayout() * model.getVideoPointsMultipler() * profitSplitFraction;
+		double revenue = model.getVideoPayout() * model.getVideoCommisonPercentage() - reward;
+		event.setRewardValue(reward);
+		event.setRevenueValue(revenue);
+		event.setProfitValue(profit);
+		event.setProfilSplitFraction(profitSplitFraction);
 		event.setClickDate(new Timestamp(System.currentTimeMillis()));
 		event.setConversionDate(new Timestamp(System.currentTimeMillis()));
 		event.setCountryCode(user.getCountryCode());
@@ -235,6 +244,17 @@ public class VideoManager {
 
 		System.out.println("Event: " + event.toString());
 		return event;
+	}
+	
+	private DenominationModelEntity getDenominationModel(String rewardType){
+		DenominationModelEntity model = null;
+		try {
+			 List<DenominationModelEntity> denomModel = daoDenominationModel.findByRewardTypeNameAndRealmId(rewardType, 4);
+			 model = denomModel.get(0);
+		} catch (Exception exc){
+			exc.printStackTrace();
+		}
+		return model;
 	}
 
 	private void logEvent(UserEventEntity event, RealmEntity realm) {

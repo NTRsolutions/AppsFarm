@@ -5,10 +5,12 @@ import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.dl.dao.DAOAppUser;
+import is.ejb.dl.dao.DAODenominationModel;
 import is.ejb.dl.dao.DAOMobileApplicationType;
 import is.ejb.dl.dao.DAORealm;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.entities.AppUserEntity;
+import is.ejb.dl.entities.DenominationModelEntity;
 import is.ejb.dl.entities.MobileApplicationTypeEntity;
 import is.ejb.dl.entities.RealmEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
@@ -59,6 +61,9 @@ public class ApplicationService {
 
 	@Inject
 	private DAOAppUser daoAppUser;
+	
+	@Inject
+	private DAODenominationModel daoDenominationModel;
 
 	@Inject
 	private DAORewardType daoRewardType;
@@ -125,7 +130,7 @@ public class ApplicationService {
 			RewardTypeEntity rewardType = daoRewardType.findByName(rewardTypeName);
 			applicationConfiguration.setAttendanceValue(rewardType.getAttendanceValue());
 			applicationConfiguration.setCurrencyCode(rewardType.getCountryCode());
-			applicationConfiguration.setVideoRewardAmount(rewardType.getVideoRewardAmount());
+			applicationConfiguration.setVideoRewardAmount(getVideoReward(rewardTypeName));
 			
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -143,4 +148,17 @@ public class ApplicationService {
 		return validators;
 	}
 
+	private double getVideoReward(String rewardType){
+		double reward = 0;
+		try {
+			 List<DenominationModelEntity> denomModel = daoDenominationModel.findByRewardTypeNameAndRealmId(rewardType, 4);
+			 DenominationModelEntity model = denomModel.get(0);
+			 double profitSplitFraction = model.getVideoCommisonPercentage() / 100;
+			 reward = model.getVideoPayout() * model.getVideoPointsMultipler() * (1-profitSplitFraction);
+		} catch (Exception exc){
+			exc.printStackTrace();
+		}
+		return reward;
+	}
+	
 }

@@ -86,6 +86,12 @@ public class DenominationModelEntity implements Serializable {
 	@Lob
 	@Column(length=1048576) 
 	private String content = null;
+	
+	private double videoPayout;
+	private double videoPointsMultipler;
+	private double videoCommisonPercentage;
+	private String videoSourcePayoutCurrencyCode;
+	
    
 	public int getId() {
 		return id;
@@ -182,6 +188,42 @@ public class DenominationModelEntity implements Serializable {
 	public void setMultiplier(double multiplier) {
 		this.multiplier = multiplier;
 	}
+
+	public double getVideoPayout() {
+		return videoPayout;
+	}
+
+	public void setVideoPayout(double videoPayout) {
+		this.videoPayout = videoPayout;
+	}
+
+	public double getVideoPointsMultipler() {
+		return videoPointsMultipler;
+	}
+
+	public void setVideoPointsMultipler(double videoPointsMultipler) {
+		this.videoPointsMultipler = videoPointsMultipler;
+	}
+
+	public double getVideoCommisonPercentage() {
+		return videoCommisonPercentage;
+	}
+
+	public void setVideoCommisonPercentage(double videoCommisonPercentage) {
+		this.videoCommisonPercentage = videoCommisonPercentage;
+	}
+
+	public String getVideoSourcePayoutCurrencyCode() {
+		return videoSourcePayoutCurrencyCode;
+	}
+
+	public void setVideoSourcePayoutCurrencyCode(String videoSourcePayoutCurrencyCode) {
+		this.videoSourcePayoutCurrencyCode = videoSourcePayoutCurrencyCode;
+	}
+
+	
+	
+	
 	
 }
 
