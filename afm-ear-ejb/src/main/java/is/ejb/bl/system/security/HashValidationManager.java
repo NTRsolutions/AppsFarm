@@ -4,6 +4,8 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RespCodesEnum;
 import is.ejb.bl.business.RespStatusEnum;
 import is.ejb.bl.system.logging.LogStatus;
+import is.ejb.dl.dao.DAORealm;
+import is.ejb.dl.entities.RealmEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -30,13 +32,19 @@ public class HashValidationManager {
 	@Inject
 	private Logger logger;
 	
+	@Inject
+	private DAORealm daoRealm;
+	
+	
 	public boolean isAPIRequestValid(HashMap<String, Object> parameters) {
 		logger.info("Validating hash map with " + parameters.size() + " parameters");
-		int hashCodeFromRequest = (Integer) parameters.remove("hashCode");
+		String hashCodeFromRequest = (String) parameters.remove("hashCode");
 		System.out.println(parameters);
 		int hashCode = parameters.hashCode();
+		RealmEntity realm = getRealmWithId(4);
+		String generatedHash = DigestUtils.sha1Hex(hashCode + realm.getApiKey());
 		logger.info("Hash code from request: " + hashCodeFromRequest + " generated: " + hashCode);
-		if (hashCodeFromRequest == hashCode) {
+		if (hashCodeFromRequest.equals(generatedHash)) {
 			return true;
 		} else {
 			return false;
@@ -62,6 +70,16 @@ public class HashValidationManager {
 		}
 		return false;
 		
+	}
+	
+	public RealmEntity getRealmWithId(int id){
+		RealmEntity realm = null;
+		try{
+			realm = daoRealm.findById(id);
+		} catch (Exception exc){
+			exc.printStackTrace();
+		}
+		return realm;
 	}
 
     public boolean isRequestValid(String apiKey,

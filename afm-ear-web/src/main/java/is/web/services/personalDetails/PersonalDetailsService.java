@@ -31,6 +31,7 @@ import is.web.services.personalDetails.validators.StreetValidator;
 import is.web.services.personalDetails.validators.SurnameValidator;
 import is.web.services.user.validators.PasswordValidator;
 import is.web.services.user.validators.UsernameValidator;
+import is.web.services.wall.validators.RequestValidator;
 import is.web.services.wallet.validators.UsernamePasswordCombinationValidator;
 
 @Path("/")
@@ -57,7 +58,8 @@ public class PersonalDetailsService {
 	private StreetValidator streetValidator;
 	@Inject
 	private PostCodeValidator postCodeValidator;
-
+	@Inject
+	private RequestValidator requestValidator;
 	@Inject
 	private APIHelper apiHelper;
 
@@ -120,6 +122,7 @@ public class PersonalDetailsService {
 		validators.add(usernameValidator);
 		validators.add(passwordValidator);
 		validators.add(usernamePasswordCombinationValidator);
+		validators.add(requestValidator);
 		return validators;
 	}
 
@@ -170,7 +173,7 @@ public class PersonalDetailsService {
 		validators.add(streetValidator);
 		validators.add(surnameValidator);
 		validators.add(countryValidator);
-
+		validators.add(requestValidator);
 		return validators;
 	}
 

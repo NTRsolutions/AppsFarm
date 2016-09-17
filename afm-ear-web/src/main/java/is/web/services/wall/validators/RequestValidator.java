@@ -16,6 +16,7 @@ public class RequestValidator implements APIValidator{
 	@Inject
 	private HashValidationManager hashValidationManager;
 	
+	
 	@Override
 	public boolean validate(HashMap<String, Object> parameters) {
 		boolean isRequestValid = hashValidationManager.isAPIRequestValid(parameters);

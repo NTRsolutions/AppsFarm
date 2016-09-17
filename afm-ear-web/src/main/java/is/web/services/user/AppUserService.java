@@ -425,6 +425,17 @@ public class AppUserService {
 				appUser.setGender((String) parameters.get("gender"));
 				isUpdate = true;
 			}
+			if (parameters.containsKey("newPassword")){
+				String newPassword = (String) parameters.get("newPassword");
+				appUser.setPassword(this.getPasswordHash(newPassword));
+				isUpdate = true;
+			}
+			if (parameters.containsKey("email")){
+				String email = (String) parameters.get("email");
+				appUser.setEmail(email);
+				isUpdate = true;
+			}
+			
 			if (isUpdate){
 				daoAppUser.createOrUpdate(appUser);
 				Application.getElasticSearchLogger().indexLog(Application.USER_UPDATE_ACTIVITY, -1, LogStatus.ERROR,
