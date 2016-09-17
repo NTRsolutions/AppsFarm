@@ -176,6 +176,8 @@ public class HasoffersNativexAPIManager {
                     				&& strOfferConuntryContent.contains("\"UK\"")) {
                 				matchesTargetGeoLocation = true;
                 			}
+                			//TODO override geo as it will be set based on category name in HO:
+                			matchesTargetDevice = true;
                 			
 //                			//if(matchesTargetDevice) 
 //                			if(matchesTargetGeoLocation)
