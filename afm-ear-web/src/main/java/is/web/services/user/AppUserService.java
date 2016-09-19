@@ -443,7 +443,7 @@ public class AppUserService {
 			}
 			if (parameters.containsKey("email")) {
 				String email = (String) parameters.get("email");
-				if (email != null & email.length() > 0) {
+				if (email != null && email.length() > 0) {
 					appUser.setEmail(email);
 					isUpdate = true;
 				}
