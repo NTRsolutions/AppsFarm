@@ -455,6 +455,7 @@ public class AppUserService {
 		List<APIValidator> validators = new ArrayList<APIValidator>();
 		validators.add(usernameValidator);
 		validators.add(passwordValidator);
+		validators.add(emailDBValidator);
 		validators.add(usernamePasswordCombinationValidator);
 		validators.add(requestValidator);
 		return validators;
