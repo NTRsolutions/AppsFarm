@@ -314,7 +314,7 @@ public class AppUserService {
 				appUser.setPassword("");
 				apiHelper.setupSuccessResponse(response);
 				response.setAppUserEntity(appUser);
-				
+
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_USER_INVALID_PASSWORD);
 			}
@@ -345,7 +345,7 @@ public class AppUserService {
 			isUpdate = true;
 		}
 
-		if (appUser.getDeviceId()  == null|| !appUser.getDeviceId().equals(deviceId)) {
+		if (appUser.getDeviceId() == null || !appUser.getDeviceId().equals(deviceId)) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating device id for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -396,7 +396,7 @@ public class AppUserService {
 			}
 
 			boolean result = updateUser(parameters);
-			if (result){
+			if (result) {
 				apiHelper.setupSuccessResponse(response);
 			} else {
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
@@ -414,31 +414,42 @@ public class AppUserService {
 			boolean isUpdate = false;
 			AppUserEntity appUser = daoAppUser.findByUsername((String) parameters.get("username"));
 			if (parameters.containsKey("androidDeviceToken")) {
-				appUser.setAndroidDeviceToken((String) parameters.get("androidDeviceToken"));
-				isUpdate = true;
+
+				String androidDeviceToken = (String) parameters.get("androidDeviceToken");
+				if (androidDeviceToken != null && androidDeviceToken.length() > 0) {
+					appUser.setAndroidDeviceToken(androidDeviceToken);
+					isUpdate = true;
+				}
 			}
 			if (parameters.containsKey("ageRange")) {
-				appUser.setAgeRange((String) parameters.get("ageRange"));
-				isUpdate = true;
+
+				String ageRange = (String) parameters.get("ageRange");
+				if (ageRange != null && ageRange.length() > 0) {
+					isUpdate = true;
+				}
 			}
 			if (parameters.containsKey("gender")) {
-				appUser.setGender((String) parameters.get("gender"));
-				isUpdate = true;
+				String gender = (String) parameters.get("gender");
+				if (gender != null && gender.length() > 0) {
+					isUpdate = true;
+				}
 			}
-			if (parameters.containsKey("newPassword")){
+			if (parameters.containsKey("newPassword")) {
 				String newPassword = (String) parameters.get("newPassword");
-				if (newPassword != null && newPassword.length() > 5){
+				if (newPassword != null && newPassword.length() > 5) {
 					appUser.setPassword(this.getPasswordHash(newPassword));
 					isUpdate = true;
 				}
 			}
-			if (parameters.containsKey("email")){
+			if (parameters.containsKey("email")) {
 				String email = (String) parameters.get("email");
-				appUser.setEmail(email);
-				isUpdate = true;
+				if (email != null & email.length() > 0) {
+					appUser.setEmail(email);
+					isUpdate = true;
+				}
 			}
-			
-			if (isUpdate){
+
+			if (isUpdate) {
 				daoAppUser.createOrUpdate(appUser);
 				Application.getElasticSearchLogger().indexLog(Application.USER_UPDATE_ACTIVITY, -1, LogStatus.ERROR,
 						Application.USER_UPDATE_ACTIVITY + " Updated appUser: " + appUser);
