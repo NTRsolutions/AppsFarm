@@ -427,8 +427,10 @@ public class AppUserService {
 			}
 			if (parameters.containsKey("newPassword")){
 				String newPassword = (String) parameters.get("newPassword");
-				appUser.setPassword(this.getPasswordHash(newPassword));
-				isUpdate = true;
+				if (newPassword != null && newPassword.length() > 5){
+					appUser.setPassword(this.getPasswordHash(newPassword));
+					isUpdate = true;
+				}
 			}
 			if (parameters.containsKey("email")){
 				String email = (String) parameters.get("email");
