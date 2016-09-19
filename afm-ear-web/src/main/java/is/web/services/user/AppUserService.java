@@ -328,7 +328,7 @@ public class AppUserService {
 		String androidDeviceToken = (String) parameters.get("androidDeviceToken");
 		String deviceId = (String) parameters.get("deviceId");
 		String phoneId = (String) parameters.get("phoneId");
-		if (!appUser.getAdvertisingId().equals(advertisingId)) {
+		if (appUser.getAdvertisingId() == null || !appUser.getAdvertisingId().equals(advertisingId)) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating advertisingId for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -336,7 +336,7 @@ public class AppUserService {
 			logger.info("Updated advertisingId for appUser: " + appUser);
 			isUpdate = true;
 		}
-		if (!appUser.getAndroidDeviceToken().equals(androidDeviceToken)) {
+		if (appUser.getAndroidDeviceToken() == null || !appUser.getAndroidDeviceToken().equals(androidDeviceToken)) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating android device token for request : "
 							+ apiRequestDetails + " for appuser: " + appUser);
@@ -345,7 +345,7 @@ public class AppUserService {
 			isUpdate = true;
 		}
 
-		if (!appUser.getDeviceId().equals(deviceId)) {
+		if (appUser.getDeviceId()  == null|| !appUser.getDeviceId().equals(deviceId)) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating device id for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -354,7 +354,7 @@ public class AppUserService {
 			isUpdate = true;
 		}
 
-		if (!appUser.getPhoneId().equals(phoneId)) {
+		if (appUser.getPhoneId() == null || !appUser.getPhoneId().equals(phoneId)) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating phone id for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
