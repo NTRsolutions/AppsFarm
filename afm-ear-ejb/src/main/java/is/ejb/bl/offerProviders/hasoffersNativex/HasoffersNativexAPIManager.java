@@ -290,8 +290,8 @@ public class HasoffersNativexAPIManager {
             	ArrayList<String> supportedDevices = new ArrayList<String>();
             	supportedDevices.add(offerWall.getTargetDevicesFilter());
             	offerToAdd.setSupportedTargetDevices(supportedDevices);
-    			//request images
-    			if(selectedOffer.getThumbnail() != null) {
+
+            	if(selectedOffer.getThumbnail() != null) {
     				HashMap<String,String> imagesMap = new HashMap<String,String>();
     				//imagesMap.put(ThumbnailQuality.hires.toString(), thumbnail.getUrl());
     				imagesMap.put(ThumbnailQuality.Image+"-"+1, selectedOffer.getThumbnail().getUrl());
@@ -396,6 +396,7 @@ public class HasoffersNativexAPIManager {
 
 		//------------------------------------------------------------------------------------------
 		//get all offers file info based on which we extrac thumbnail data
+        //TODO this is no longer needed as we fetch images at an earlier stage
 		getAllOffersFileInfo(offerWall, adProviderConfig.getNetworkId(), adProviderConfig.getNetworkToken(), listSelectedIndividualOffers);
 
         return listSelectedIndividualOffers;
@@ -515,21 +516,24 @@ public class HasoffersNativexAPIManager {
     		
     		//set thumbnail urls for each offer that we selected to add to the wall
     		for(int i=0;i<listSelectedIndividualOffers.size();i++) {
-    			is.ejb.bl.offerWall.content.Offer offerToAdd = listSelectedIndividualOffers.get(i); 
+    			is.ejb.bl.offerWall.content.Offer offerToAdd = listSelectedIndividualOffers.get(i);
     			//logger.info("***** checking offer: "+offerToAdd.getSourceId());
     			for(int j=0;j<listOfferFileData.size();j++) {
     				OfferFile offerFileData = listOfferFileData.get(j);
     				if(offerToAdd.getSourceId().equals(String.valueOf(offerFileData.getOffer_id()))) {
-    					//logger.info("*** identified matching id: "+offerFileData.getOffer_id());
-    	    			if(offerFileData.getThumbnail() != null) {
-    	    				HashMap<String,String> imagesMap = new HashMap<String,String>();
-    	    				imagesMap.put(ThumbnailQuality.Image+"-"+1, offerFileData.getThumbnail());
-    	    				//imagesMap.put(ThumbnailQuality.Image+"-"+2, selectedOffer.getThumbnail().getThumbnail());
-    	    				offerToAdd.setImage(imagesMap);
-    	    			} else { //retrieve images via api call
-    	    				offerToAdd.setImage(null);
-    	    			}
-    	    			break;
+    					logger.info("==> image: "+offerToAdd.getImage());
+    					if(offerToAdd.getImage()==null) {
+        					//logger.info("*** identified matching id: "+offerFileData.getOffer_id());
+        	    			if(offerFileData.getThumbnail() != null) {
+        	    				HashMap<String,String> imagesMap = new HashMap<String,String>();
+        	    				imagesMap.put(ThumbnailQuality.Image+"-"+1, offerFileData.getThumbnail());
+        	    				//imagesMap.put(ThumbnailQuality.Image+"-"+2, selectedOffer.getThumbnail().getThumbnail());
+        	    				offerToAdd.setImage(imagesMap);
+        	    			} else { //retrieve images via api call
+        	    				offerToAdd.setImage(null);
+        	    			}
+        	    			break;
+    					}
     				}
     			}
     		}

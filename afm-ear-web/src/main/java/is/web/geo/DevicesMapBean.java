@@ -38,7 +38,7 @@ public class DevicesMapBean implements Serializable {
 	
 	@Inject
 	private DAOUser daoCustomer;
-	@Resource(name="DefaultDS", mappedName="java:jboss/datasources/iWebDS") 	
+	@Resource(name="DefaultDS", mappedName="java:jboss/datasources/afmDS") 	
 	private DataSource ds;
 	
 	private UserEntity customer;
