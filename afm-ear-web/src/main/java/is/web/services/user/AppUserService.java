@@ -425,12 +425,14 @@ public class AppUserService {
 
 				String ageRange = (String) parameters.get("ageRange");
 				if (ageRange != null && ageRange.length() > 0) {
+					appUser.setAgeRange(ageRange);
 					isUpdate = true;
 				}
 			}
 			if (parameters.containsKey("gender")) {
 				String gender = (String) parameters.get("gender");
 				if (gender != null && gender.length() > 0) {
+					appUser.setGender(gender);
 					isUpdate = true;
 				}
 			}
