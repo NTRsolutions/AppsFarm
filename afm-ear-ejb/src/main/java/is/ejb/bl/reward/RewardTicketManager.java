@@ -12,6 +12,7 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.RewardTicketStatus;
 import is.ejb.bl.email.EmailHolder;
 import is.ejb.bl.email.EmailManager;
+import is.ejb.bl.firebase.FirebaseResponse;
 import is.ejb.bl.notificationSystems.NotificationManager;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.wallet.WalletManager;
@@ -62,7 +63,7 @@ public class RewardTicketManager {
 			rewardTicket.setRewardId(reward.getId());
 			rewardTicket.setCreditPoints(reward.getRewardValue());
 			rewardTicket.setRequestDate(new Timestamp(System.currentTimeMillis()));
-			rewardTicket.setStatus(RewardTicketStatus.AWAITING_PROCESSING);
+			rewardTicket.setStatus(RewardTicketStatus.NEW_REQUEST);
 			rewardTicket.setRewardType(reward.getRewardType());
 			rewardTicket.generateHash();
 
@@ -172,6 +173,8 @@ public class RewardTicketManager {
 		}
 	}
 
+	
+	
 	private boolean substractRewardAmountFromWallet(AppUserEntity appUser, RewardTicketEntity rewardTicket) {
 		try {
 			WalletDataEntity walletData = walletManager.getWalletData(appUser);
@@ -277,7 +280,7 @@ public class RewardTicketManager {
 	public boolean sendNotification(RewardTicketEntity rewardTicket, String notificationMessage) {
 		try {
 			AppUserEntity appUser = daoAppUser.findById(rewardTicket.getUserId());
-			boolean result = notificationManager.sendNotification(appUser, notificationMessage);
+			FirebaseResponse result = notificationManager.sendNotification(appUser, notificationMessage);
 			Application.getElasticSearchLogger().indexRewardTicket(
 					LogStatus.OK, "Sending notification: " + notificationMessage + " for reward ticket id : "
 							+ rewardTicket.getId() + " hash: " + rewardTicket.getHash() + " result: " + result,
@@ -292,6 +295,9 @@ public class RewardTicketManager {
 			return false;
 		}
 	}
+	
+
+	
 
 	public PersonalDetailsEntity getPersonalDetails(String username) {
 		PersonalDetailsEntity userDetails = null;

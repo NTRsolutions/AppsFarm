@@ -14,6 +14,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import is.ejb.bl.business.UserEventType;
 import is.ejb.dl.entities.RewardTicketEntity;
 public class ESLogger {
 
@@ -476,6 +477,8 @@ public class ESLogger {
 		}
 	}
 
+	
+	
 	public void indexWalletTransaction(int realmId, 
 			String phoneNumber, 
 			String email, 
@@ -501,7 +504,8 @@ public class ESLogger {
 			String countryCode,
 			boolean instantReaward,
 			String applicationName,
-			boolean testMode) {
+			boolean testMode,
+			int userId) {
 		try {
 			if(threadWalletTransactionsQueue.isQueueNotFull()) {
 				XContentBuilder xcb = jsonBuilder().startObject();
@@ -533,6 +537,7 @@ public class ESLogger {
 				xcb.field("instantReaward", instantReaward);
 				xcb.field("applicationName", applicationName);
 				xcb.field("testMode", testMode);
+				xcb.field("userId", userId);
 				xcb.endObject();
 				threadWalletTransactionsQueue.addToQueue(xcb);
 			}
@@ -604,5 +609,7 @@ public class ESLogger {
 			exc.printStackTrace();
 		}
 	}
+
+
 
 }

@@ -9,10 +9,12 @@ import java.util.logging.Logger;
 
 import javax.ejb.Asynchronous;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -84,6 +86,8 @@ public class AppUserService {
 	private APIHelper apiHelper;
 	@Inject
 	private AttendanceManager attendanceManager;
+	@Context
+	private HttpServletRequest httpRequest;
 
 	@Path("/user/register")
 	@POST
@@ -102,7 +106,10 @@ public class AppUserService {
 				apiHelper.setupSuccessResponse(response);
 				insertedUser.setPassword("");
 				response.setAppUserEntity(insertedUser);
+				indexUserRegistrationInElastic(insertedUser,apiHelper.getIpAddressFromHttpRequest(httpRequest));
 			} else {
+				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
+						Application.USER_REGISTRATION_ACTIVITY + "Error user register for request: " + apiRequestDetails);
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 
 			}
@@ -198,6 +205,14 @@ public class AppUserService {
 			exc.printStackTrace();
 			return null;
 		}
+	}
+
+	private void indexUserRegistrationInElastic(AppUserEntity appUser,String ipAddress) {
+		logger.info("Indexed success user register in es.");
+		Application.getElasticSearchLogger().indexUserRegistration(appUser.getFullName(), appUser.getEmail(),
+				appUser.getPhoneNumberExtension(), appUser.getPhoneNumber(), appUser.getLocale(),
+				appUser.getSystemInfo(), "", ipAddress, appUser.getAgeRange(), false, appUser.getDeviceType(), "BPM", appUser.getCountryCode(),
+				"", appUser.getRewardTypeName(), appUser.getAdvertisingId(), appUser.getIdfa(), appUser.getApplicationName());
 	}
 
 	private List<APIValidator> getRegisterValidators() {

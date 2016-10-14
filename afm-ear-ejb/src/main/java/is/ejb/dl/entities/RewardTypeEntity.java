@@ -95,7 +95,7 @@ public class RewardTypeEntity implements Serializable {
 	
 	
 	private String imageBannerContent; 
-	
+	private String currency;
 	
 	
 	public int getId() {
@@ -399,6 +399,14 @@ public class RewardTypeEntity implements Serializable {
 		this.attendanceValue = attendanceValue;
 	}
 
-	
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+
 
 }

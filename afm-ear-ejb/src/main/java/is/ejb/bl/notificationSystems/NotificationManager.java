@@ -3,6 +3,7 @@ package is.ejb.bl.notificationSystems;
 import is.ejb.bl.business.Application;
 import is.ejb.bl.firebase.FirebaseManager;
 import is.ejb.bl.firebase.FirebaseMessage;
+import is.ejb.bl.firebase.FirebaseResponse;
 import is.ejb.bl.notificationSystems.gcm.GoogleNotificationSender;
 
 import is.ejb.bl.system.logging.LogStatus;
@@ -37,7 +38,9 @@ public class NotificationManager {
 	private FirebaseManager firebaseManager;
 
 
-	public boolean sendNotification(AppUserEntity appUser, String message) {
+	
+	
+	public FirebaseResponse sendNotification(AppUserEntity appUser, String message) {
 		try {
 			Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.OK,
 					Application.NOTIFICATION_ACTIVITY + " sending notification message: " + message + " to appUser:"
@@ -51,30 +54,30 @@ public class NotificationManager {
 						Application.NOTIFICATION_ACTIVITY + " error sending notification message: " + message
 								+ " to appUser:" + appUser + " error: invalid api key for applicationName:"
 								+ appUser.getApplicationName());
-				return false;
+				return new FirebaseResponse(500,"Invalid api key");
 			}
 
 			if (deviceToken == null || deviceToken.length() == 0) {
 				Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.ERROR,
 						Application.NOTIFICATION_ACTIVITY + " error sending notification message: " + message
 								+ " to appUser:" + appUser + " error: invalid device token");
-				return false;
+				return new FirebaseResponse(500,"Invalid device token");
 			}
 
 			FirebaseMessage firebaseMessage = firebaseManager.prepareFirebaseMessage(apiKey, "AppsFarm", message, deviceToken);
-			boolean result = firebaseManager.sendMessage(firebaseMessage);
+			FirebaseResponse result = firebaseManager.sendMessage(firebaseMessage);
 			
 			Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.OK,
 					Application.NOTIFICATION_ACTIVITY + " sending notification message: " + message + " to appUser:"
 							+ appUser + " result: " + result);
-			return true;
+			return result;
 
 		} catch (Exception exc) {
 			exc.printStackTrace();
 			Application.getElasticSearchLogger().indexLog(Application.NOTIFICATION_ACTIVITY, -1, LogStatus.ERROR,
 					Application.NOTIFICATION_ACTIVITY + " error sending notification message: " + message
 							+ " to appUser:" + appUser + " error: " + exc.toString());
-			return false;
+			return new FirebaseResponse(500,"Exc: " + exc.getMessage());
 		}
 	}
 
