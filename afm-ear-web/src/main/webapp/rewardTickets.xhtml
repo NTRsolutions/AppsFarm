@@ -147,13 +147,15 @@
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderSendByPost}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Send By Post Information" styleClass="dialog-mediumFont" />
+						<h:outputText value="Send By Post Information"
+							styleClass="dialog-mediumFont" />
 					</p:column>
 					<p:column>
 						<p:selectBooleanCheckbox
 							value="#{rewardTicketsBean.renderPersonalDetails}" />
 						<p:spacer width="5" height="10" />
-						<h:outputText value="Personal Details" styleClass="dialog-mediumFont" />
+						<h:outputText value="Personal Details"
+							styleClass="dialog-mediumFont" />
 					</p:column>
 				</p:row>
 			</p:panelGrid>
@@ -297,8 +299,8 @@
 			<h:outputText value="#{ticket.hash}" />
 		</p:column>
 		<p:column rendered="#{rewardTicketsBean.renderPersonalDetails}"
-			prependId="false" headerText="Personal Details" sortBy="personalDetails"
-			style="width:25px;text-align: left;"
+			prependId="false" headerText="Personal Details"
+			sortBy="personalDetails" style="width:25px;text-align: left;"
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{ticket.personalDetails}" />
 		</p:column>
@@ -321,9 +323,9 @@
 				style="background: #F1F5F8;width:100%" columns="1">
 				<h:panelGrid id="idTicketPanelGrid1" columns="4" cellpadding="1">
 					<h:outputText style="font-size:20px" value="Ticket # #{ticket.id}" />
-					<h:outputText style="font-size:20px" value="Comment" />
-					<h:outputText style="font-size:20px" value="Personal Details" />
 					<h:outputText style="font-size:20px" value="Actions" />
+					<h:outputText style="font-size:20px" value="Personal Details" />
+					<h:outputText style="font-size:20px" value="Manage" />
 				</h:panelGrid>
 
 				<h:panelGrid id="idTicketPanelGrid2" columns="4" cellpadding="1">
@@ -359,19 +361,23 @@
 
 					<h:panelGrid id="idTicketPanelGrid4" columns="1" cellpadding="1"
 						columnClasses="ticketcontainer">
-						<h:outputText
-							style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
-							value="#{ticket.comment}" />
+						<p:scrollPanel mode="native" style="height:300px">
+							<h:outputText escape="false"
+								style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
+								value="#{ticket.actions}" />
+						</p:scrollPanel>
 
 					</h:panelGrid>
 					<h:panelGrid id="idTicketPanelGrid5" columns="1" cellpadding="1"
 						columnClasses="ticketcontainer">
 						<h:outputText
 							style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
-							value="This ticket is requested by post." rendered="#{ticket.sendByPost}" />
-												<h:outputText
+							value="This ticket is requested by post."
+							rendered="#{ticket.sendByPost}" />
+						<h:outputText
 							style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
-							value="This ticket is not requested by post." rendered="#{!ticket.sendByPost}" />
+							value="This ticket is not requested by post."
+							rendered="#{!ticket.sendByPost}" />
 						<h:outputText
 							style="white-space: normal;word-wrap: break-word;word-break: break-all;font-size:12px"
 							value="#{ticket.personalDetails}" />
@@ -383,9 +389,7 @@
 							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
 							oncomplete="widgetEditTicketStatus.show()" />
 
-						<p:commandButton value="Modify Comment" icon="ui-icon-comment"
-							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
-							oncomplete="widgetEditTicketComment.show()" />
+						<p:commandButton value="Add action" icon="ui-icon-comment" />
 
 						<p:commandButton value="Change Ticket Owner" icon="ui-icon-person"
 							actionListener="#{rewardTicketsBean.setSelectedTicket(ticket)}"
@@ -416,7 +420,7 @@
 
 
 					</h:panelGrid>
-					
+
 				</h:panelGrid>
 			</p:panelGrid>
 
@@ -440,8 +444,7 @@
 				<f:selectItems value="#{rewardTicketsBean.getTicketStatuses()}" />
 			</p:selectOneMenu>
 			<p:commandButton value="Save" icon="ui-icon-check"
-				actionListener="#{rewardTicketsBean.saveSelectedTicket(
-				)}"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket('status')}"
 				oncomplete="widgetEditTicketStatus.hide()" />
 			<p:commandButton value="Close" icon="ui-icon-close"
 				oncomplete="widgetEditTicketStatus.hide()" />
@@ -456,7 +459,7 @@
 
 			<h:outputText styleClass="dialog-mediumFont" value="Ticket Comment:" />
 			<p:inputTextarea rows="6" cols="33"
-				value="#{rewardTicketsBean.selectedTicket.comment}" />
+				value="#{rewardTicketsBean.selectedTicket.actions}" />
 			<p:commandButton value="Save" icon="ui-icon-check"
 				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
 				oncomplete="widgetEditTicketComment.hide()" />
@@ -477,7 +480,7 @@
 				<f:selectItems value="#{rewardTicketsBean.getAdministrators()}" />
 			</p:selectOneMenu>
 			<p:commandButton value="Save" icon="ui-icon-check"
-				actionListener="#{rewardTicketsBean.saveSelectedTicket()}"
+				actionListener="#{rewardTicketsBean.saveSelectedTicket('owner')}"
 				oncomplete="widgetEditTicketOwner.hide()" />
 			<p:commandButton value="Close" icon="ui-icon-close"
 				oncomplete="widgetEditTicketOwner.hide()" />
@@ -570,10 +573,10 @@
 			<p:inputText size="60" value="#{rewardTicketsBean.notification}" />
 		</h:panelGrid>
 		<p:commandButton value="Close" icon="ui-icon-close"
-				oncomplete="widgetTicketNotification.hide()" />
-			<p:commandButton value="Send notification" icon="ui-icon-mail-open"
-				actionListener="#{rewardTicketsBean.sendNotification()}"
-				oncomplete="widgetTicketNotification.hide()" />
+			oncomplete="widgetTicketNotification.hide()" />
+		<p:commandButton value="Send notification" icon="ui-icon-mail-open"
+			actionListener="#{rewardTicketsBean.sendNotification()}"
+			oncomplete="widgetTicketNotification.hide()" />
 	</p:dialog>
 
 

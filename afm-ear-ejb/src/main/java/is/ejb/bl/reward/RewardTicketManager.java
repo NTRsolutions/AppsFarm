@@ -120,7 +120,7 @@ public class RewardTicketManager {
 							LogStatus.OK, "Marking reward type with id: " + rewardTicket.getId()
 									+ " as failed. Comment: " + comment + " hash: " + rewardTicket.getHash(),
 							rewardTicket);
-			rewardTicket.setComment(comment);
+			rewardTicket.setActions(rewardTicket.getActions());
 			rewardTicket.setCloseDate(new Timestamp(new Date().getTime()));
 			rewardTicket.setStatus(RewardTicketStatus.PROCESSED_FAILED);
 			daoRewardTickets.createOrUpdate(rewardTicket);
@@ -357,6 +357,16 @@ public class RewardTicketManager {
 					Application.PERSONAL_DETAILS + "Create or update personal details from parameters: " + parameters + " error: " + exc.toString());
 		}
 
+	}
+	
+	public void addAction(RewardTicketEntity rewardTicket, String action){
+		if (rewardTicket.getActions() == null){
+			rewardTicket.setActions(action);
+		} else {
+			rewardTicket.setActions(action + "<br><br>" + rewardTicket.getActions());
+		}
+		this.updateTicket(rewardTicket);
+		
 	}
 
 }

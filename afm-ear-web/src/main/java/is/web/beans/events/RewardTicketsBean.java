@@ -3,6 +3,7 @@ package is.web.beans.events;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -259,6 +260,8 @@ public class RewardTicketsBean {
 
 	public List<SelectItem> getTicketStatuses() {
 		List<SelectItem> statusList = new ArrayList<SelectItem>();
+		statusList.add(
+				new SelectItem(RewardTicketStatus.NEW_REQUEST.toString(), RewardTicketStatus.NEW_REQUEST.toString()));
 		statusList.add(new SelectItem(RewardTicketStatus.AWAITING_PROCESSING.toString(),
 				RewardTicketStatus.AWAITING_PROCESSING.toString()));
 		statusList.add(new SelectItem(RewardTicketStatus.CURRENTLY_PROCESSED.toString(),
@@ -267,11 +270,13 @@ public class RewardTicketsBean {
 				RewardTicketStatus.PROCESSED_SUCCESS.toString()));
 		statusList.add(new SelectItem(RewardTicketStatus.PROCESSED_FAILED.toString(),
 				RewardTicketStatus.PROCESSED_FAILED.toString()));
+		statusList.add(new SelectItem(RewardTicketStatus.PROCESSED_MANUAL_ABORT.toString(),
+				RewardTicketStatus.PROCESSED_MANUAL_ABORT.toString()));
 
 		return statusList;
 	}
 
-	public void saveSelectedTicket() {
+	public void saveSelectedTicket(String type) {
 		if (selectedTicket.getStatus() == RewardTicketStatus.CURRENTLY_PROCESSED
 				&& selectedTicket.getProcessingDate() == null) {
 			selectedTicket.setProcessingDate(new Timestamp(new Date().getTime()));
@@ -293,6 +298,17 @@ public class RewardTicketsBean {
 		rewardTicketManager.updateTicket(selectedTicket);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Ticket updated"));
 		refresh();
+		if (type != null){
+			if (type.equals("status")){
+				rewardTicketManager.addAction(selectedTicket,
+						constructAction("Status changed to : "+ selectedTicket.getStatus()));
+			}
+			if (type.equals("owner")){
+				rewardTicketManager.addAction(selectedTicket,
+						constructAction("Owner changed to: " + selectedTicket.getTicketOwner()));
+			}
+		}
+		
 	}
 
 	public List<SelectItem> getAdministrators() {
@@ -316,14 +332,35 @@ public class RewardTicketsBean {
 						+ ") Send credit back to wallet from ticket with id: " + rewardTicket.getId() + " hash: "
 						+ rewardTicket.getHash(),
 				rewardTicket);
+		if (!this.getSendCreditBackToWalletState(rewardTicket)) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Failed",
+					"You can't send cash back to wallet because this ticket is already manually aborted"));
+			refresh();
+			return;
+		}
+
 		boolean result = rewardTicketManager.addRewardAmountBackToWallet(rewardTicket);
 		if (result) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Success", "Credits transfered successfully"));
+			rewardTicket.setStatus(RewardTicketStatus.PROCESSED_MANUAL_ABORT);
+			rewardTicketManager.updateTicket(rewardTicket);
+			rewardTicketManager.addAction(rewardTicket,
+					constructAction("Credits sent back to wallet. Changed status to Manually Aborted."));
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Failed", "Credits transfered failed"));
 		}
 		refresh();
+	}
+
+	private String constructAction(String action) {
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		String constructedAction = "[<b> " + dt.format(new Date()) + " </b>][ <b>" + getLoggedUserName() + "</b> ]: " + action;
+		return constructedAction;
+	}
+
+	private String getLoggedUserName() {
+		return loginBean.getUser().getName();
 	}
 
 	public List<LogEntry> getLogs() {
@@ -372,6 +409,7 @@ public class RewardTicketsBean {
 		RequestContext.getCurrentInstance().execute("widgetSendEmail.hide()");
 		RequestContext.getCurrentInstance().execute("widgetEmailPreview.hide()");
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Success", "Email has been sent"));
+		rewardTicketManager.addAction(selectedTicket, constructAction("Email has been sent. "));
 		refresh();
 
 	}
@@ -380,15 +418,17 @@ public class RewardTicketsBean {
 		setSelectedTicket(rewardTicket);
 		notification = NotificationMessageDictionary.TICKET_MESSAGE;
 		notification = notification.replaceAll("\\{reward\\}", rewardTicket.getRewardName());
-		
 		RequestContext.getCurrentInstance().update("tabView:idWidgetTicketNotification");
 		RequestContext.getCurrentInstance().update("tabView:idWidgetTicketNotificationPreviewGrid");
 	}
 
 	public void sendNotification() {
-		logger.info("Sending notification...");;
+		logger.info("Sending notification...");
+		;
 		RequestContext.getCurrentInstance().execute("widgetTicketNotification.hide()");
 		boolean result = rewardTicketManager.sendNotification(selectedTicket, notification);
+		rewardTicketManager.addAction(selectedTicket, constructAction(
+				"Notification has been sent: " + notification + " with status: " + (result ? "success" : " failed")));
 		logger.info("Sending notification result: " + result);
 		if (result) {
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -398,6 +438,15 @@ public class RewardTicketsBean {
 					new FacesMessage("Error", "Error occured. Notification has not been sent"));
 		}
 		refresh();
+	}
+
+	public boolean getSendCreditBackToWalletState(RewardTicketEntity rewardTicket) {
+		boolean result = true;
+		if (rewardTicket != null && rewardTicket.getStatus() != null
+				&& rewardTicket.getStatus().equals(RewardTicketStatus.PROCESSED_MANUAL_ABORT)) {
+			result = false;
+		}
+		return result;
 	}
 
 	public int getSelectedEmailTemplate() {

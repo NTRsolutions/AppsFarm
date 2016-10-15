@@ -593,7 +593,7 @@ public class ESLogger {
 				xcb.field("processingDate", ticket.getProcessingDate());
 				xcb.field("closeDate", ticket.getCloseDate());
 				xcb.field("status", ticket.getStatus().toString());
-				xcb.field("comment", ticket.getComment());
+				xcb.field("actions", ticket.getActions());
 				xcb.field("ticketOwner", ticket.getTicketOwner());
 				xcb.field("hash", ticket.getHash());
 				xcb.field("@logStatus", logStatus.toString());

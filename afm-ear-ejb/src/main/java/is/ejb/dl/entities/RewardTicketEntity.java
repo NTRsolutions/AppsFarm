@@ -39,7 +39,7 @@ public class RewardTicketEntity {
 	private RewardTicketStatus status;
 	@Lob
 	@Column
-	private String comment;
+	private String actions;
 	private String ticketOwner;
 	private String hash;
 	private int realmId;
@@ -127,13 +127,7 @@ public class RewardTicketEntity {
 		this.status = status;
 	}
 
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+	
 
 	public String getTicketOwner() {
 		return ticketOwner;
@@ -191,8 +185,6 @@ public class RewardTicketEntity {
 		this.isSendByPost = isSendByPost;
 	}
 
-	
-
 	public String getPersonalDetails() {
 		return personalDetails;
 	}
@@ -201,10 +193,19 @@ public class RewardTicketEntity {
 		this.personalDetails = personalDetails;
 	}
 
+	
+	public String getActions() {
+		return actions;
+	}
+
+	public void setActions(String actions) {
+		this.actions = actions;
+	}
+
 	public String getContent() {
 		return "[userId=" + userId + ", email=" + email + ", rewardName=" + rewardName + ", creditPoints="
 				+ creditPoints + ", requestDate=" + requestDate + ", processingDate=" + processingDate + ", closeDate="
-				+ closeDate + ", status=" + status + ", comment=" + comment + ", ticketOwner=" + ticketOwner + ", hash="
+				+ closeDate + ", status=" + status + ", action=" + actions + ", ticketOwner=" + ticketOwner + ", hash="
 				+ hash + "]";
 	}
 
@@ -213,9 +214,11 @@ public class RewardTicketEntity {
 		return "RewardTicketEntity [id=" + id + ", userId=" + userId + ", email=" + email + ", rewardName=" + rewardName
 				+ ", rewardId=" + rewardId + ", rewardType=" + rewardType + ", rewardCategory=" + rewardCategory
 				+ ", creditPoints=" + creditPoints + ", requestDate=" + requestDate + ", processingDate="
-				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", comment=" + comment
+				+ processingDate + ", closeDate=" + closeDate + ", status=" + status + ", actions=" + actions
 				+ ", ticketOwner=" + ticketOwner + ", hash=" + hash + ", realmId=" + realmId + ", isSendByPost="
 				+ isSendByPost + ", personalDetails=" + personalDetails + "]";
 	}
+
+	
 
 }
