@@ -209,9 +209,10 @@ public class AppUserService {
 
 	private void indexUserRegistrationInElastic(AppUserEntity appUser,String ipAddress) {
 		logger.info("Indexed success user register in es.");
+		boolean gender = (appUser.getGender() != null && appUser.getGender().toLowerCase().equals("male")) ? true: false;
 		Application.getElasticSearchLogger().indexUserRegistration(appUser.getFullName(), appUser.getEmail(),
 				appUser.getPhoneNumberExtension(), appUser.getPhoneNumber(), appUser.getLocale(),
-				appUser.getSystemInfo(), "", ipAddress, appUser.getAgeRange(), false, appUser.getDeviceType(), "BPM", appUser.getCountryCode(),
+				appUser.getSystemInfo(), "", ipAddress, appUser.getAgeRange(), gender, appUser.getDeviceType(), "BPM", appUser.getCountryCode(),
 				"", appUser.getRewardTypeName(), appUser.getAdvertisingId(), appUser.getIdfa(), appUser.getApplicationName());
 	}
 
