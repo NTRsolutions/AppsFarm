@@ -365,11 +365,10 @@ public class ClickService {
 			if (deviceType.equals("Android")) {
 				// android
 				// &aff_sub5=37498&google_aid={google_aid}&source={source}&aff_sub={transaction_id}&aff_sub2={adv_sub}
-				saltedOfferUrl = offer.getUrl() + 
-						//"&aff_sub5=" + URLEncoder.encode("37498", "UTF-8") + 
+				saltedOfferUrl = offer.getUrl() + //"&aff_sub5=" + URLEncoder.encode("37498", "UTF-8") + // aff_sub5=37498
 						"&google_aid=" + URLEncoder.encode(advertisingId, "UTF-8") + // google_aid={google_aid}
 						"&aff_sub={transaction_id}" + // &aff_sub={transaction_id}
-						//"&source=" + URLEncoder.encode("BPM", "UTF-8") + // &source={source}
+						"&source=" + URLEncoder.encode("Edge360", "UTF-8") + // &source={source}
 						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 			} else {
 				// ios
