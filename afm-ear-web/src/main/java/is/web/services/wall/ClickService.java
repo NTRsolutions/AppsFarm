@@ -369,7 +369,7 @@ public class ClickService {
 						"&google_aid=" + URLEncoder.encode(advertisingId, "UTF-8") + // google_aid={google_aid}
 						"&aff_sub={transaction_id}" + // &aff_sub={transaction_id}
 						"&source=" + URLEncoder.encode("Edge360", "UTF-8") + // &source={source}
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8");
+						"&aff_sub5=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 			} else {
 				// ios
 				// &aff_sub5=37498&ios_ifa={ios_ifa}&source={source}&aff_sub={transaction_id}&aff_sub2={adv_sub}
@@ -378,13 +378,13 @@ public class ClickService {
 						"&ios_ifa=" + URLEncoder.encode(idfa, "UTF-8") + // google_aid={google_aid}
 						"&aff_sub={transaction_id}" + // &aff_sub={transaction_id}
 						"&source=" + URLEncoder.encode("Edge360", "UTF-8") + // &source={source}
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8");
+						"&aff_sub5=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 			}
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.TRIALPAY.toString())) {
 			saltedOfferUrl = offer.getUrl() + "&sid=" + URLEncoder.encode(userId + "", "UTF-8") + "&transaction_id="
 					+ URLEncoder.encode(internalTransactionId, "UTF-8");
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.HASOFFERS_EXT.toString())) {
-			saltedOfferUrl = offer.getUrl() + "&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8");
+			saltedOfferUrl = offer.getUrl() + "&aff_sub5=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.CLICKKY.toString())) {
 			saltedOfferUrl = offer.getUrl() + "&subid=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.WOOBI_IOS.toString())) {
@@ -402,54 +402,6 @@ public class ClickService {
 			saltedOfferUrl = saltedOfferUrl.replace("{ifa}", URLEncoder.encode(idfa, "UTF-8"));
 			// cater for advertising id
 			saltedOfferUrl = saltedOfferUrl.replace("{advertisingid}", URLEncoder.encode(advertisingId, "UTF-8"));
-		} else if (!applicationName.toLowerCase().equals("AirRewardz".toLowerCase()) // for
-																						// AdJockey
-				&& offer.getAdProviderCodeName().equals(OfferProviderCodeNames.HASOFFERS.toString())) {
-			if (deviceType.toLowerCase().equals("android")) {
-				saltedOfferUrl = "http://airrewardz.go2cloud.org/aff_c?offer_id="
-						+ URLEncoder.encode(offer.getSourceId(), "UTF-8") + "&aff_id=" + URLEncoder.encode("2", "UTF-8")
-						+ // URLEncoder.encode(offer.getAffiliateId(),
-						// "UTF-8")+ //TODO
-						// to fix as
-						// affiliate id is
-						// not passed
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8") + "&google_aid="
-						+ URLEncoder.encode(advertisingId, "UTF-8");
-			} else {
-				saltedOfferUrl = "http://airrewardz.go2cloud.org/aff_c?offer_id="
-						+ URLEncoder.encode(offer.getSourceId(), "UTF-8") + "&aff_id=" + URLEncoder.encode("2", "UTF-8")
-						+ // URLEncoder.encode(offer.getAffiliateId(),
-						// "UTF-8")+ //TODO
-						// to fix as
-						// affiliate id is
-						// not passed
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8") + "&ios_ifa="
-						+ URLEncoder.encode(idfa, "UTF-8");
-			}
-		} else if (applicationName.toLowerCase().equals("AirRewardz".toLowerCase()) // for
-																					// AdBroker
-				&& offer.getAdProviderCodeName().equals(OfferProviderCodeNames.HASOFFERS.toString())) {
-			if (deviceType.toLowerCase().equals("android")) {
-				saltedOfferUrl = "http://airrewardz.go2cloud.org/aff_c?offer_id="
-						+ URLEncoder.encode(offer.getSourceId(), "UTF-8") + "&aff_id=" + URLEncoder.encode("2", "UTF-8")
-						+ // URLEncoder.encode(offer.getAffiliateId(),
-						// "UTF-8")+ //TODO
-						// to fix as
-						// affiliate id is
-						// not passed
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8") + "&google_aid="
-						+ URLEncoder.encode(advertisingId, "UTF-8");
-			} else {
-				saltedOfferUrl = "http://airrewardz.go2cloud.org/aff_c?offer_id="
-						+ URLEncoder.encode(offer.getSourceId(), "UTF-8") + "&aff_id=" + URLEncoder.encode("2", "UTF-8")
-						+ // URLEncoder.encode(offer.getAffiliateId(),
-						// "UTF-8")+ //TODO
-						// to fix as
-						// affiliate id is
-						// not passed
-						"&aff_sub2=" + URLEncoder.encode(internalTransactionId, "UTF-8") + "&ios_ifa="
-						+ URLEncoder.encode(idfa, "UTF-8");
-			}
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.AARKI.toString())) {
 			if (deviceType.toLowerCase().equals("android")) {
 				saltedOfferUrl = offer.getUrl() + "&click_label=" + URLEncoder.encode(internalTransactionId, "UTF-8")
