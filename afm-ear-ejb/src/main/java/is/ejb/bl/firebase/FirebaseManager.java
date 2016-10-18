@@ -26,7 +26,7 @@ public class FirebaseManager {
 		gson = new Gson();
 	}
 
-	public boolean sendMessage(FirebaseMessage message) {
+	public FirebaseResponse sendMessage(FirebaseMessage message) {
 		try {
 			HttpsURLConnection con = (HttpsURLConnection)setupConnection(message);
 			logger.info("Executing connection...");
@@ -47,12 +47,12 @@ public class FirebaseManager {
 			in.close();
 			con.disconnect();
 			logger.info("Firebase response code: " + responseCode + " result: " + response);
-			return true;
+			return new FirebaseResponse(responseCode,response.toString());
 			
 			
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			return false;
+			return new FirebaseResponse(500,"Exc: " + exc.getMessage());
 		}
 
 	}

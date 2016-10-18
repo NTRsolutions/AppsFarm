@@ -1,11 +1,16 @@
 package is.web.beans.offerRewardTypes;
 
 import is.ejb.bl.business.CountryCode;
+import is.ejb.bl.offerFilter.CurrencyCode;
+import is.ejb.bl.offerFilter.CurrencyCodes;
+import is.ejb.bl.offerFilter.SerDeCurrencyCode;
 import is.ejb.dl.dao.DAOCountries;
+import is.ejb.dl.dao.DAOCurrencyCode;
 import is.ejb.dl.dao.DAODenominationModel;
 import is.ejb.dl.dao.DAOMobileApplicationType;
 import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.entities.CountryEntity;
+import is.ejb.dl.entities.CurrencyCodeEntity;
 import is.ejb.dl.entities.MobileApplicationTypeEntity;
 import is.ejb.dl.entities.RealmEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
@@ -55,6 +60,10 @@ public class OfferRewardTypesBean implements Serializable {
 	@Inject
 	private DAOCountries daoCountries;
 	
+	@Inject
+	private SerDeCurrencyCode serDeCurrencyCode;
+	@Inject
+	private DAOCurrencyCode daoCurrencyCode;
 
 	private List<RewardTypeEntity> listRewardTypes = new ArrayList<RewardTypeEntity>();
 
@@ -80,6 +89,8 @@ public class OfferRewardTypesBean implements Serializable {
 
 	private List<CountryEntity> countries;
 	
+	private List<CurrencyCode> currencyCodes;
+	
 	public OfferRewardTypesBean() {
 	}
 	
@@ -101,6 +112,9 @@ public class OfferRewardTypesBean implements Serializable {
 					listRewardTypes);
 			//updateImageBannerDataTable(editedRewardType);
 			countries = daoCountries.getAll();
+			CurrencyCodeEntity currencyCodeEntity = daoCurrencyCode.findByRealmId(loginBean.getUser().getRealm().getId());
+			CurrencyCodes currencyCodesObject = serDeCurrencyCode.deserialize(currencyCodeEntity.getSupportedCurrencies());
+			currencyCodes = currencyCodesObject.getListCodes();
 			
 		} catch (Exception e) {
 			logger.severe(e.toString());
@@ -427,5 +441,15 @@ public class OfferRewardTypesBean implements Serializable {
 			RewardTypeDataModelBean rewardTypeDataModelBean) {
 		this.rewardTypeDataModelBean = rewardTypeDataModelBean;
 	}
+	
+	public List<CurrencyCode> getCurrencyCodes() {
+		return currencyCodes;
+	}
 
+	public void setCurrencyCodes(List<CurrencyCode> currencyCodes) {
+		this.currencyCodes = currencyCodes;
+	}
+
+	
+	
 }

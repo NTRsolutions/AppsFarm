@@ -11,10 +11,14 @@ import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import is.ejb.bl.business.Application;
+import is.ejb.bl.business.UserEventCategory;
+import is.ejb.bl.business.UserEventType;
 import is.ejb.bl.system.logging.LogStatus;
+import is.ejb.dl.dao.DAORewardType;
 import is.ejb.dl.dao.DAOWalletData;
 import is.ejb.dl.dao.DAOWalletTransaction;
 import is.ejb.dl.entities.AppUserEntity;
+import is.ejb.dl.entities.RewardTypeEntity;
 import is.ejb.dl.entities.WalletDataEntity;
 import is.ejb.dl.entities.WalletTransactionEntity;
 
@@ -29,6 +33,9 @@ public class WalletManager {
 
 	@Inject
 	private DAOWalletTransaction daoWalletTransaction;
+	
+	@Inject
+	private DAORewardType daoRewardType;
 
 	public boolean createWalletAction(AppUserEntity appUser, WalletTransactionType type, double transactionAmount,
 			String message) {
@@ -63,6 +70,7 @@ public class WalletManager {
 				if (walletTransaction != null) {
 					logger.info("inserting wallet transaction request");
 					daoWalletTransaction.createOrUpdate(walletTransaction);
+					indexWalletTransactionInElastic(appUser,walletTransaction);
 				}
 				logger.info(" wallet action request: " + actionData + "sucessfully completed");
 				Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, -1, LogStatus.OK,
@@ -71,6 +79,18 @@ public class WalletManager {
 				return true;
 			}
 		}
+	}
+
+	private void indexWalletTransactionInElastic(AppUserEntity appUser,WalletTransactionEntity walletTransaction) {
+		Application.getElasticSearchLogger().indexWalletTransaction(appUser.getRealmId(), appUser.getPhoneNumber(), appUser.getEmail(),
+				appUser.getDeviceType(), walletTransaction.getId()+"", "", "Reward ticket " + walletTransaction.getType(),
+				"SYSTEM", appUser.getRewardTypeName(), 0,
+				walletTransaction.getPayoutValue(), walletTransaction.getPayoutCurrencyCode(), 0, "BPM",
+				"", UserEventType.conversion.toString(), walletTransaction.getInternalTransactionId(), "",
+				UserEventCategory.WALLET_REWARD_BUY.toString(), "", "", "", appUser.getCountryCode(),
+				false, appUser.getApplicationName(), false, appUser.getId());
+
+		
 	}
 
 	private WalletTransactionEntity prepareWalletTransaction(AppUserEntity appUser, WalletTransactionType type,
@@ -86,7 +106,7 @@ public class WalletManager {
 			walletTransactionEntity.setApplicationName(appUser.getApplicationName());
 			walletTransactionEntity
 					.setInternalTransactionId(generateInternalTransactionId(appUser, type, transactionAmount, message));
-			walletTransactionEntity.setPayoutCurrencyCode(appUser.getCountryCode());
+			walletTransactionEntity.setPayoutCurrencyCode(getCurrencyForUser(appUser));
 			walletTransactionEntity.setPayoutDescription(message);
 			walletTransactionEntity.setPayoutValue(transactionAmount);
 			walletTransactionEntity.setRewardName(type.toString());
@@ -94,7 +114,7 @@ public class WalletManager {
 			walletTransactionEntity.setTimestamp(new Timestamp(new Date().getTime()));
 			walletTransactionEntity.setType(type.toString());
 			walletTransactionEntity.setUserId(appUser.getId());
-
+				
 			return walletTransactionEntity;
 		} catch (Exception exc) {
 			Application.getElasticSearchLogger().indexLog(Application.WALLET_TRANSACTION_ACTIVITY, -1, LogStatus.ERROR,
@@ -105,6 +125,25 @@ public class WalletManager {
 			return null;
 		}
 	}
+	
+	private String getCurrencyForUser(AppUserEntity appUser){
+		String currency = "";
+		RewardTypeEntity rewardType = getRewardTypeWithName(appUser.getRewardTypeName());
+		if (rewardType != null){
+			currency = rewardType.getCurrency();
+		}
+		return currency;
+	}
+	
+	private RewardTypeEntity getRewardTypeWithName(String name){
+		try{
+			return daoRewardType.findByName(name);
+		}catch (Exception exc){
+			exc.printStackTrace();
+			return null;
+		}
+	}
+	
 
 	private String generateInternalTransactionId(AppUserEntity appUser, WalletTransactionType type,
 			double transactionAmount, String message) {

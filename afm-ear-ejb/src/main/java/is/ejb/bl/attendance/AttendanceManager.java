@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import is.ejb.bl.business.Application;
+import is.ejb.bl.firebase.FirebaseResponse;
 import is.ejb.bl.notificationSystems.NotificationManager;
 import is.ejb.bl.notificationSystems.NotificationMessageDictionary;
 import is.ejb.bl.system.logging.LogStatus;
@@ -121,7 +122,7 @@ public class AttendanceManager {
 						+ " is being notified attendance bonus: " + attendanceValue);
 		String message = NotificationMessageDictionary.ATTENDANCE_BONUS;
 		message = message.replaceAll("\\{reward\\}","" + attendanceValue + " points");
-		boolean result = notificationManager.sendNotification(appUser, message);
+		FirebaseResponse result = notificationManager.sendNotification(appUser, message);
 		Application.getElasticSearchLogger().indexLog(Application.ATTENDANCE_ACTIVITY, -1, LogStatus.OK,
 				Application.ATTENDANCE_ACTIVITY + "Notified User id: " + appUser.getId() + " messgae:" + message + " result: " + result);
 		logger.info( "Notified User id: " + appUser.getId() + " messgae:" + message + " result: " + result);

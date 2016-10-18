@@ -13,6 +13,7 @@ import is.ejb.bl.business.WalletTransactionStatus;
 import is.ejb.bl.conversionHistory.ConversionHistoryEntry;
 import is.ejb.bl.conversionHistory.ConversionHistoryHolder;
 import is.ejb.bl.eventQueue.EventQueueManager;
+import is.ejb.bl.firebase.FirebaseResponse;
 import is.ejb.bl.friends.UserFriendManager;
 import is.ejb.bl.notificationSystems.NotificationManager;
 import is.ejb.bl.notificationSystems.NotificationMessageDictionary;
@@ -69,6 +70,7 @@ import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -132,6 +134,9 @@ public class RewardManager {
 			walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION, event.getRewardValue(),
 					"Reward for event id: " + event.getId() + " internalTransactionId: "
 							+ event.getInternalTransactionId());
+			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_MESSAGE);
+			
+			
 			logger.info("Reward completed to wallet");
 			event.setRewardRequestDate(new Timestamp(System.currentTimeMillis()));
 			event.setRewardRequestStatus(RespStatusEnum.SUCCESS.toString());
@@ -149,9 +154,9 @@ public class RewardManager {
 					event.getRewardValue(), event.getRewardIsoCurrencyCode(), event.getProfitValue(), realm.getName(),
 					"", UserEventType.conversion.toString(), event.getInternalTransactionId(), "",
 					UserEventCategory.WALLET_PAY_IN.toString(), "", "", event.getIpAddress(), event.getCountryCode(),
-					event.isInstant(), event.getApplicationName(), event.isTestMode());
+					event.isInstant(), event.getApplicationName(), event.isTestMode(), event.getUserId());
 
-			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_MESSAGE);
+			
 
 		} catch (Exception exc) {
 			exc.printStackTrace();
@@ -168,9 +173,14 @@ public class RewardManager {
 		logger.info("Sending notification: " + message + " event: " + event + " appUser: " + appUser);
 		message = message.replaceAll("\\{reward\\}", event.getRewardValue() + " points ");
 		message = message.replaceAll("\\{offer\\}", event.getOfferTitle());
-		notificationManager.sendNotification(appUser, message);
-
+		FirebaseResponse response = notificationManager.sendNotification(appUser, message);
+		event.setMobileAppNotificationDate(new Timestamp(new Date().getTime()));
+		event.setMobileAppNotificationStatus(response.getCode()+ "");
+		event.setMobileAppNotificationStatusMessage(response.getContent());
 	}
+	
+	
+	
 
 	/**
 	 * update conversion history for this specific user and offer entry for this

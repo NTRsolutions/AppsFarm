@@ -21,7 +21,11 @@
 			styleClass="ui-nodesStatusTableHeader">
 			<h:outputText value="#{rewardType.countryCode}" />
 		</p:column>
-
+		<p:column headerText="Currency"
+			style="width:140px;text-align:left; font-weight:bold;"
+			styleClass="ui-nodesStatusTableHeader">
+			<h:outputText value="#{rewardType.currency}" />
+		</p:column>
 		<p:column headerText="Application type"
 			style="width:140px;text-align:left; font-weight:bold;"
 			styleClass="ui-nodesStatusTableHeader">
@@ -93,6 +97,14 @@
 				<f:selectItems value="#{offerRewardTypesBean.countries}" />
 			</p:selectOneMenu>
 
+			<h:outputText styleClass="dialog-mediumFont" value="Currency: " />
+			<p:selectOneMenu
+				value="#{offerRewardTypesBean.createdRewardType.currency}">
+				<f:selectItems value="#{offerRewardTypesBean.currencyCodes}"
+					var="element" itemLabel="#{element.code}"
+					itemValue="#{element.code}" />
+			</p:selectOneMenu>
+
 			<h:outputText styleClass="dialog-mediumFont"
 				value="Application type: " />
 			<p:selectOneMenu id="realmedits"
@@ -103,12 +115,10 @@
 				value="Attendance Value: " />
 			<p:inputText size="35"
 				value="#{offerRewardTypesBean.createdRewardType.attendanceValue}" />
-			
+
 			<h:outputText styleClass="dialog-mediumFont" value="Test mode:" />
 			<p:selectBooleanCheckbox
 				value="#{offerRewardTypesBean.createdRewardType.testMode}" />
-			
-
 		</h:panelGrid>
 		<h:panelGrid columns="3" cellpadding="4">
 			<p:commandButton value="Add" icon="ui-icon-search"
@@ -145,7 +155,13 @@
 				value="#{offerRewardTypesBean.editedRewardType.countryCode}">
 				<f:selectItems value="#{offerRewardTypesBean.countries}" />
 			</p:selectOneMenu>
-
+			<h:outputText styleClass="dialog-mediumFont" value="Currency: " />
+			<p:selectOneMenu
+				value="#{offerRewardTypesBean.editedRewardType.currency}">
+				<f:selectItems value="#{offerRewardTypesBean.currencyCodes}"
+					var="element" itemLabel="#{element.code}"
+					itemValue="#{element.code}" />
+			</p:selectOneMenu>
 			<h:outputText styleClass="dialog-mediumFont"
 				value="Application type: " />
 			<p:selectOneMenu id="realmedit2"
@@ -156,15 +172,13 @@
 				value="Attendance Value: " />
 			<p:inputText size="35"
 				value="#{offerRewardTypesBean.editedRewardType.attendanceValue}" />
-							
+
 			<h:outputText styleClass="dialog-mediumFont" value="Test mode:" />
 			<p:selectBooleanCheckbox
 				value="#{offerRewardTypesBean.editedRewardType.testMode}" />
-
-
 		</h:panelGrid>
 
-	
+
 		<h:panelGrid columns="3" cellpadding="4">
 			<p:commandButton value="Save" icon="ui-icon-search"
 				action="#{offerRewardTypesBean.updateRewardType}" update=""

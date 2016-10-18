@@ -117,7 +117,7 @@ public class EventBrowserBean implements Serializable {
 	private boolean renderMobileAppNotificationStatusCol = true;
 	private boolean renderMobileAppNotificationStatusMessageCol = true;
 	private boolean renderRewardTypeName = true;
-	private boolean renderRewardName = true;
+	private boolean renderRewardName = false;
 	private boolean renderUserEventCategory = true;
 	private boolean renderEmail = true;
 	private boolean renderInstant = true;
