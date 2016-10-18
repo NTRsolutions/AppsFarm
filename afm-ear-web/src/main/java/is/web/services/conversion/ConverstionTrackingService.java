@@ -165,7 +165,7 @@ public class ConverstionTrackingService {
 	}
 
 	private void logConversionRequest(ConversionData data) {
-		String dataContent = "retrieved successful conversion data:" + data;
+		String dataContent = "retrieved successful conversion data:" + data.getInternalTransactionId()+" "+data.getOfferProviderTransactionId()+" "+data.getIpAddress();
 		logger.info(dataContent);
 		Application.getElasticSearchLogger().indexLog(Application.CONVERSION_ACTIVITY, -1, LogStatus.OK,
 				Application.CONVERSION_ACTIVITY + " " + Application.CONVERSION_IDENTIFIED + " received request: "
