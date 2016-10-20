@@ -56,43 +56,48 @@ public class FyberAPIManager {
 			OfferFilterManager offerFilterManager,
 			OfferRewardCalculationManager offerRewardCalculationManager,
 			RealtimeFeedDataHolder realtimeFeedDH,
-			TrialPayProviderConfig providerConfig) throws Exception {
+			FyberProviderConfig providerConfig) throws Exception {
 		
 		ArrayList<Offer> listFoundOffers = new ArrayList<Offer>();
 		
-		String ip = "31.61.138.94";
-		long unixTime = System.currentTimeMillis() / 1000L;
-		//String requestUrl = "appid="+appId+"&device_id=2b6f0cc904d137be2e1730235f5664094b831186&timestamp="+unixTime+"&uid=player1";
-		//String requestUrlWithApiKey = "appid="+appId+"&device_id=2b6f0cc904d137be2e1730235f5664094b831186&timestamp="+unixTime+"&uid=player1&"+apiKey;
-
-		//String requestUrl = "appid="+appId+"&device_id=111&timestamp="+unixTime+"&uid=testUser";
-		//String requestUrlWithApiKey = "appid="+appId+"&device_id=111&timestamp="+unixTime+"&uid=testUser&"+apiKey;
-		
-		//String requestUrl = "appid="+appId+"&device_id=111&locale=pl&offer_types=101,112&timestamp="+unixTime+"&uid=testUser";
-		//String requestUrlWithApiKey = "appid="+appId+"&device_id=111&locale=pl&offer_types=101,112&timestamp="+unixTime+"&uid=testUser&"+apiKey;
-
-		//String requestUrl = "appid="+appId+"&device_id=111&locale=pl&timestamp="+unixTime+"&uid=testUser";
-		//String requestUrlWithApiKey = "appid="+appId+"&device_id=111&locale=pl&timestamp="+unixTime+"&uid=testUser&"+apiKey;
 		String requestUrl = "";
 		String requestUrlWithApiKey = "";
 		
-//		if(offerTypes != null && offerTypes.length()>0) {
-//			requestUrl = "appid="+appId+"&device_id=111&locale=EN&offer_types="+offerTypes+"&timestamp="+unixTime+"&uid=testUser";
-//			requestUrlWithApiKey = "appid="+appId+"&device_id=111&locale=EN&offer_types="+offerTypes+"&timestamp="+unixTime+"&uid=testUser&"+apiKey;
-//		} else {
-//			requestUrl = "appid="+appId+"&device_id=111&locale=EN&timestamp="+unixTime+"&uid=testUser";
-//			requestUrlWithApiKey = "appid="+appId+"&device_id=111&locale=EN&timestamp="+unixTime+"&uid=testUser&"+apiKey;
-//		}
+		//http://api.fyber.com/feed/v1/offers.json?appid=[APP_ID]&uid=[USER_ID]
+		//&ip=[IP_ADDRESS]&locale=[LOCALE]&device_id=[DEVICE_ID]&ps_time=[TIMESTAMP]
+		//&pub0=[CUSTOM]&timestamp=[UNIX_TIMESTAMP]&offer_types=[OFFER_TYPES]
+		//&google_ad_id=[GAID]&google_ad_id_limited_tracking_enabled=[GAID ENABLED]&hashkey=[HASHKEY]
 
-		//http://developer.fyber.com/content/android/offer-wall/offer-api/
-        String sha1RequestUrl = DigestUtils.sha1Hex(requestUrlWithApiKey); 
-        //System.out.println("sha1: "+sha1RequestUrl);
-        requestUrl = "http://api.sponsorpay.com/feed/v1/offers.json?&"+requestUrl+"&hashkey="+sha1RequestUrl;
-        //System.out.println("full req: "+requestUrl);
-		Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), LogStatus.OK, "FYBER getOffers rest method called, content: "+requestUrl);
+		//TODO add to real time feed generator, supply realtime data and ask jakub to test it
 		
-		requestUrl = new FyberTest().getFyberTestUrl();
-
+		//FROM USER get:
+		//limitedTracking via AdvertisingIdClient.getAdvertisingIdInfo(mContext).isLimitAdTrackingEnabled()
+		//ip address if given
+		
+		long unixTime = System.currentTimeMillis() / 1000L;
+		String baseAddress = "http://api.fyber.com/feed/v1/offers.json?";
+		String address = "";
+		address += "appid="+providerConfig.getApiId();//47543"; //app id in config
+		
+		address += "&google_ad_id="+realtimeFeedDH.getGaid(); //0da9523d-89f9-4b91-8563-cf7918f036ec";
+		address += "&google_ad_id_limited_tracking_enabled=false";
+		//address += "&ip=212.45.111.17";
+		address += "&locale="+realtimeFeedDH.getLocale();//en";
+		address += "&os_version="+realtimeFeedDH.getOsVersion(); //6.0.1";
+		//address += "&page=1";
+		//address += "&pub0=test";
+		address += "&timestamp="+unixTime;
+		address += "&uid="+realtimeFeedDH.getUserId() ;//23335";
+		if(providerConfig.getOfferTypes()!=null && providerConfig.getOfferTypes().length() >0) {
+			address += "&offer_types="+providerConfig.getOfferTypes();
+		}
+		String copyAddress = new String(address);
+		copyAddress += "&"+providerConfig.getApiKey();//fa943c53f6ee72d53015fb918f916dc1a1043b9a"; //api key in config
+		String hash = DigestUtils.sha1Hex(copyAddress);
+		baseAddress += address + "&hashkey="+hash;
+		requestUrl = baseAddress;
+		
+        Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), LogStatus.OK, "FYBER getOffers rest method called, content: "+requestUrl);
 		Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
 				offerWall.getRealm().getId(), 
 				LogStatus.OK, 
@@ -130,7 +135,9 @@ public class FyberAPIManager {
 		" req status: "+urlConnection.getResponseCode()+
 		" rest response length: "+reqResponse.length());
 
-    	int numberOfOffersToSelect = providerConfig.getNumberOfPulledOffers();
+    	//int numberOfOffersToSelect = providerConfig.getNumberOfPulledOffers();
+    	int numberOfOffersToSelect = 1000; //TODO may wish to add it to config 
+    	
     	ArrayList<OffersEntry> listPulledOffers = new ArrayList<OffersEntry>();
     	ArrayList<is.ejb.bl.offerWall.content.Offer> listSelectedIndividualOffers = new ArrayList<is.ejb.bl.offerWall.content.Offer>();
 
@@ -161,10 +168,10 @@ public class FyberAPIManager {
 				numberOfOffersToSelect = listPulledOffers.size();
 			} 
 			
-			logger.info(OfferProviderCodeNames.TRIALPAY+" total pulled offers: "+listPulledOffers.size());
+			logger.info(OfferProviderCodeNames.FYBER+" total pulled offers: "+listPulledOffers.size());
 	    	Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
 	    			LogStatus.OK, 
-	    			" "+OfferProviderCodeNames.TRIALPAY+
+	    			" "+OfferProviderCodeNames.FYBER+
 	    			" total pulled offers: "+listPulledOffers.size());
 			
 			//pick offers randomly and make sure they do not repeat in the offer wall
@@ -173,7 +180,7 @@ public class FyberAPIManager {
 					Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
 							offerWall.getRealm().getId(), 
 							LogStatus.WARNING, 
-							Application.OFFERS_GENERATION_OFFERS_INSUFFICIENT+" "+OfferProviderCodeNames.TRIALPAY+" no offers left to pick from Hasoffers - possibly most were rejected");
+							Application.OFFERS_GENERATION_OFFERS_INSUFFICIENT+" "+OfferProviderCodeNames.FYBER+" no offers left to pick from Hasoffers - possibly most were rejected");
 					break;
 				}
 				

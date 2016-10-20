@@ -7,6 +7,10 @@ public class RealtimeFeedDataHolder {
 	private String gaid;
 	private String idfa;
 	private String deviceType;
+	//fyber specific
+	private boolean limitedTrackingEnabled;
+	private String osVersion;
+	private String locale;
 	
 	public String getUserId() {
 		return userId;
@@ -44,6 +48,23 @@ public class RealtimeFeedDataHolder {
 	public void setDeviceType(String deviceType) {
 		this.deviceType = deviceType;
 	}
-	
+	public boolean isLimitedTrackingEnabled() {
+		return limitedTrackingEnabled;
+	}
+	public void setLimitedTrackingEnabled(boolean limitedTrackingEnabled) {
+		this.limitedTrackingEnabled = limitedTrackingEnabled;
+	}
+	public String getOsVersion() {
+		return osVersion;
+	}
+	public void setOsVersion(String osVersion) {
+		this.osVersion = osVersion;
+	}
+	public String getLocale() {
+		return locale;
+	}
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
 	
 }

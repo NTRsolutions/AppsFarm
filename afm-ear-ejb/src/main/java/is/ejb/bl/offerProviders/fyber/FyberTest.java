@@ -40,7 +40,7 @@ public class FyberTest {
 		
 		String baseAddress = "http://api.fyber.com/feed/v1/offers.json?";
 		String address = "";
-		address += "appid=47543";
+		address += "appid=47543"; //app id in config
 		
 		address += "&google_ad_id=0da9523d-89f9-4b91-8563-cf7918f036ec";
 		address += "&google_ad_id_limited_tracking_enabled=false";
@@ -60,7 +60,7 @@ public class FyberTest {
 		String hash = DigestUtils.sha1Hex(copyAddress);
 		System.out.println(hash);
 		
-		baseAddress += address + "&hashkey="+hash;
+		baseAddress += address + "&hashkey="+hash; //api key in config
 
 		return baseAddress;
 	}

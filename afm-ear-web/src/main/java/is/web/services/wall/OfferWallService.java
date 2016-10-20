@@ -239,8 +239,14 @@ public class OfferWallService {
 		realtimeFeedDataHolder.setUa(URLEncoder.encode("", "UTF-8"));
 		realtimeFeedDataHolder.setUserId(URLEncoder.encode(appUser.getId() + "", "UTF-8"));
 		realtimeFeedDataHolder.setDeviceType(URLEncoder.encode(appUser.getDeviceType(), "UTF-8"));
-		OfferWallContent offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder,
-				true);
+		
+		//TODO to be completed for Fyber
+		//realtimeFeedDataHolder.setLocale(locale);
+		//realtimeFeedDataHolder.setOsVersion(osVersion);
+		//realtimeFeedDataHolder.setLimitedTrackingEnabled(limitedTrackingEnabled);
+		//realtimeFeedDataHolder.setUa(ua);
+		
+		OfferWallContent offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder, true);
 
 		// filter offer wall and remove offers that are already
 		// converted by user

@@ -106,9 +106,14 @@ public class RealtimeFeedGenerator {
 	@Inject
 	private SerDeTrialPayProviderConfiguration serDeTrialPayProviderConfiguration;
 
+	@Inject
+	private SerDeFyberProviderConfiguration serDeFyberProviderConfiguration;
 	//------------------------------ offer managers ------------------------------------
 	@Inject
 	private TrialPayAPIManager trialPayAPIManager;
+	
+	@Inject
+	private FyberAPIManager fyberAPIManager;
 	//--------------- offer filter managers -------------------
 	@Inject
 	private OfferFilterManager offerFilterManager;
@@ -198,6 +203,45 @@ public class RealtimeFeedGenerator {
 						//throw new Exception(exc.toString());
 					}
 				}
+				//----------------------------------- Fyber ------------------------------------
+				if(adProvider.getCodeName().equals(OfferProviderCodeNames.FYBER.toString())) {
+					try {
+						//retrieve offers via api call
+						IndividualOfferWall individualOfferWall = new IndividualOfferWall();
+						FyberProviderConfig adProviderConfig = serDeFyberProviderConfiguration.deserialize(adProvider.getConfiguration());
+						ArrayList<Offer> listAllIndividualOffers = 
+								fyberAPIManager.getOffers(offerWall,
+										individualOfferWall,
+										offerFilterManager,
+										offerRewardCalculationManager,
+										realmtimeFeedDataHolder,
+										adProviderConfig);
+						individualOfferWall.setOfferWallName(singleOfferWallConfig.getName());
+						//individualOfferWall.setGenerationTimestamp(System.currentTimeMillis() / 1000L);
+						individualOfferWall.setGenerationTime(new Timestamp(System.currentTimeMillis()).toString());
+						individualOfferWall.setAdProviderCodeName(OfferProviderCodeNames.FYBER.toString());
+						individualOfferWall.setOffers(listAllIndividualOffers);
+						//generate unique key as combination of offer wall combo name + individual offer name + realmId + timestamp 
+						String sha1Hash = DigestUtils.sha1Hex(offerWallContent.getCompositeOfferWallName()+singleOfferWallConfig.getName()+offerWall.getRealm().getId()+System.currentTimeMillis());
+						individualOfferWall.setId(sha1Hash);
+
+						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
+								LogStatus.OK, 
+								Application.SINGLE_OFFER_WALL_GENERATION_IDENTIFIED+ " created single offer wall: "+individualOfferWall.getOfferWallName()+" offer provider: "+offerWall.getProviderCodeName()+" network: "+offerWall.getRealm().getName());
+
+						listIndividualOfferWalls.add(individualOfferWall);
+					} catch(Exception exc) {
+						exc.printStackTrace();
+						logger.severe(exc.toString());
+						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
+								LogStatus.ERROR, 
+								Application.SINGLE_OFFER_WALL_GENERATION_FAILED+" error generating single offer walls for offer wall: "+offerWall.getName()+" offer provider: "+adProvider.getCodeName()+" realId: "+offerWall.getRealm().getId()+" error: "+exc.toString());
+
+						//if this is triggered -> multi offer wall will fail which we don't want
+						//throw new Exception(exc.toString());
+					}
+				}
+				
 			}
 
 			if(offerFilterManager.getOfferFilterConfiguration().isRejectDuplicateOffers()){
