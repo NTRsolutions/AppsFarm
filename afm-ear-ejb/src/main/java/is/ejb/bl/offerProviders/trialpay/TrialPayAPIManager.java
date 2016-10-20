@@ -138,6 +138,7 @@ public class TrialPayAPIManager {
     					tpOffer.getLink() != null && tpOffer.getLink().length()>0 
     					) {
         			listPulledOffers.add(tpOffer);
+        			
 //        			logger.info("found trialpay offer id: "+tpOffer.getId());
 //        			logger.info(" title: "+tpOffer.getTitle());
 //        			logger.info(" reward name: "+tpOffer.getReward_name());
@@ -160,13 +161,12 @@ public class TrialPayAPIManager {
     			}
     		}
 
-    		//------------------------------------------------------------------------------------------
-    		//------------------------------ fill list of offers ---------------------------------------
             //report retrieved offer pool size
             Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
     				offerWall.getRealm().getId(), LogStatus.OK, 
     				Application.OFFER_POOL_SIZE+" "+
     				OfferProviderCodeNames.TRIALPAY+" offer pool size: "+ listPulledOffers.size());//+" rest method called, content: "+requestUrl);
+
             //update offer stats
             offerWall.setNumberOfOffersInSelectionPool(offerWall.getNumberOfOffersInSelectionPool()+listPulledOffers.size());
             individualOfferWall.getListOfferStats().add(OfferWallStats.number_of_offers_in_selection_pool+":"+listPulledOffers.size());

@@ -7,6 +7,7 @@ import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Information {
+	@JsonProperty("virtual_currency_sale_enabled") private Boolean virtual_currency_sale_enabled;
 	@JsonProperty("support_url") private String support_url;
 	@JsonProperty("appid") private Integer appid;
 	@JsonProperty("virtual_currency") private String virtual_currency;
@@ -14,6 +15,13 @@ public class Information {
 	@JsonProperty("app_name") private String app_name;
 	@JsonProperty("country") private String country;
 	
+	public Boolean getVirtual_currency_sale_enabled() {
+		return virtual_currency_sale_enabled;
+	}
+	public void setVirtual_currency_sale_enabled(
+			Boolean virtual_currency_sale_enabled) {
+		this.virtual_currency_sale_enabled = virtual_currency_sale_enabled;
+	}
 	public String getSupport_url() {
 		return support_url;
 	}
@@ -50,5 +58,6 @@ public class Information {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	
 	
 }

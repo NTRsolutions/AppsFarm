@@ -9,11 +9,12 @@ import java.util.*;
 public class OffersEntry {
 	@JsonProperty("title") private String title;
 	@JsonProperty("offer_id") private Integer offer_id;
-	@JsonProperty("thumbnail") private Map<String, String> thumbnail;
+	@JsonProperty("thumbnail") private Thumbnail thumbnail;
 	@JsonProperty("time_to_payout") private Time_to_payout time_to_payout;
 	@JsonProperty("teaser") private String teaser;
 	@JsonProperty("required_actions") private String required_actions;
 	@JsonProperty("link") private String link;
+	@JsonProperty("store_id") private String store_id;
 	@JsonProperty("offer_types") private List<Offer_typesEntry> offer_types;
 	@JsonProperty("payout") private Integer payout;
 	
@@ -29,10 +30,10 @@ public class OffersEntry {
 	public void setOffer_id(Integer offer_id) {
 		this.offer_id = offer_id;
 	}
-	public Map<String, String> getThumbnail() {
+	public Thumbnail getThumbnail() {
 		return thumbnail;
 	}
-	public void setThumbnail(Map<String, String> thumbnail) {
+	public void setThumbnail(Thumbnail thumbnail) {
 		this.thumbnail = thumbnail;
 	}
 	public Time_to_payout getTime_to_payout() {
@@ -58,6 +59,12 @@ public class OffersEntry {
 	}
 	public void setLink(String link) {
 		this.link = link;
+	}
+	public String getStore_id() {
+		return store_id;
+	}
+	public void setStore_id(String store_id) {
+		this.store_id = store_id;
 	}
 	public List<Offer_typesEntry> getOffer_types() {
 		return offer_types;

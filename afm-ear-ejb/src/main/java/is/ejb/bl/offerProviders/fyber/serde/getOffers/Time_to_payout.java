@@ -9,6 +9,7 @@ import java.util.*;
 public class Time_to_payout {
 	@JsonProperty("amount") private Integer amount;
 	@JsonProperty("readable") private String readable;
+	
 	public Integer getAmount() {
 		return amount;
 	}
@@ -21,5 +22,4 @@ public class Time_to_payout {
 	public void setReadable(String readable) {
 		this.readable = readable;
 	}
-	
 }

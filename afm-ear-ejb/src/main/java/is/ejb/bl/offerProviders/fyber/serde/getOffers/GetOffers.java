@@ -1,5 +1,6 @@
 package is.ejb.bl.offerProviders.fyber.serde.getOffers;
 
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -50,5 +51,6 @@ public class GetOffers {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
 	
 }

@@ -105,11 +105,8 @@ public class SupersonicAPIManager {
     		}
     	}
 
-    	
-//    	logger.info(reqResponse);
     	ArrayList<OffersEntry> listPulledOffers = new ArrayList<OffersEntry>();
     	ArrayList<is.ejb.bl.offerWall.content.Offer> listSelectedIndividualOffers = new ArrayList<is.ejb.bl.offerWall.content.Offer>(); 
-
 
      	try {
 	        //serialise response into object
