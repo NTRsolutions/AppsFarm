@@ -222,15 +222,16 @@ public class OfferWallService {
 					details.getSystemInfo(), details.getApplicationInfo());
 			logger.info("Indexed wall selection");
 
-			OfferWallContent offerWallContent = filterWalls(appUser, ipAddress, offerWall);
+			OfferWallContent offerWallContent = filterWalls(appUser, ipAddress, offerWall, details);
 			apiHelper.setupSuccessResponse(response);
 			response.setMultiOfferWall(offerWallContent);
 
 		}
 	}
 
-	private OfferWallContent filterWalls(AppUserEntity appUser, String ipAddress, OfferWallEntity offerWall)
-			throws Exception {
+	private OfferWallContent filterWalls(AppUserEntity appUser, String ipAddress, OfferWallEntity offerWall,
+			APIRequestDetails details) throws Exception {
+
 		RealtimeFeedDataHolder realtimeFeedDataHolder = new RealtimeFeedDataHolder();
 
 		realtimeFeedDataHolder.setGaid(URLEncoder.encode(appUser.getAdvertisingId(), "UTF-8"));
@@ -239,14 +240,58 @@ public class OfferWallService {
 		realtimeFeedDataHolder.setUa(URLEncoder.encode("", "UTF-8"));
 		realtimeFeedDataHolder.setUserId(URLEncoder.encode(appUser.getId() + "", "UTF-8"));
 		realtimeFeedDataHolder.setDeviceType(URLEncoder.encode(appUser.getDeviceType(), "UTF-8"));
-		
-		//TODO to be completed for Fyber
-		//realtimeFeedDataHolder.setLocale(locale);
-		//realtimeFeedDataHolder.setOsVersion(osVersion);
-		//realtimeFeedDataHolder.setLimitedTrackingEnabled(limitedTrackingEnabled);
-		//realtimeFeedDataHolder.setUa(ua);
-		
-		OfferWallContent offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder, true);
+
+		HashMap<String, Object> parameters = details.getParameters();
+		logger.info("Parameters: " + parameters);
+		if (parameters != null) {
+			String locale = "";
+			if (parameters.containsKey("locale")){
+				Object value = parameters.get("locale");
+				if (value != null){
+					locale = (String) parameters.get("locale");
+				}
+			}
+			
+			String osVersion = "";
+			if (parameters.containsKey("osVersion")){
+				Object value = parameters.get("osVersion");
+				if (value != null){
+					osVersion = (String) parameters.get("osVersion");
+				}
+			}
+			
+			boolean limitedTrackingEnabled = false;
+			if (parameters.containsKey("limitedTrackingEnabled")){
+				Object value = parameters.get("limitedTrackingEnabled");
+				if (value != null){
+					limitedTrackingEnabled = (Boolean) parameters.get("limitedTrackingEnabled");
+				}
+			}
+			String ua = "";
+			if (parameters.containsKey("ua")){
+				Object value = parameters.get("ua");
+				if (value != null){
+					ua = (String) parameters.get("ua");
+				}
+			}
+			
+			realtimeFeedDataHolder.setLocale(locale);
+			realtimeFeedDataHolder.setOsVersion(osVersion);
+			realtimeFeedDataHolder.setLimitedTrackingEnabled(limitedTrackingEnabled);
+			realtimeFeedDataHolder.setUa(ua);
+			
+
+		}
+		logger.info(" ** REAL TIME FEED DATA HOLDER: " + realtimeFeedDataHolder);
+
+		// TODO to be completed for Fyber
+		// realtimeFeedDataHolder.setLocale(locale);
+		// realtimeFeedDataHolder.setOsVersion(osVersion);
+		// realtimeFeedDataHolder.setLimitedTrackingEnabled(limitedTrackingEnabled);
+		// realtimeFeedDataHolder.setUa(ua);
+
+		OfferWallContent offerWallContent = realtimeFeedGenerator.composeOfferWall(offerWall, realtimeFeedDataHolder,
+				true);
 
 		// filter offer wall and remove offers that are already
 		// converted by user

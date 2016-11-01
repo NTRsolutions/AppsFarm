@@ -66,5 +66,11 @@ public class RealtimeFeedDataHolder {
 	public void setLocale(String locale) {
 		this.locale = locale;
 	}
+	@Override
+	public String toString() {
+		return "RealtimeFeedDataHolder [userId=" + userId + ", ua=" + ua + ", ip=" + ip + ", gaid=" + gaid + ", idfa="
+				+ idfa + ", deviceType=" + deviceType + ", limitedTrackingEnabled=" + limitedTrackingEnabled
+				+ ", osVersion=" + osVersion + ", locale=" + locale + "]";
+	}
 	
 }
