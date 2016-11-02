@@ -609,6 +609,50 @@ public class ESLogger {
 			exc.printStackTrace();
 		}
 	}
+	
+	public void indexCrashReport(
+			String phoneNumberExtension,
+			String phoneNumber,
+			String deviceInfo,
+			String deviceVersion,
+			String applicationName,
+			String applicationVersion,
+			String breadcrumb,
+			String stackTrace,
+			String ipAddress,
+			String email,
+			String rewardType,
+			String countryCode,
+			String deviceType,
+			String gaid,
+			String idfa,
+			String ageRange,
+			String gender) {
+		try {
+			if(threadCrashReportsQueue.isQueueNotFull()) {
+				XContentBuilder xcb = jsonBuilder().startObject();
+				xcb.field("phoneNumberExtension", phoneNumberExtension);
+				xcb.field("phoneNumber", phoneNumber);
+				xcb.field("deviceInfo", deviceInfo);
+				xcb.field("deviceVersion", deviceVersion);
+				xcb.field("applicationName", applicationName);
+				xcb.field("applicationVersion", applicationVersion);
+				xcb.field("breadcrumb", breadcrumb);
+				xcb.field("stackTrace", stackTrace);
+				xcb.field("ipAddress", ipAddress);
+				xcb.field("@time", System.currentTimeMillis());
+				xcb.field("@timestamp", new Date());
+				xcb.field("serverName", localhostname);
+				xcb.endObject();
+				threadCrashReportsQueue.addToQueue(xcb);
+			}
+		} catch(Exception exc) {
+			exc.toString();
+			exc.printStackTrace();
+		}
+
+	}
+	
 
 
 
