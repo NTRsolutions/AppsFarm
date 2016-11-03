@@ -383,6 +383,8 @@ public class ClickService {
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.TRIALPAY.toString())) {
 			saltedOfferUrl = offer.getUrl() + "&sid=" + URLEncoder.encode(userId + "", "UTF-8") + "&transaction_id="
 					+ URLEncoder.encode(internalTransactionId, "UTF-8");
+		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.FYBER.toString())) {
+				saltedOfferUrl = offer.getUrl() + "&pub0=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.HASOFFERS_EXT.toString())) {
 			saltedOfferUrl = offer.getUrl() + "&aff_sub5=" + URLEncoder.encode(internalTransactionId, "UTF-8");
 		} else if (offer.getAdProviderCodeName().equals(OfferProviderCodeNames.CLICKKY.toString())) {
