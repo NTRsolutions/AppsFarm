@@ -62,6 +62,11 @@
 						    	<h:outputText styleClass="dialog-mediumFont" value="Active: " />  
 						        <p:selectBooleanCheckbox value="#{adProviderConfigurationBean.editedDomain.active}"  />
 
+						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate number: " rendered="#{adProviderConfigurationBean.renderAdGate}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.adGateAffiliateNumber}" size="100" rendered="#{adProviderConfigurationBean.renderAdGate}" />
+								<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderAdGate}" />  
+	   				            <p:inputText value="#{adProviderConfigurationBean.adGateApiKey}" size="100" rendered="#{adProviderConfigurationBean.renderAdGate}" />
+
 						    	<h:outputText styleClass="dialog-mediumFont" value="Id: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
 	   				            <p:inputText value="#{adProviderConfigurationBean.snapdealId}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
 								<h:outputText styleClass="dialog-mediumFont" value="Token: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
@@ -213,6 +218,12 @@
 							</p:tab>
 							<p:tab title="Provider Configuration" rendered="true" >
 							    <h:panelGrid columns="2" cellpadding="4">
+							    
+    						    	<h:outputText styleClass="dialog-mediumFont" value="Affiliate number: " rendered="#{adProviderConfigurationBean.renderAdGate}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.adGateAffiliateNumberCreate}" size="100" rendered="#{adProviderConfigurationBean.renderAdGate}" />
+									<h:outputText styleClass="dialog-mediumFont" value="Api Key: " rendered="#{adProviderConfigurationBean.renderAdGate}" />  
+		   				            <p:inputText value="#{adProviderConfigurationBean.adGateApiKeyCreate}" size="100" rendered="#{adProviderConfigurationBean.renderAdGate}" />
+							    
    							    	<h:outputText styleClass="dialog-mediumFont" value="Id: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  
 		   				            <p:inputText value="#{adProviderConfigurationBean.snapdealIdCreate}" size="100" rendered="#{adProviderConfigurationBean.renderSnapdeal}" />
 							    	<h:outputText styleClass="dialog-mediumFont" value="Token: " rendered="#{adProviderConfigurationBean.renderSnapdeal}" />  

@@ -4,6 +4,8 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.OfferProviderCodeNames;
 import is.ejb.bl.offerProviders.aarki.AarkiProviderConfig;
 import is.ejb.bl.offerProviders.aarki.SerDeAarkiProviderConfiguration;
+import is.ejb.bl.offerProviders.adgate.AdGateProviderConfig;
+import is.ejb.bl.offerProviders.adgate.SerDeAdGateProviderConfiguration;
 import is.ejb.bl.offerProviders.clickey.ClickeyProviderConfig;
 import is.ejb.bl.offerProviders.clickey.SerDeClickeyProviderConfiguration;
 import is.ejb.bl.offerProviders.fyber.FyberProviderConfig;
@@ -78,6 +80,8 @@ public class AdProviderConfigurationBean implements Serializable {
 	private DAORealm daoRealm;
 
 	@Inject
+	private SerDeAdGateProviderConfiguration serDeAdGate;
+	@Inject
 	private SerDeTrialPayProviderConfiguration serDeTrialPay;
 	@Inject
 	private SerDeClickeyProviderConfiguration serDeClickey;
@@ -103,7 +107,8 @@ public class AdProviderConfigurationBean implements Serializable {
 	private SerDePersonalyProviderConfiguration serDePersonaly;
 	@Inject
 	private SerDeSnapdealProviderConfiguration serDeSnapdeal;
-	
+
+	private AdGateProviderConfig configAdGate;
 	private TrialPayProviderConfig configTrialPay;
 	private ClickeyProviderConfig configClickey;
 	private WoobiProviderConfig configWoobiAndroid;
@@ -124,6 +129,7 @@ public class AdProviderConfigurationBean implements Serializable {
 	
 	private UserEntity customer;
 
+	private boolean renderAdGate = false;
 	private boolean renderTrialPay = false;
 	private boolean renderClickey = false;
 	private boolean renderWoobiAndroid = false;
@@ -140,6 +146,9 @@ public class AdProviderConfigurationBean implements Serializable {
 	private boolean renderSnapdeal = false;
 	
 	//create fields
+	private String adGateAffiliateNumberCreate = "";
+	private String adGateApiKeyCreate = "";
+
 	private String snapdealTokenCreate = "";
 	private String snapdealIdCreate = "";
 
@@ -197,6 +206,9 @@ public class AdProviderConfigurationBean implements Serializable {
 	private int aarkiNumberOfPulledOffersCreate = 1000;
 
 	//edit fields
+	private String adGateAffiliateNumber = "";
+	private String adGateApiKey = "";
+
 	private String snapdealToken = "";
 	private String snapdealId = "";
 
@@ -304,6 +316,7 @@ public class AdProviderConfigurationBean implements Serializable {
 	private void createOfferProviderTypes() {
 		listOfferProviderTypes = new ArrayList<SelectItem>();
 		listOfferProviderTypes.add(new SelectItem("Select one", "Select one"));
+		listOfferProviderTypes.add(new SelectItem(OfferProviderCodeNames.ADGATE.toString(), OfferProviderCodeNames.ADGATE.toString()));
 		listOfferProviderTypes.add(new SelectItem(OfferProviderCodeNames.FYBER.toString(), OfferProviderCodeNames.FYBER.toString()));
 		listOfferProviderTypes.add(new SelectItem(OfferProviderCodeNames.TRIALPAY.toString(), OfferProviderCodeNames.TRIALPAY.toString()));
 		listOfferProviderTypes.add(new SelectItem(OfferProviderCodeNames.AARKI.toString(), OfferProviderCodeNames.AARKI.toString()));
@@ -323,6 +336,7 @@ public class AdProviderConfigurationBean implements Serializable {
 	public void adjustUIForSelectedProviderType() {
 		logger.info("adjusting UI for selected provider type: "+createdDomain.getCodeName());
 		createdDomain.setTags(createdDomain.getCodeName());
+		renderAdGate = false;
 		renderFyber = false;
 		renderTrialPay = false;
 		renderClickey = false;
@@ -339,6 +353,9 @@ public class AdProviderConfigurationBean implements Serializable {
 		renderPersonaly = false;
 		renderSnapdeal = false;
 
+		if(createdDomain.getCodeName().equals(OfferProviderCodeNames.ADGATE.toString())) {
+			renderAdGate = true;
+		}
 		if(createdDomain.getCodeName().equals(OfferProviderCodeNames.SNAPDEAL.toString())) {
 			renderSnapdeal = true;
 		}
@@ -389,6 +406,22 @@ public class AdProviderConfigurationBean implements Serializable {
 	public void update() {
 		logger.info("updating AdProvider configuration: "+editedDomain.getName());
 		try {
+			//set configuration parameters according to specific AdProvider schemas
+			if(editedDomain.getCodeName().equals(OfferProviderCodeNames.ADGATE.toString())){
+				//serialise config 
+				try {
+					configAdGate.setAffiliateNumber(adGateAffiliateNumber);
+					configAdGate.setApiKey(adGateApiKey);
+					
+					String strConfigContent = serDeAdGate.serialize(configAdGate);
+					editedDomain.setConfiguration(strConfigContent);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to serialize Ad provider configuration: "+e.toString()));
+					RequestContext.getCurrentInstance().update("tabView:idDomainConfigurationGrowl");
+				}
+			}
 			//set configuration parameters according to specific AdProvider schemas
 			if(editedDomain.getCodeName().equals(OfferProviderCodeNames.SNAPDEAL.toString())){
 				//serialise config 
@@ -621,7 +654,37 @@ public class AdProviderConfigurationBean implements Serializable {
 		this.editedDomain = domain;
 
 		//display correct configuration parameters according to specific AdProvider schemas
+		if(editedDomain.getCodeName().equals(OfferProviderCodeNames.ADGATE.toString())){
+			renderAdGate = true;
+			renderSnapdeal = false;
+			renderPersonaly = false;
+			renderTrialPay = false;
+			renderClickey = false;
+			renderWoobiIOS = false;
+			renderWoobiAndroid = false;
+			renderSupersonic = false;
+			renderAarki = false;
+			renderMinimob = false;
+			renderFyber = false;
+			renderHasoffers = false;
+			renderHasoffersExt = false;
+			renderHasoffersNativex = false;
+			renderHasoffersVC = false;
+			//deserialise config 
+			try {
+				logger.info("deserialising: "+editedDomain.getConfiguration());
+				configAdGate = serDeAdGate.deserialize(editedDomain.getConfiguration());
+				adGateAffiliateNumber = configAdGate.getAffiliateNumber();
+				adGateApiKey = configAdGate.getApiKey();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to retrieve Ad provider configuration: "+e.toString()));
+				RequestContext.getCurrentInstance().update("tabView:idDomainConfigurationGrowl");
+			}
+		}		
 		if(editedDomain.getCodeName().equals(OfferProviderCodeNames.SNAPDEAL.toString())){
+			renderAdGate = false;
 			renderSnapdeal = true;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -650,6 +713,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}		
 		if(editedDomain.getCodeName().equals(OfferProviderCodeNames.PERSONALY.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = true;
 			renderTrialPay = false;
@@ -678,6 +742,7 @@ public class AdProviderConfigurationBean implements Serializable {
 				RequestContext.getCurrentInstance().update("tabView:idDomainConfigurationGrowl");
 			}
 		} if(editedDomain.getCodeName().equals(OfferProviderCodeNames.TRIALPAY.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = true;
@@ -706,6 +771,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.CLICKKY.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -732,6 +798,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.WOOBI_IOS.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -758,6 +825,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.WOOBI_ANDROID.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -785,6 +853,7 @@ public class AdProviderConfigurationBean implements Serializable {
 		}
 		//display correct configuration parameters according to specific AdProvider schemas
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.SUPERSONIC.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -816,6 +885,7 @@ public class AdProviderConfigurationBean implements Serializable {
 		}
 		//display correct configuration parameters according to specific AdProvider schemas
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.AARKI.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -844,6 +914,7 @@ public class AdProviderConfigurationBean implements Serializable {
 		}
 		//display correct configuration parameters according to specific AdProvider schemas
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.MINIMOB.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -871,6 +942,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.FYBER.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -899,6 +971,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.HASOFFERS.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -929,6 +1002,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.HASOFFERS_EXT.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -959,6 +1033,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.HASOFFERS_NATIVEX.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -989,6 +1064,7 @@ public class AdProviderConfigurationBean implements Serializable {
 			}
 		}
 		else if(editedDomain.getCodeName().equals(OfferProviderCodeNames.HASOFFERS_VC.toString())){
+			renderAdGate = false;
 			renderSnapdeal = false;
 			renderPersonaly = false;
 			renderTrialPay = false;
@@ -1045,6 +1121,21 @@ public class AdProviderConfigurationBean implements Serializable {
 				logger.info("creating AdProvider configuration: "+createdDomain.getName());
 				try {
 					//set configuration parameters according to specific AdProvider schemas
+					if(createdDomain.getCodeName().equals(OfferProviderCodeNames.ADGATE.toString())){
+						//serialise config 
+						try {
+							configAdGate = new AdGateProviderConfig();
+							configAdGate.setAffiliateNumber(adGateAffiliateNumberCreate);
+							configAdGate.setApiKey(adGateApiKeyCreate);
+							String strConfigContent = serDeAdGate.serialize(configAdGate);
+							createdDomain.setConfiguration(strConfigContent);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed", "Unable to serialize Ad provider configuration: "+e.toString()));
+							RequestContext.getCurrentInstance().update("tabView:idDomainConfigurationGrowl");
+						}
+					}
 					if(createdDomain.getCodeName().equals(OfferProviderCodeNames.SNAPDEAL.toString())){
 						//serialise config 
 						try {
@@ -2173,6 +2264,46 @@ public class AdProviderConfigurationBean implements Serializable {
 
 	public void setSnapdealId(String snapdealId) {
 		this.snapdealId = snapdealId;
+	}
+
+	public boolean isRenderAdGate() {
+		return renderAdGate;
+	}
+
+	public void setRenderAdGate(boolean renderAdGate) {
+		this.renderAdGate = renderAdGate;
+	}
+
+	public String getAdGateAffiliateNumber() {
+		return adGateAffiliateNumber;
+	}
+
+	public void setAdGateAffiliateNumber(String adGateAffiliateNumber) {
+		this.adGateAffiliateNumber = adGateAffiliateNumber;
+	}
+
+	public String getAdGateApiKey() {
+		return adGateApiKey;
+	}
+
+	public void setAdGateApiKey(String adGateApiKey) {
+		this.adGateApiKey = adGateApiKey;
+	}
+
+	public String getAdGateAffiliateNumberCreate() {
+		return adGateAffiliateNumberCreate;
+	}
+
+	public void setAdGateAffiliateNumberCreate(String adGateAffiliateNumberCreate) {
+		this.adGateAffiliateNumberCreate = adGateAffiliateNumberCreate;
+	}
+
+	public String getAdGateApiKeyCreate() {
+		return adGateApiKeyCreate;
+	}
+
+	public void setAdGateApiKeyCreate(String adGateApiKeyCreate) {
+		this.adGateApiKeyCreate = adGateApiKeyCreate;
 	}
 
 	

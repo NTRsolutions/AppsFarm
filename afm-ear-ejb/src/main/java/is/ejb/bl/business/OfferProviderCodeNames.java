@@ -1,6 +1,7 @@
 package is.ejb.bl.business;
 
 public enum OfferProviderCodeNames {
+	ADGATE,
 	SNAPDEAL,
 	PERSONALY,
 	MOCEAN, 
