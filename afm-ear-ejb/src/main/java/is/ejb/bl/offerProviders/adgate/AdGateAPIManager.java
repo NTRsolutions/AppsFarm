@@ -75,6 +75,7 @@ public class AdGateAPIManager {
         	requiredCategory = "11";
         }
         
+        
     	requestUrl = "https://api.adgatemedia.com/v1/offers?aff="+providerConfig.getAffiliateNumber()+
         		"&api_key="+providerConfig.getApiKey()+
         		"&ua="+requiredDevice+ //android or iphone
