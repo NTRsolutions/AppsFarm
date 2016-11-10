@@ -8,6 +8,9 @@ import is.ejb.bl.offerFilter.SerDeCurrencyCode;
 import is.ejb.bl.offerProviders.aarki.AarkiAPIManager;
 import is.ejb.bl.offerProviders.aarki.AarkiProviderConfig;
 import is.ejb.bl.offerProviders.aarki.SerDeAarkiProviderConfiguration;
+import is.ejb.bl.offerProviders.adgate.AdGateAPIManager;
+import is.ejb.bl.offerProviders.adgate.AdGateProviderConfig;
+import is.ejb.bl.offerProviders.adgate.SerDeAdGateProviderConfiguration;
 import is.ejb.bl.offerProviders.clickey.ClickeyAPIManager;
 import is.ejb.bl.offerProviders.clickey.ClickeyProviderConfig;
 import is.ejb.bl.offerProviders.clickey.SerDeClickeyProviderConfiguration;
@@ -115,6 +118,8 @@ public class OfferWallGenerator {
 
 	//------------------------------ serde ------------------------------------
 	@Inject
+	private SerDeAdGateProviderConfiguration serDeAdGate;
+	@Inject
 	private SerDeClickeyProviderConfiguration serDeClickky;
 	@Inject
 	private SerDeWoobiProviderConfiguration serDeWoobi;
@@ -140,6 +145,8 @@ public class OfferWallGenerator {
 	private SerDeSnapdealProviderConfiguration serDeSnapdeal;
 
 	//------------------------------ offer managers ------------------------------------
+	@Inject
+	private AdGateAPIManager adGateAPIManager;
 	@Inject
 	private ClickeyAPIManager clickeyAPIManager;
 	@Inject
@@ -206,37 +213,47 @@ public class OfferWallGenerator {
 				//retrieve specific ad provider configurations to handle api call
 
 				//----------------------------------------------------------------------------------
-				//----------------------------------- SNAPDEAL ------------------------------------
-				if(adProvider.getCodeName().equals(OfferProviderCodeNames.SNAPDEAL.toString())) {
-//					try {
-//						IndividualOfferWall individualOfferWall = new IndividualOfferWall();
-//						//retrieve offers via api call
-//						SnapdealProviderConfig adProviderConfig = serDeSnapdeal.deserialize(adProvider.getConfiguration());
-//						
-//						//or just don't generate failing offer wall?
-//						snapdealAPIManager.getOffers(offerWall, 
-//							individualOfferWall,
-//							offerFilterManager,
-//							offerRewardCalculationManager,
-//							adProviderConfig);
-//
-//						//generate unique key as combination of offer wall combo name + individual offer name + realmId + timestamp 
-//						String sha1Hash = DigestUtils.sha1Hex(offerWallContent.getCompositeOfferWallName()+singleOfferWallConfig.getName()+offerWall.getRealm().getId()+System.currentTimeMillis());
-//						individualOfferWall.setId(sha1Hash);
-//
-//						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
-//								LogStatus.OK, 
-//								Application.SINGLE_OFFER_WALL_GENERATION_IDENTIFIED+ " created single offer wall: "+individualOfferWall.getOfferWallName()+" offer provider: "+offerWall.getProviderCodeName()+" network: "+offerWall.getRealm().getName());
-//					} catch(Exception exc) {
-//						exc.printStackTrace();
-//						logger.severe(exc.toString());
-//						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
-//								LogStatus.ERROR, 
-//								Application.SINGLE_OFFER_WALL_GENERATION_FAILED+" error generating single offer walls for offer wall: "+offerWall.getName()+" offer provider: "+adProvider.getCodeName()+" realId: "+offerWall.getRealm().getId()+" error: "+exc.toString());
-//						
-//						//if this is triggered -> multi offer wall will fail which we don't want
-//						//throw new Exception(exc.toString());
-//					}
+				//----------------------------------- PERSONALY ------------------------------------
+				if(adProvider.getCodeName().equals(OfferProviderCodeNames.ADGATE.toString())) {
+					try {
+						//all offer ids from all ACTIVE!!! offer groups as we only take into account active groups
+						ArrayList<Integer> listOfferIdsPool = new ArrayList<Integer>(); //this is the global pool of obtained offer Ids from which to select ones for offer wall
+						IndividualOfferWall individualOfferWall = new IndividualOfferWall();
+						//retrieve offers via api call
+						AdGateProviderConfig adProviderConfig = serDeAdGate.deserialize(adProvider.getConfiguration());
+
+						//or just don't generate failing offer wall?
+						ArrayList<Offer> listAllIndividualOffers = 
+								adGateAPIManager.getOffers(offerWall, 
+								individualOfferWall,
+								offerFilterManager,
+								offerRewardCalculationManager,
+								adProviderConfig,
+								singleOfferWallConfig.getNumberOfOffers());
+
+						individualOfferWall.setOfferWallName(singleOfferWallConfig.getName());
+						individualOfferWall.setGenerationTime(new Timestamp(System.currentTimeMillis()).toString());
+						individualOfferWall.setAdProviderCodeName(OfferProviderCodeNames.ADGATE.toString());
+						individualOfferWall.setOffers(listAllIndividualOffers);
+						//generate unique key as combination of offer wall combo name + individual offer name + realmId + timestamp 
+						String sha1Hash = DigestUtils.sha1Hex(offerWallContent.getCompositeOfferWallName()+singleOfferWallConfig.getName()+offerWall.getRealm().getId()+System.currentTimeMillis());
+						individualOfferWall.setId(sha1Hash);
+
+						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
+								LogStatus.OK, 
+								Application.SINGLE_OFFER_WALL_GENERATION_IDENTIFIED+ " created single offer wall: "+individualOfferWall.getOfferWallName()+" offer provider: "+offerWall.getProviderCodeName()+" network: "+offerWall.getRealm().getName());
+
+						listIndividualOfferWalls.add(individualOfferWall);
+					} catch(Exception exc) {
+						exc.printStackTrace();
+						logger.severe(exc.toString());
+						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
+								LogStatus.ERROR, 
+								Application.SINGLE_OFFER_WALL_GENERATION_FAILED+" error generating single offer walls for offer wall: "+offerWall.getName()+" offer provider: "+adProvider.getCodeName()+" realId: "+offerWall.getRealm().getId()+" error: "+exc.toString());
+						
+						//if this is triggered -> multi offer wall will fail which we don't want
+						//throw new Exception(exc.toString());
+					}
 				}
 
 				//----------------------------------------------------------------------------------

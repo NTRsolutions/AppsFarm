@@ -49,12 +49,13 @@ public class AdGateAPIManager {
 										IndividualOfferWall individualOfferWall,
 										OfferFilterManager offerFilterManager,
 										OfferRewardCalculationManager offerRewardCalculationManager,
-										RealtimeFeedDataHolder realtimeFeedDH,
-										TrialPayProviderConfig providerConfig) throws Exception {
+										AdGateProviderConfig providerConfig,
+										int numberOfOffersToSelect) throws Exception {
 		//offer wall stats
-        offerWall.setNumberOfRequestedOffers(offerWall.getNumberOfRequestedOffers()+providerConfig.getNumberOfPulledOffers());
-        individualOfferWall.getListOfferStats().add(OfferWallStats.number_of_requested_offers+":"+providerConfig.getNumberOfPulledOffers());
-        
+        offerWall.setNumberOfRequestedOffers(offerWall.getNumberOfRequestedOffers()+numberOfOffersToSelect);
+        individualOfferWall.getListOfferStats().add(OfferWallStats.number_of_requested_offers+":"+numberOfOffersToSelect);
+
+		//offer wall stats
 		ArrayList<Offer> listFoundOffers = new ArrayList<Offer>();
 
     	HttpURLConnection urlConnection = null;
@@ -62,24 +63,23 @@ public class AdGateAPIManager {
         String reqResponse = "";
         
         String requestUrl = "";
-        if(realtimeFeedDH.getIdfa()!=null && realtimeFeedDH.getIdfa().length()>0) {
-        	requestUrl = "https://geo.tp-cdn.com/api/offer/v1/?vic="+providerConfig.getVic()+
-            		"&sid="+realtimeFeedDH.getUserId()+
-            		"&idfa_en=1"+
-            		"&ua="+realtimeFeedDH.getUa()+
-            		"&ip="+realtimeFeedDH.getIp()+
-            		"&idfa="+realtimeFeedDH.getIdfa()+
-            		"&num_offers="+providerConfig.getNumberOfPulledOffers();	
-        } else {
-        	requestUrl = "https://geo.tp-cdn.com/api/offer/v1/?vic="+providerConfig.getVic()+
-            		"&sid="+realtimeFeedDH.getUserId()+
-            		"&gaid_en=1"+
-            		"&ua="+realtimeFeedDH.getUa()+
-            		"&ip="+realtimeFeedDH.getIp()+
-            		"&gaid="+realtimeFeedDH.getGaid()+
-            		"&num_offers="+providerConfig.getNumberOfPulledOffers();	
+        
+        String targetDevice = offerWall.getTargetDevicesFilter().toLowerCase();
+        String requiredDevice = "";
+        String requiredCategory = "";
+        if(targetDevice.equals("android")) {
+        	requiredDevice = "android";
+        	requiredCategory = "1";
+        } else if(targetDevice.equals("ios")) {
+        	requiredDevice = "iphone";
+        	requiredCategory = "11";
         }
-        	
+        
+    	requestUrl = "https://api.adgatemedia.com/v1/offers?aff="+providerConfig.getAffiliateNumber()+
+        		"&api_key="+providerConfig.getApiKey()+
+        		"&ua="+requiredDevice+ //android or iphone
+        		"&categories="+requiredCategory+ //1=android or 11=iphone
+        		"&country="+offerWall.getTargetCountriesFilter().toLowerCase();
 
 		Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
 				offerWall.getRealm().getId(), 
@@ -121,8 +121,11 @@ public class AdGateAPIManager {
 		" req url: "+requestUrl+
 		" req status: "+urlConnection.getResponseCode()+
 		" rest response length: "+reqResponse.length());
-
-    	int numberOfOffersToSelect = providerConfig.getNumberOfPulledOffers();
+    	
+    	System.out.println(" req url: "+requestUrl+
+    			" req status: "+urlConnection.getResponseCode()+
+    			" rest response length: "+reqResponse);
+    	
     	ArrayList<is.ejb.bl.offerWall.content.Offer> listSelectedIndividualOffers = new ArrayList<is.ejb.bl.offerWall.content.Offer>();
     	try {
         	ArrayList<TrialPayOffer> listPulledOffers = new ArrayList<TrialPayOffer>();
