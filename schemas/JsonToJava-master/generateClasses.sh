@@ -58,7 +58,10 @@ export CLASSPATH=target/classes/:lib/*:import/
 
 #-------------- snapdeal api -----------------
 #java com.astav.jsontojava.JsonToJava jsonTemplates/snapdeal/GetCategories.json out ejb.bl.offerProviders.snapdeal.getCategories GetCategories regex-sample.json false
-java com.astav.jsontojava.JsonToJava jsonTemplates/snapdeal/CategoryOffers.json out ejb.bl.offerProviders.snapdeal.CategoryOffers CategoryOffers regex-sample.json false
+#java com.astav.jsontojava.JsonToJava jsonTemplates/snapdeal/CategoryOffers.json out ejb.bl.offerProviders.snapdeal.CategoryOffers CategoryOffers regex-sample.json false
 
+
+#-------------- fyber api -----------------
+java com.astav.jsontojava.JsonToJava jsonTemplates/adGate/GetAdGateOffers.json out is.ejb.bl.offerProviders.adgate.getAdGateOffers GetAdGateOffers regex-sample.json false
 
 

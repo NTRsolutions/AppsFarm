@@ -4,11 +4,10 @@ import is.ejb.bl.business.Application;
 import is.ejb.bl.business.OfferProviderCodeNames;
 import is.ejb.bl.business.OfferWallStats;
 import is.ejb.bl.business.ThumbnailQuality;
-import is.ejb.bl.offerProviders.trialpay.TrialPayProviderConfig;
-import is.ejb.bl.offerProviders.trialpay.getOffers.TrialPayOffer;
+import is.ejb.bl.offerProviders.adgate.getAdGateOffers.GetAdGateOffers;
+import is.ejb.bl.offerProviders.adgate.getAdGateOffers.OffersEntry;
 import is.ejb.bl.offerWall.OfferFilterManager;
 import is.ejb.bl.offerWall.OfferRewardCalculationManager;
-import is.ejb.bl.offerWall.RealtimeFeedDataHolder;
 import is.ejb.bl.offerWall.content.IndividualOfferWall;
 import is.ejb.bl.offerWall.content.Offer;
 import is.ejb.bl.system.logging.LogStatus;
@@ -118,7 +117,7 @@ public class AdGateAPIManager {
 //		" rest response: "+reqResponse);
     	Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
 		LogStatus.OK, 
-		" "+OfferProviderCodeNames.TRIALPAY+
+		" "+OfferProviderCodeNames.ADGATE+
 		" req url: "+requestUrl+
 		" req status: "+urlConnection.getResponseCode()+
 		" rest response length: "+reqResponse.length());
@@ -127,32 +126,32 @@ public class AdGateAPIManager {
     			" req status: "+urlConnection.getResponseCode()+
     			" rest response length: "+reqResponse);
     	
+    	reqResponse = "{\"offers\": "+reqResponse+"}";
     	ArrayList<is.ejb.bl.offerWall.content.Offer> listSelectedIndividualOffers = new ArrayList<is.ejb.bl.offerWall.content.Offer>();
     	try {
-        	ArrayList<TrialPayOffer> listPulledOffers = new ArrayList<TrialPayOffer>();
+        	ArrayList<OffersEntry> listPulledOffers = new ArrayList<OffersEntry>();
             //serialise response into object
     		ObjectMapper mapper = new ObjectMapper();
-    		TrialPayOffer[] arrayOfOffers = mapper.readValue(reqResponse, TrialPayOffer[].class);
-    		for(int i=0;i<arrayOfOffers.length;i++){
-    			TrialPayOffer tpOffer = arrayOfOffers[i];
-    			if(tpOffer != null && tpOffer.getId() != null && tpOffer.getId().length()>0 &&
-    					tpOffer.getCategory() != null && 
-    					tpOffer.getReward_name() != null && tpOffer.getReward_name().length()>0 &&
-    					tpOffer.getImage_url() != null && tpOffer.getImage_url().length()>0 &&
-    					tpOffer.getImpression_url() != null && tpOffer.getImpression_url().length()>0 &&
-    					tpOffer.getLink() != null && tpOffer.getLink().length()>0 
-    					) {
-        			listPulledOffers.add(tpOffer);
+    		GetAdGateOffers offersDH = mapper.readValue(reqResponse, GetAdGateOffers.class);
+    		List<OffersEntry> arrayOfOffers = offersDH.getOffers();
+    		for(int i=0;i<arrayOfOffers.size();i++){
+    			OffersEntry agOffer = arrayOfOffers.get(i);
+    			if(agOffer != null && agOffer.getId() != null &&
+    					agOffer.getCategory() != null && 
+    					agOffer.getName() != null && agOffer.getName().length()>0 &&
+    					agOffer.getTracking_url() != null) {
+        			listPulledOffers.add(agOffer);
         			
-//        			logger.info("found trialpay offer id: "+tpOffer.getId());
-//        			logger.info(" title: "+tpOffer.getTitle());
-//        			logger.info(" reward name: "+tpOffer.getReward_name());
-//        			logger.info(" reward amount: "+tpOffer.getVc_amount());
-//        			logger.info(" image url: "+tpOffer.getImage_url());
-//        			logger.info(" impression url: "+tpOffer.getImpression_url());
-//        			logger.info(" instructions: "+tpOffer.getInstructions());
-//        			logger.info(" link: "+tpOffer.getLink());
-//        			logger.info(" categories: "+tpOffer.getCategory().toString());
+        			logger.info("found ag offer id: "+agOffer.getId());
+        			logger.info(" name: "+agOffer.getName());
+        			logger.info(" country: "+agOffer.getCountry());
+        			logger.info(" category: "+agOffer.getCategory());
+        			logger.info(" requirements: "+agOffer.getRequirements());
+        			logger.info(" tracking url: "+agOffer.getTracking_url());
+        			logger.info(" type: "+agOffer.getType());
+        			logger.info(" link: "+agOffer.getUa());
+        			logger.info(" payout: "+agOffer.getPayout());
+        			logger.info(" anchor: "+agOffer.getAnchor());
         			
 //                	logger.info("found trialpay offer id: "+tpOffer.getId()+
 //                			" title: "+tpOffer.getTitle()+
@@ -198,42 +197,42 @@ public class AdGateAPIManager {
     			}
     			
     			int randomNumber = (int)(Math.random()*listPulledOffers.size());
-    			TrialPayOffer selectedOffer = listPulledOffers.get(randomNumber);
+    			OffersEntry selectedOffer = listPulledOffers.get(randomNumber);
     			
     			//transform it into our internal format
     			is.ejb.bl.offerWall.content.Offer offerToAdd = new is.ejb.bl.offerWall.content.Offer();
     			
-    			offerToAdd.setSourceId(selectedOffer.getId());
+    			offerToAdd.setSourceId(selectedOffer.getId()+"");
             	//generate unique offer id used by our system to track offer conversion
             	String sha1Id = DigestUtils.sha1Hex(offerWall.getRealm().getId()+
             										offerWall.getNumberOfOffers()+
             										Math.random()*100000+
             										System.currentTimeMillis()+
             										randomNumber+
-            										selectedOffer.getTitle()+
-            										selectedOffer.getLink()+
+            										selectedOffer.getName()+
+            										selectedOffer.getTracking_url()+
             										numberOfOffersToSelect+"");
             	
             	offerToAdd.setIncentivised(true);
             	offerToAdd.setId(sha1Id);
-            	offerToAdd.setSourceId(selectedOffer.getId());
-            	offerToAdd.setTitle(selectedOffer.getTitle());
-            	offerToAdd.setDescription(selectedOffer.getDescription());
-            	if(selectedOffer.getInstructions().length()>240) {
-                	offerToAdd.setCallToAction(selectedOffer.getInstructions().substring(0,230));
+            	offerToAdd.setSourceId(selectedOffer.getId()+"");
+            	offerToAdd.setTitle(selectedOffer.getName());
+            	offerToAdd.setDescription(selectedOffer.getRequirements());
+            	if(selectedOffer.getRequirements().length()>240) {
+                	offerToAdd.setCallToAction(selectedOffer.getRequirements().substring(0,230));
             	} else {
-            		offerToAdd.setCallToAction(selectedOffer.getInstructions());
+            		offerToAdd.setCallToAction(selectedOffer.getRequirements());
             	}
-            	offerToAdd.setAdProviderCodeName(OfferProviderCodeNames.TRIALPAY.toString());
-            	offerToAdd.setPreviewUrl(selectedOffer.getImpression_url());
-            	offerToAdd.setUrl(selectedOffer.getLink());
-            	offerToAdd.setCurrency(selectedOffer.getReward_name());
-            	offerToAdd.setPayout(round(selectedOffer.getVc_amount()/(double)100,2));
+            	offerToAdd.setAdProviderCodeName(OfferProviderCodeNames.ADGATE.toString());
+            	offerToAdd.setPreviewUrl(selectedOffer.getPreview_url());
+            	offerToAdd.setUrl(selectedOffer.getTracking_url());
+            	offerToAdd.setCurrency("USD");
+            	offerToAdd.setPayout(round(selectedOffer.getPayout(),2));
             	offerToAdd.setInternalNetworkId(offerWall.getRealm().getId());
             	offerToAdd.setTrackingRequirements(new ArrayList<String>());
     			//get images
     			HashMap<String,String> imagesMap = new HashMap<String,String>();
-    			imagesMap.put(ThumbnailQuality.Image+"-"+1, selectedOffer.getImage_url());
+    			imagesMap.put(ThumbnailQuality.Image+"-"+1, selectedOffer.getIcon());
             	offerToAdd.setImage(imagesMap);
 
             	//filters - set to true as we don't filter this offer (its automatically filtered by the provider based on request data)
@@ -242,15 +241,15 @@ public class AdGateAPIManager {
     			boolean isOfferAcceptedByDeviceFilter = true;
 
     			isOfferAcceptedByGlobalFilter = offerFilterManager.isOfferAcceptedBasedOnGlobalFilters(offerToAdd, 
-    					offerWall, OfferProviderCodeNames.TRIALPAY);
+    					offerWall, OfferProviderCodeNames.ADGATE);
     			/*
     			if(isOfferAcceptedByGlobalFilter) {
     				//apply geo filtering
     				isOfferAcceptedByGeoFilter = offerFilterManager.isOfferAcceptedBasedOnGeoFilter(offerToAdd, 
-    						offerWall, OfferProviderCodeNames.TRIALPAY, selectedOffer.getCountries());
+    						offerWall, OfferProviderCodeNames.ADGATE, selectedOffer.getCountries());
     				if(isOfferAcceptedByGeoFilter) {
     					//apply device filtering
-    					isOfferAcceptedByDeviceFilter = offerFilterManager.isOfferAcceptedBasedOnTargetPlatformFilter(offerToAdd, offerWall, OfferProviderCodeNames.TRIALPAY, selectedOffer.getDevice_targeting());
+    					isOfferAcceptedByDeviceFilter = offerFilterManager.isOfferAcceptedBasedOnTargetPlatformFilter(offerToAdd, offerWall, OfferProviderCodeNames.ADGATE, selectedOffer.getDevice_targeting());
     				}
     			}
     			*/
@@ -266,7 +265,7 @@ public class AdGateAPIManager {
         					isOfferAcceptedByDeviceFilter && 
         							isOfferAcceptedByGeoFilter) { //process only if offer is accepted by previous filters!
         				//calculate reward value/profit/split and add to offer data
-        				offerToAdd = offerRewardCalculationManager.calculateOfferReward(offerToAdd, offerWall, OfferProviderCodeNames.TRIALPAY);
+        				offerToAdd = offerRewardCalculationManager.calculateOfferReward(offerToAdd, offerWall, OfferProviderCodeNames.ADGATE);
         				isOfferDuplicate = offerFilterManager.getOfferDuplicatesDetector().isOfferDuplicate(offerToAdd, offerWall);
         				if(isOfferDuplicate) {
             				isOfferDuplicateWithHigherPayout = offerFilterManager.getOfferDuplicatesDetector().isOfferDuplicateAndWithHigherPayout(offerToAdd, offerWall);
@@ -293,7 +292,7 @@ public class AdGateAPIManager {
     						isOfferAcceptedByDeviceFilter && 
     							isOfferAcceptedByGeoFilter){ //if not checking duplicates
     				//calculate reward value/profit/split and add to offer data
-    				offerToAdd = offerRewardCalculationManager.calculateOfferReward(offerToAdd, offerWall, OfferProviderCodeNames.TRIALPAY);
+    				offerToAdd = offerRewardCalculationManager.calculateOfferReward(offerToAdd, offerWall, OfferProviderCodeNames.ADGATE);
     			}
     			//-------------------------- check for duplicates ends ----------------
     			
@@ -310,7 +309,7 @@ public class AdGateAPIManager {
     						offerWall.getRealm().getId(), 
     						LogStatus.OK, 
     						Application.SINGLE_OFFER_CREATED+" "+
-    						OfferProviderCodeNames.TRIALPAY+" successfully created offer "
+    						OfferProviderCodeNames.ADGATE+" successfully created offer "
     								+offerToAdd.getTitle()+" offerId: "+offerToAdd.getId());
     			} else { //if below threshold - remove that offer id from the pool of offer ids as well
     				listPulledOffers.remove(randomNumber); //also remove offer id from the pool as it is below payoff threshold
@@ -318,7 +317,7 @@ public class AdGateAPIManager {
     		}
     	} catch(Exception exc) {
     		exc.printStackTrace();
-            throw new Exception(OfferProviderCodeNames.TRIALPAY+
+            throw new Exception(OfferProviderCodeNames.ADGATE+
             		" Error: "+exc.toString()+" when retrieving/processing data from offer provider");//+reqResponse);
     	}
 
