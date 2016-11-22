@@ -21,6 +21,7 @@ public class ApplicationRewardEntity {
 	private String logo;
 	private String discount;
 	private boolean isSendByPost;
+	private String rewardCategory;
 	public int getId() {
 		return id;
 	}
@@ -69,6 +70,12 @@ public class ApplicationRewardEntity {
 	}
 	public void setSendByPost(boolean isSendByPost) {
 		this.isSendByPost = isSendByPost;
+	}
+	public String getRewardCategory() {
+		return rewardCategory;
+	}
+	public void setRewardCategory(String rewardCategory) {
+		this.rewardCategory = rewardCategory;
 	}
 	
 	

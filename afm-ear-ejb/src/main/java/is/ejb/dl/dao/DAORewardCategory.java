@@ -47,4 +47,12 @@ public class DAORewardCategory {
 
 		return query.getSingleResult();
 	}
+	
+	public List<RewardCategoryEntity> getByRewardType(String rewardType) {
+		TypedQuery<RewardCategoryEntity> query = entityManager
+				.createQuery("SELECT o FROM RewardCategoryEntity o WHERE o.rewardType = ?1", RewardCategoryEntity.class);
+		query.setParameter(1, rewardType);
+
+		return query.getResultList();
+	}
 }

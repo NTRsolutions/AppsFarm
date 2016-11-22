@@ -58,7 +58,7 @@ public class ApplicationRewardBean {
 	private List<MobileApplicationTypeEntity> mobileApplicationTypeEntityList;
 
 	private List<SelectItem> mobileAppSelectItemList;
-
+	
 	private List<SelectItem> rewardCategoryList;
 	@Inject
 	private DAOCurrencyCode daoCurrencyCode;
@@ -75,6 +75,9 @@ public class ApplicationRewardBean {
 	@Inject
 	private DAORewardCategory daoRewardCategory;
 
+	
+	
+	
 	@PostConstruct
 	public void init() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -213,6 +216,13 @@ public class ApplicationRewardBean {
 				return;
 			}
 
+			if (editModel.getRewardCategory() == null || editModel.getRewardCategory().length() == 0) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward category."));
+				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
+				return;
+			}
+			
 			editModel.setRealmId(loginBean.getUser().getRealm().getId());
 			logger.info(editModel.toString());
 			daoApplicationReward.createOrUpdate(editModel);
@@ -249,7 +259,12 @@ public class ApplicationRewardBean {
 				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
 				return;
 			}
-
+			if (createModel.getRewardCategory() == null || createModel.getRewardCategory().length() == 0) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Failed", "Please provide reward category."));
+				RequestContext.getCurrentInstance().update("tabView:idApplicationReward");
+				return;
+			}
 			createModel.setRealmId(loginBean.getUser().getRealm().getId());
 
 			daoApplicationReward.create(createModel);

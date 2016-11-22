@@ -38,6 +38,11 @@
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.rewardValue}" />
 			</p:column>
+						<p:column rendered="true" headerText="Category"
+				style="width:100px;text-align:left; font-weight:bold;"
+				styleClass="ui-nodesStatusTableHeader">
+				<h:outputText value="#{model.rewardCategory}" />
+			</p:column>
 
 			<p:column rendered="true" headerText="Discount"
 				style="width:100px;text-align:left; font-weight:bold;"
@@ -108,7 +113,12 @@
 					value="#{applicationRewardBean.createModel.rewardType}">
 					<f:selectItems value="#{applicationRewardBean.rewardTypesList}" />
 				</p:selectOneMenu>
-
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Reward Category:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.createModel.rewardCategory}">
+					<f:selectItems value="#{applicationRewardBean.rewardCategoryList}" />
+				</p:selectOneMenu>
 				<h:outputText styleClass="dialog-mediumFont" value="Reward logo URL:" />
 				<p:inputText size="60"
 					value="#{applicationRewardBean.createModel.logo}" />
@@ -158,6 +168,13 @@
 					value="#{applicationRewardBean.editModel.rewardType}">
 					<f:selectItems value="#{applicationRewardBean.rewardTypesList}" />
 				</p:selectOneMenu>
+				<h:outputText rendered="true" styleClass="dialog-mediumFont"
+					value="Reward Category:" />
+				<p:selectOneMenu rendered="true"
+					value="#{applicationRewardBean.editModel.rewardCategory}">
+					<f:selectItems value="#{applicationRewardBean.rewardCategoryList}" />
+				</p:selectOneMenu>
+				
 
 				<h:outputText styleClass="dialog-mediumFont" value="Reward logo URL:" />
 				<p:inputText size="60"

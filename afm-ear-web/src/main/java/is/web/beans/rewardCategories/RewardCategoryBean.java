@@ -14,7 +14,11 @@ import javax.inject.Inject;
 import org.primefaces.context.RequestContext;
 
 import is.ejb.dl.dao.DAORewardCategory;
+import is.ejb.dl.dao.DAORewardType;
+import is.ejb.dl.entities.RealmEntity;
 import is.ejb.dl.entities.RewardCategoryEntity;
+import is.ejb.dl.entities.RewardTypeEntity;
+import is.web.beans.users.LoginBean;
 
 @ManagedBean(name = "rewardCategoryBean")
 @SessionScoped
@@ -22,18 +26,33 @@ public class RewardCategoryBean {
 
 	@Inject
 	private DAORewardCategory daoRewardCategory;
-
+	@Inject
+	private DAORewardType daoRewardType;
 	@Inject
 	private Logger logger;
 
 	private RewardCategoryEntity createModel = new RewardCategoryEntity();
-
+	private List<RewardTypeEntity> rewardTypeList = new ArrayList<RewardTypeEntity>();
 	private List<RewardCategoryEntity> allCategories = new ArrayList<RewardCategoryEntity>();
 	private RewardCategoryTableDataModelBean modelBean;
 
 	@PostConstruct
 	public void init() {
 		loadAllCategories();
+		loadRewardTypes();
+
+	}
+
+	private void loadRewardTypes() {
+		try {
+			FacesContext fc = FacesContext.getCurrentInstance();
+			LoginBean loginBean = (LoginBean) fc.getApplication().evaluateExpressionGet(fc, "#{loginBean}",
+					LoginBean.class);
+			RealmEntity realm = loginBean.getUser().getRealm();
+			rewardTypeList = daoRewardType.findAllByRealmId(realm.getId());
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
 
 	}
 
@@ -59,15 +78,11 @@ public class RewardCategoryBean {
 				showError("Please provide category name.");
 				return;
 			}
-			if (createModel.getImageUrl() == null || createModel.getImageUrl().length() == 0) {
-				showError("Please provide image url.");
-				return;
-			}
 
 			RequestContext.getCurrentInstance().execute("widgetCreateRewardCategory.hide()");
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reward category created"));
-			logger.info("Created category with name: " + createModel.getName() + " url: " + createModel.getImageUrl());
+
 			daoRewardCategory.createOrUpdate(createModel);
 			loadAllCategories();
 			refresh();
@@ -103,6 +118,14 @@ public class RewardCategoryBean {
 
 	public void setModelBean(RewardCategoryTableDataModelBean modelBean) {
 		this.modelBean = modelBean;
+	}
+
+	public List<RewardTypeEntity> getRewardTypeList() {
+		return rewardTypeList;
+	}
+
+	public void setRewardTypeList(List<RewardTypeEntity> rewardTypeList) {
+		this.rewardTypeList = rewardTypeList;
 	}
 
 }

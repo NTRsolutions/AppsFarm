@@ -111,6 +111,8 @@ public class SentinelTabs {
 	public static final String TAB_DEFAULT_PAGE = "tabDefaultPage";
 	
 	
+	
+	
 	//-------------------------------------- domain config -------------------------------------
 	//autoregister.xhtml
 	public static final String TAB_SENTINEL_AUTOREGISTER = "tabAutoregister";

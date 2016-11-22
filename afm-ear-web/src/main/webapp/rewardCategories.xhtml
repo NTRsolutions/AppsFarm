@@ -31,10 +31,10 @@
 				styleClass="ui-nodesStatusTableHeader">
 				<h:outputText value="#{model.name}" />
 			</p:column>
-			<p:column rendered="true" headerText="Image URL"
+			<p:column rendered="true" headerText="Reward type"
 				style="width:50px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
-				<h:outputText value="#{model.imageUrl}" />
+				<h:outputText value="#{model.rewardType}" />
 			</p:column>
 			<p:column rendered="true" headerText="Action"
 				style="width:50px;text-align:left; font-weight:bold;"
@@ -43,16 +43,14 @@
 
 				<p:commandButton value="Delete" icon="ui-icon-search"
 					action="#{rewardCategoryBean.remove(model)}"
-					style="margin-right:20px;"
-				    update="@form"
-					process="@this" />
+					style="margin-right:20px;" update="@form" process="@this" />
 			</p:column>
 
 		</p:dataTable>
 		<h:panelGrid columns="1" cellpadding="4">
-			<p:commandButton value="Create reward category"
-				icon="ui-icon-search" update="@form"
-				oncomplete="widgetCreateRewardCategory.show()" process="@this">
+			<p:commandButton value="Create reward category" icon="ui-icon-search"
+				update="@form" oncomplete="widgetCreateRewardCategory.show()"
+				process="@this">
 			</p:commandButton>
 		</h:panelGrid>
 		<p:dialog id="idWidgetCreateRewardCategory" width="500"
@@ -65,9 +63,12 @@
 				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
 				<p:inputText size="30"
 					value="#{rewardCategoryBean.createModel.name}" />
-				<h:outputText styleClass="dialog-mediumFont" value="Image Url:" />
-				<p:inputText size="30"
-					value="#{rewardCategoryBean.createModel.imageUrl}" />
+					
+				<h:outputText styleClass="dialog-mediumFont" value="Reward type:" />
+				<p:selectOneMenu rendered="true"
+					value="#{rewardCategoryBean.createModel.rewardType}">
+					<f:selectItems value="#{rewardCategoryBean.rewardTypeList}" var="entry" itemValue="#{entry.name}" itemLabel="#{entry.name}" />
+				</p:selectOneMenu>
 
 
 

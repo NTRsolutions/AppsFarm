@@ -14,7 +14,7 @@ public class RewardCategoryEntity {
 	@GeneratedValue
 	private int id;
 	private String name;
-	private String imageUrl;
+	private String rewardType;
 	
 	public int getId() {
 		return id;
@@ -28,12 +28,12 @@ public class RewardCategoryEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getImageUrl() {
-		return imageUrl;
+	public String getRewardType() {
+		return rewardType;
 	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
 	}
-	
+
 	
 }

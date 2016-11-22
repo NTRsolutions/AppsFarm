@@ -160,7 +160,7 @@ ul.ui-menu-child {
 						<p:menuitem value="Reward Types"
 							actionListener="#{sentinelMenuBean.loadTab('tabSupportedRewardTypes')}"
 							ajax="false" />
-						<p:menuitem rendered="false" value="Reward Categories"
+						<p:menuitem rendered="true" value="Reward Categories"
 							actionListener="#{sentinelMenuBean.loadTab('tabRewardCategories')}"
 							ajax="false" />
 						<p:menuitem value="Currencies"
@@ -260,10 +260,9 @@ ul.ui-menu-child {
 						<p:menuitem value="Callback Servers"
 							actionListener="#{sentinelMenuBean.loadTab('tabCallbackServers')}"
 							ajax="false" />
-						<p:menuitem  value="Email Templates"
+						<p:menuitem value="Email Templates"
 							actionListener="#{sentinelMenuBean.loadTab('tabEmailTemplates')}"
 							ajax="false" />
-
 						<p:menuitem rendered="false" value="Video gamification"
 							actionListener="#{sentinelMenuBean.loadTab('tabVideoGamificationSettings')}"
 							ajax="false" />
@@ -304,6 +303,6 @@ ul.ui-menu-child {
 		</p:layoutUnit>
 
 	</p:layout>
-	
+
 </h:body>
 </html>
