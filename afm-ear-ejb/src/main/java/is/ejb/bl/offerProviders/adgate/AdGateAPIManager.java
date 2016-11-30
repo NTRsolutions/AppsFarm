@@ -85,7 +85,7 @@ public class AdGateAPIManager {
 				offerWall.getRealm().getId(), 
 				LogStatus.OK, 
 				Application.OFFER_WALL_GENERATION_ACTIVITY+" "+
-				OfferProviderCodeNames.TRIALPAY+" requesting url: "+requestUrl);
+				OfferProviderCodeNames.ADGATE+" requesting url: "+requestUrl);
 
 		logger.info("request url: "+requestUrl);
     	try {
@@ -112,7 +112,7 @@ public class AdGateAPIManager {
     	//logger.info("request response: "+reqResponse);
 //    	Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
 //		LogStatus.OK, 
-//		" "+OfferProviderCodeNames.TRIALPAY+
+//		" "+OfferProviderCodeNames.ADGATE+
 //		" req status: "+urlConnection.getResponseCode()+
 //		" rest response: "+reqResponse);
     	Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
@@ -153,7 +153,7 @@ public class AdGateAPIManager {
         			logger.info(" payout: "+agOffer.getPayout());
         			logger.info(" anchor: "+agOffer.getAnchor());
         			
-//                	logger.info("found trialpay offer id: "+tpOffer.getId()+
+//                	logger.info("found ADGATE offer id: "+tpOffer.getId()+
 //                			" title: "+tpOffer.getTitle()+
 //                			" reward name: "+tpOffer.getReward_name()+
 //                			" reward amount: "+tpOffer.getVc_amount()+
@@ -169,7 +169,7 @@ public class AdGateAPIManager {
             Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
     				offerWall.getRealm().getId(), LogStatus.OK, 
     				Application.OFFER_POOL_SIZE+" "+
-    				OfferProviderCodeNames.TRIALPAY+" offer pool size: "+ listPulledOffers.size());//+" rest method called, content: "+requestUrl);
+    				OfferProviderCodeNames.ADGATE+" offer pool size: "+ listPulledOffers.size());//+" rest method called, content: "+requestUrl);
 
             //update offer stats
             offerWall.setNumberOfOffersInSelectionPool(offerWall.getNumberOfOffersInSelectionPool()+listPulledOffers.size());
@@ -180,10 +180,10 @@ public class AdGateAPIManager {
     			numberOfOffersToSelect = listPulledOffers.size();
     		} 
     		
-    		logger.info(OfferProviderCodeNames.TRIALPAY+" total pulled offers: "+listPulledOffers.size());
+    		logger.info(OfferProviderCodeNames.ADGATE+" total pulled offers: "+listPulledOffers.size());
         	Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, offerWall.getRealm().getId(), 
         			LogStatus.OK, 
-        			" "+OfferProviderCodeNames.TRIALPAY+
+        			" "+OfferProviderCodeNames.ADGATE+
         			" total pulled offers: "+listPulledOffers.size());
     		
     		//pick offers randomly and make sure they do not repeat in the offer wall
@@ -192,7 +192,7 @@ public class AdGateAPIManager {
     				Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY, 
     						offerWall.getRealm().getId(), 
     						LogStatus.WARNING, 
-    						Application.OFFERS_GENERATION_OFFERS_INSUFFICIENT+" "+OfferProviderCodeNames.TRIALPAY+" no offers left to pick from Hasoffers - possibly most were rejected");
+    						Application.OFFERS_GENERATION_OFFERS_INSUFFICIENT+" "+OfferProviderCodeNames.ADGATE+" no offers left to pick from Hasoffers - possibly most were rejected");
     				break;
     			}
     			
