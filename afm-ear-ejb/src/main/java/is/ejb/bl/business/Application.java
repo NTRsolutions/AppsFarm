@@ -527,6 +527,12 @@ public class Application {
 	public static final String NOTIFICATION_ACTIVITY = "NOTIFICATION_ACTIVITY";
 
 	public static final String PERSONAL_DETAILS = "PERSONAL_DETAILS";
+
+	public static final String FYBER_CALLBACK = "FYBER_CALLBACK";
+
+	public static final String FYBER_VIDEO_CALLBACK = "FYBER_VIDEO_CALLBACK";
+
+	public static final String EXTERNAL_OFFER_WALL = "EXTERNAL_OFFER_WALL";
 	
     private static Application app;
     private String overrideServerName = null;

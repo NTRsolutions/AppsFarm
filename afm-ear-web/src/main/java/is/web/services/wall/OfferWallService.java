@@ -12,8 +12,12 @@ import is.ejb.bl.offerWall.content.IndividualOfferWall;
 import is.ejb.bl.offerWall.content.Offer;
 import is.ejb.bl.offerWall.content.OfferWallContent;
 import is.ejb.bl.offerWall.content.SerDeOfferWallContent;
+import is.ejb.bl.offerWall.external.ExternalOfferWallManager;
+import is.ejb.bl.offerWall.external.FyberCallbackDetails;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.security.HashValidationManager;
+import is.ejb.bl.video.VideoCallbackData;
+import is.ejb.bl.video.VideoManager;
 import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOConversionHistory;
 import is.ejb.dl.dao.DAOOfferWall;
@@ -51,6 +55,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -90,6 +97,70 @@ public class OfferWallService {
 
 	@Inject
 	private APIHelper apiHelper;
+
+	@Inject
+	private ExternalOfferWallManager externalOfferwallManager;
+
+	@Inject
+	private VideoManager videoManager;
+
+	@GET
+	@Path("/fyber/reward/")
+	public Response saveFyberRewardCallback(@QueryParam("uid") String uid, @QueryParam("sid") String sid,
+			@QueryParam("amount") String amount, @QueryParam("currency_name") String currencyName,
+			@QueryParam("currency_id") String currencyId, @QueryParam("_trans_id_") String transId,
+			@QueryParam("pub0") String pub0, @QueryParam("pub1") String pub1, @QueryParam("pub2") String pub2,
+			@QueryParam("pub3") String pub3) {
+		String dataContent = "uid: " + uid + " sid: " + sid + " amount: " + amount + " currencyName: " + currencyName
+				+ " currencyId: " + currencyId + " transId: " + transId + " pub0: " + pub0 + " pub1: " + pub1
+				+ " pub2: " + pub2 + " pub3: " + pub3;
+		try {
+			String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = httpRequest.getRemoteAddr();
+			}
+			dataContent = dataContent + " ipAddress: " + ipAddress;
+			if (pub0 != null && pub0.equals("video")) {
+				Application.getElasticSearchLogger().indexLog(Application.FYBER_VIDEO_CALLBACK, -1, LogStatus.OK,
+						Application.FYBER_VIDEO_CALLBACK + " received callback for event: " + dataContent);
+				VideoCallbackData data = new VideoCallbackData();
+				data.setAmount(Integer.valueOf(amount));
+				data.setCurrencyId(currencyId);
+				data.setCurrencyName(currencyName);
+				data.setUid(sid);
+				data.setUserId(pub1);
+				data.setUsername(pub2);
+				data.setTransactionId(pub3);
+
+				Application.getElasticSearchLogger().indexLog(Application.VIDEO_REWARD_ACTIVITY, -1, LogStatus.OK,
+						Application.VIDEO_REWARD_ACTIVITY + "Received video callback request from ipAddress: "
+								+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
+				logger.info("Received video callback request from ipAddress: "
+						+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + data.toString());
+				videoManager.addData(data);
+
+			} else {
+				Application.getElasticSearchLogger().indexLog(Application.FYBER_CALLBACK, -1, LogStatus.OK,
+						Application.FYBER_CALLBACK + " received callback for event: " + dataContent);
+				FyberCallbackDetails details = new FyberCallbackDetails();
+				details.setAmount(amount);
+				details.setCurrencyId(currencyId);
+				details.setCurrencyName(currencyName);
+				details.setSid(sid);
+				details.setTransId(transId);
+				details.setUid(uid);
+				externalOfferwallManager.saveConversion(details);
+			}
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.FYBER_CALLBACK, -1, LogStatus.ERROR,
+					Application.FYBER_CALLBACK + " received callback: " + dataContent + " but error occured: "
+							+ ExceptionUtils.getFullStackTrace(exc));
+		}
+
+		return Response.ok().build();
+	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -245,41 +316,40 @@ public class OfferWallService {
 		logger.info("Parameters: " + parameters);
 		if (parameters != null) {
 			String locale = "";
-			if (parameters.containsKey("locale")){
+			if (parameters.containsKey("locale")) {
 				Object value = parameters.get("locale");
-				if (value != null){
+				if (value != null) {
 					locale = (String) parameters.get("locale");
 				}
 			}
-			
+
 			String osVersion = "";
-			if (parameters.containsKey("osVersion")){
+			if (parameters.containsKey("osVersion")) {
 				Object value = parameters.get("osVersion");
-				if (value != null){
+				if (value != null) {
 					osVersion = (String) parameters.get("osVersion");
 				}
 			}
-			
+
 			boolean limitedTrackingEnabled = false;
-			if (parameters.containsKey("limitedTrackingEnabled")){
+			if (parameters.containsKey("limitedTrackingEnabled")) {
 				Object value = parameters.get("limitedTrackingEnabled");
-				if (value != null){
+				if (value != null) {
 					limitedTrackingEnabled = (Boolean) parameters.get("limitedTrackingEnabled");
 				}
 			}
 			String ua = "";
-			if (parameters.containsKey("ua")){
+			if (parameters.containsKey("ua")) {
 				Object value = parameters.get("ua");
-				if (value != null){
+				if (value != null) {
 					ua = (String) parameters.get("ua");
 				}
 			}
-			
+
 			realtimeFeedDataHolder.setLocale(locale);
 			realtimeFeedDataHolder.setOsVersion(osVersion);
 			realtimeFeedDataHolder.setLimitedTrackingEnabled(limitedTrackingEnabled);
 			realtimeFeedDataHolder.setUa(ua);
-			
 
 		}
 		logger.info(" ** REAL TIME FEED DATA HOLDER: " + realtimeFeedDataHolder);

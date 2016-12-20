@@ -131,7 +131,7 @@ public class RewardManager {
 							+ event.getInternalTransactionId());
 
 			appUser = daoAppUser.findById(event.getUserId());
-			walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION, event.getRewardValue(),
+			walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION, event.getCustomRewardValue(),
 					"Reward for event id: " + event.getId() + " internalTransactionId: "
 							+ event.getInternalTransactionId());
 			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_MESSAGE);
@@ -171,7 +171,7 @@ public class RewardManager {
 
 	private void sendNotification(AppUserEntity appUser, UserEventEntity event, String message) {
 		logger.info("Sending notification: " + message + " event: " + event + " appUser: " + appUser);
-		message = message.replaceAll("\\{reward\\}", event.getRewardValue() + " points ");
+		message = message.replaceAll("\\{reward\\}", event.getCustomRewardValue() + " points ");
 		message = message.replaceAll("\\{offer\\}", event.getOfferTitle());
 		FirebaseResponse response = notificationManager.sendNotification(appUser, message);
 		event.setMobileAppNotificationDate(new Timestamp(new Date().getTime()));
