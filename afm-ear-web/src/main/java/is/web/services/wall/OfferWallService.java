@@ -14,6 +14,7 @@ import is.ejb.bl.offerWall.content.OfferWallContent;
 import is.ejb.bl.offerWall.content.SerDeOfferWallContent;
 import is.ejb.bl.offerWall.external.ExternalOfferWallManager;
 import is.ejb.bl.offerWall.external.FyberCallbackDetails;
+import is.ejb.bl.offerWall.external.TrialpayCallbackDetails;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.security.HashValidationManager;
 import is.ejb.bl.video.VideoCallbackData;
@@ -104,6 +105,49 @@ public class OfferWallService {
 	@Inject
 	private VideoManager videoManager;
 
+	@GET
+	@Path("/v2/trialpay/reward/")
+	public String saveTrialpayRewardCallback(@QueryParam("oid") String oid, @QueryParam("sid") String sid,
+			@QueryParam("reward_amount") String rewardAmount, @QueryParam("email") String email,
+			@QueryParam("country") String country, @QueryParam("revenue") String revenue,
+			@QueryParam("transaction_type") String transactionType, @QueryParam("offer_category") String offerCategory,
+			@QueryParam("order_date") String orderDate, @QueryParam("tid") String tid) {
+		String dataContent = "oid: " + oid + " sid: " + sid + " rewardAmount: " + rewardAmount + " email: " + email
+				+ " country: " + country + "transactionType: " + transactionType + " offerCategory: " + offerCategory
+				+ " orderDate: " + orderDate + " tid: " + tid;
+		try {
+			String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = httpRequest.getRemoteAddr();
+			}
+			dataContent = dataContent + " ipAddress: " + ipAddress;
+			Application.getElasticSearchLogger().indexLog(Application.TRIALPAY_CALLBACK, -1, LogStatus.OK,
+					Application.TRIALPAY_CALLBACK + " received callback for event: " + dataContent);
+
+			TrialpayCallbackDetails details = new TrialpayCallbackDetails();
+			details.setCountry(country);
+			details.setEmail(email);
+			details.setOfferCategory(offerCategory);
+			details.setOid(oid);
+			details.setOrderDate(orderDate);
+			details.setRevenue(revenue);
+			details.setRewardAmount(rewardAmount);
+			details.setSid(sid);
+			details.setTid(tid);
+			details.setTransactionType(transactionType);
+			externalOfferwallManager.saveConversion(details);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.TRIALPAY_CALLBACK, -1, LogStatus.ERROR,
+					Application.TRIALPAY_CALLBACK + " received callback: " + dataContent + " but error occured: "
+							+ ExceptionUtils.getFullStackTrace(exc));
+		}
+
+		return "1";
+	}
+	
+	
 	@GET
 	@Path("/fyber/reward/")
 	public Response saveFyberRewardCallback(@QueryParam("uid") String uid, @QueryParam("sid") String sid,

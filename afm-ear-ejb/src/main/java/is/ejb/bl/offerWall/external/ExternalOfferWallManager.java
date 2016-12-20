@@ -197,7 +197,94 @@ public class ExternalOfferWallManager {
 		bd = bd.setScale(places, RoundingMode.HALF_DOWN);
 		return bd.doubleValue();
 	}
+	
+	public void saveConversion(TrialpayCallbackDetails details) {
+		try {
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processing trialpay event: " + details.toString());
+			AppUserEntity appUser = null;
+			if (details.getSid() != null) {
+				appUser = selectAppUser(details.getSid());
+			}
+			if (appUser == null) {
+				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select user for: " + details.toString());
+				return;
+			}
+			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(), appUser.getRealmId());
+			if (denominationModel == null) {
+				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select denomination model for: "
+						+ details.toString() + " appuser: " + appUser.toString());
+				return;
+			}
+			Timestamp timestamp = getCurrentTime();
+			UserEventEntity userEvent = 
+			setupEvent(details, appUser, denominationModel, timestamp);
+			daoUserEvent.create(userEvent);
+			indexUserEvent(userEvent);
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processed event: " + userEvent.toString()
+					+ " for supersonic details:" + details.toString() + " appuser: " + appUser.toString());
+			rewardManager.updateUserConversionHistory(userEvent);
+			RealmEntity realm = daoRealm.findById(appUser.getRealmId());
 
+			rewardManager.issueReward(realm, userEvent, null, false);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Processing trialpay event: " + details.toString()
+					+ " failed exc: " + ExceptionUtils.getFullStackTrace(exc));
+		}
+		
+	}
+
+	private UserEventEntity setupEvent(TrialpayCallbackDetails details, AppUserEntity appUser,
+			DenominationModelEntity denominationModel, Timestamp timestamp) {
+		UserEventEntity userEvent = new UserEventEntity();
+		userEvent.setAdProviderCodeName("Fyber");
+		userEvent.setAdvertisingId(appUser.getAdvertisingId());
+		userEvent.setAndroidDeviceToken(appUser.getAndroidDeviceToken());
+		userEvent.setApplicationName(appUser.getApplicationName());
+		userEvent.setClickDate(timestamp);
+		userEvent.setConversionDate(timestamp);
+		userEvent.setCountryCode(appUser.getCountryCode());
+		userEvent.setCustomRewardCurrencyCode(denominationModel.getTargetPayoutCurrencyCode());
+		Double rewardValue = Double.valueOf(details.getRewardAmount());
+		userEvent.setCustomRewardValue(rewardValue);
+		userEvent.setDeviceId(appUser.getDeviceId());
+		userEvent.setDeviceType(appUser.getDeviceType());
+		userEvent.setEmail(appUser.getEmail());
+		userEvent.setIdfa(appUser.getIdfa());
+		userEvent.setInternalTransactionId(generateInternalTransactionId(appUser));
+		userEvent.setIosDeviceToken(appUser.getiOSDeviceToken());
+		userEvent.setOfferId(details.getOid());
+
+		userEvent.setOfferPayout(
+				denominateValue(denominationModel, rewardValue));
+		userEvent.setOfferPayoutInTargetCurrency(
+				denominateValue(denominationModel, rewardValue));
+		//System.out.println("rewardValue: " + rewardValue +  " native: " + denominationModel.getNativeMultipler() + " multipler: " + denominationModel.getMultiplier());
+		userEvent.setRewardValue(
+				 rewardValue);
+		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage()/100);
+		double denominatedRewardValue = userEvent.getRewardValue();
+		userEvent.setProfitValue(denominatedRewardValue * userEvent.getProfilSplitFraction());
+		userEvent.setRewardValue(denominatedRewardValue - userEvent.getProfitValue());
+		userEvent.setProfitValue(round(userEvent.getProfitValue(), 4));
+		userEvent.setRewardValue(round(userEvent.getRewardValue(), 4));
+		userEvent.setRewardIsoCurrencyCode(denominationModel.getTargetPayoutCurrencyCode());
+		userEvent.setOfferPayoutInTargetCurrencyIsoCurrencyCode(denominationModel.getSourcePayoutCurrencyCode());
+		userEvent.setOfferPayoutIsoCurrencyCode(userEvent.getOfferPayoutInTargetCurrencyIsoCurrencyCode());
+		userEvent.setUserId(appUser.getId());
+		userEvent.setRewardDate(timestamp);
+		userEvent.setRewardTypeName(appUser.getRewardTypeName());
+		userEvent.setUserEventCategory(UserEventCategory.INSTALL.toString());
+		userEvent.setTransactionId(details.getOid());
+		userEvent.setOfferTitle("Trialpay offer");
+		userEvent.setOfferSourceId(details.getOid());
+		userEvent.setPhoneNumber(appUser.getPhoneNumber());
+		userEvent.setPhoneNumberExt(appUser.getPhoneNumberExtension());
+		userEvent.setRealmId(appUser.getRealmId());
+		return userEvent;
+	}
+	
+	
 	
 
 }
