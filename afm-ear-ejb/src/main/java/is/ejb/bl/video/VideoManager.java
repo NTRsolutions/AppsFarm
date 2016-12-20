@@ -241,6 +241,8 @@ public class VideoManager {
 		event.setUserEventCategory(UserEventCategory.VIDEO.toString());
 		event.setEmail(user.getEmail());
 		event.setInstant(false);
+		event.setCustomRewardValue(reward);
+		event.setCustomRewardCurrencyCode("Points");
 
 		System.out.println("Event: " + event.toString());
 		return event;
