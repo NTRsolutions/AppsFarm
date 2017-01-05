@@ -12,6 +12,7 @@ import is.ejb.bl.offerWall.content.IndividualOfferWall;
 import is.ejb.bl.offerWall.content.Offer;
 import is.ejb.bl.offerWall.content.OfferWallContent;
 import is.ejb.bl.offerWall.content.SerDeOfferWallContent;
+import is.ejb.bl.offerWall.external.AdGateCallbackDetails;
 import is.ejb.bl.offerWall.external.ExternalOfferWallManager;
 import is.ejb.bl.offerWall.external.FyberCallbackDetails;
 import is.ejb.bl.offerWall.external.TrialpayCallbackDetails;
@@ -106,6 +107,57 @@ public class OfferWallService {
 	private VideoManager videoManager;
 
 	@GET
+	@Path("/v2/adgate/reward/")
+	public Response saveAdGateRewardCallback(@QueryParam("offer_id") String offerId,
+			@QueryParam("offer_name") String offerName, @QueryParam("affiliate_id") String affiliateId,
+			@QueryParam("source") String source, @QueryParam("s1") String s1,
+			@QueryParam("transaction_id") String transactionId, @QueryParam("session_ip") String sessionIp,
+			@QueryParam("date") String date, @QueryParam("time") String time, @QueryParam("datetime") String datetime,
+			@QueryParam("ran") String ran, @QueryParam("payout") String payout, @QueryParam("status") String status,
+			@QueryParam("points") String points, @QueryParam("vc_title") String vcTitle) {
+		String dataContent = "offerId: " + offerId + " offerName: " + offerName + " affiliateId: " + affiliateId
+				+ " source: " + source + " s1: " + s1 + " transactionId: " + transactionId + " sessionIp: " + sessionIp
+				+ " date: " + date + " time: " + time + " datetime: " + datetime + " ran: " + ran + " payout: " + payout
+				+ " status: " + status + " points: " + points + " vcTitle: " + vcTitle;
+		try {
+			String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = httpRequest.getRemoteAddr();
+			}
+			dataContent = dataContent + " ipAddress: " + ipAddress;
+			Application.getElasticSearchLogger().indexLog(Application.ADGATE_CALLBACK, -1, LogStatus.OK,
+					Application.ADGATE_CALLBACK + " received callback for event: " + dataContent);
+			logger.info("ADGATE CALLBACK: " + dataContent);
+			AdGateCallbackDetails details = new AdGateCallbackDetails();
+			details.setAffiliateId(affiliateId);
+			details.setDate(date);
+			details.setDateTime(datetime);
+			details.setOfferId(offerId);
+			details.setOfferName(offerName);
+			details.setPayout(payout);
+			details.setPoints(points);
+			details.setRan(ran);
+			details.setS1(s1);
+			details.setSessionIp(sessionIp);
+			details.setSource(source);
+			details.setStatus(status);
+			details.setTime(time);
+			details.setTransactionId(transactionId);
+			details.setVcTitle(vcTitle);
+			
+			externalOfferwallManager.saveConversion(details);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.ADGATE_CALLBACK, -1, LogStatus.ERROR,
+					Application.ADGATE_CALLBACK + " received callback: " + dataContent + " but error occured: "
+							+ ExceptionUtils.getFullStackTrace(exc));
+		}
+		return Response.ok().build();
+
+	}
+
+	@GET
 	@Path("/v2/trialpay/reward/")
 	public String saveTrialpayRewardCallback(@QueryParam("oid") String oid, @QueryParam("sid") String sid,
 			@QueryParam("reward_amount") String rewardAmount, @QueryParam("email") String email,
@@ -146,8 +198,7 @@ public class OfferWallService {
 
 		return "1";
 	}
-	
-	
+
 	@GET
 	@Path("/fyber/reward/")
 	public Response saveFyberRewardCallback(@QueryParam("uid") String uid, @QueryParam("sid") String sid,

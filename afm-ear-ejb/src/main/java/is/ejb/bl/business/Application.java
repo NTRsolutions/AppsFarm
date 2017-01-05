@@ -535,6 +535,8 @@ public class Application {
 	public static final String EXTERNAL_OFFER_WALL = "EXTERNAL_OFFER_WALL";
 
 	public static final String TRIALPAY_CALLBACK = "TRIALPAY_CALLBACK";
+
+	public static final String ADGATE_CALLBACK = "ADGATE_CALLBACK";
 	
     private static Application app;
     private String overrideServerName = null;
