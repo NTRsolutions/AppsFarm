@@ -26,7 +26,6 @@ import is.ejb.dl.entities.DenominationModelEntity;
 import is.ejb.dl.entities.RealmEntity;
 import is.ejb.dl.entities.UserEventEntity;
 
-
 @Stateless
 public class ExternalOfferWallManager {
 
@@ -43,26 +42,23 @@ public class ExternalOfferWallManager {
 	@Inject
 	private RewardManager rewardManager;
 
-	
-
 	private void indexUserEvent(UserEventEntity userEvent) {
-		try{
-		Application.getElasticSearchLogger().indexUserClick(userEvent.getRealmId(), userEvent.getPhoneNumber(), "",
-				userEvent.getDeviceType(), userEvent.getOfferId(), userEvent.getOfferSourceId().toLowerCase(),
-				userEvent.getOfferTitle(), userEvent.getAdProviderCodeName(), userEvent.getRewardTypeName(),
-				userEvent.getOfferPayoutInTargetCurrency(), userEvent.getRewardValue(),
-				userEvent.getRewardIsoCurrencyCode(), userEvent.getProfitValue(), "BPM", "",
-				UserEventType.conversion.toString(), userEvent.getInternalTransactionId(), "",
-				UserEventCategory.INSTALL.toString(), "", "", "", userEvent.getCountryCode(), userEvent.isInstant(),
-				userEvent.getApplicationName(), userEvent.getAdvertisingId(), // gaid
-				userEvent.getIdfa(), // idfa
-				userEvent.isTestMode(), userEvent.getCustomRewardValue(), userEvent.getCustomRewardCurrencyCode());
-		}
-		catch(Exception exc){
-			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Indexing event: " + userEvent + " failed: " + ExceptionUtils.getFullStackTrace(exc));
+		try {
+			Application.getElasticSearchLogger().indexUserClick(userEvent.getRealmId(), userEvent.getPhoneNumber(), "",
+					userEvent.getDeviceType(), userEvent.getOfferId(), userEvent.getOfferSourceId().toLowerCase(),
+					userEvent.getOfferTitle(), userEvent.getAdProviderCodeName(), userEvent.getRewardTypeName(),
+					userEvent.getOfferPayoutInTargetCurrency(), userEvent.getRewardValue(),
+					userEvent.getRewardIsoCurrencyCode(), userEvent.getProfitValue(), "BPM", "",
+					UserEventType.conversion.toString(), userEvent.getInternalTransactionId(), "",
+					UserEventCategory.INSTALL.toString(), "", "", "", userEvent.getCountryCode(), userEvent.isInstant(),
+					userEvent.getApplicationName(), userEvent.getAdvertisingId(), // gaid
+					userEvent.getIdfa(), // idfa
+					userEvent.isTestMode(), userEvent.getCustomRewardValue(), userEvent.getCustomRewardCurrencyCode());
+		} catch (Exception exc) {
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR,
+					"Indexing event: " + userEvent + " failed: " + ExceptionUtils.getFullStackTrace(exc));
 		}
 	}
-
 
 	public String generateInternalTransactionId(AppUserEntity user) {
 		String internalTransactionId = DigestUtils
@@ -89,11 +85,11 @@ public class ExternalOfferWallManager {
 			return null;
 		}
 	}
-	
-	private DenominationModelEntity selectDenominationModel(String rewardTypeName, int realmId){
-		try{
+
+	private DenominationModelEntity selectDenominationModel(String rewardTypeName, int realmId) {
+		try {
 			return daoDenominationModel.findByRewardTypeNameAndRealmId(rewardTypeName, realmId).get(0);
-		}catch (Exception exc){
+		} catch (Exception exc) {
 			exc.printStackTrace();
 			return null;
 		}
@@ -110,15 +106,15 @@ public class ExternalOfferWallManager {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select user for: " + details.toString());
 				return;
 			}
-			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(), appUser.getRealmId());
+			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(),
+					appUser.getRealmId());
 			if (denominationModel == null) {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select denomination model for: "
 						+ details.toString() + " appuser: " + appUser.toString());
 				return;
 			}
 			Timestamp timestamp = getCurrentTime();
-			UserEventEntity userEvent = 
-			setupEvent(details, appUser, denominationModel, timestamp);
+			UserEventEntity userEvent = setupEvent(details, appUser, denominationModel, timestamp);
 			daoUserEvent.create(userEvent);
 			indexUserEvent(userEvent);
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processed event: " + userEvent.toString()
@@ -132,7 +128,7 @@ public class ExternalOfferWallManager {
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Processing supersonic event: " + details.toString()
 					+ " failed exc: " + ExceptionUtils.getFullStackTrace(exc));
 		}
-		
+
 	}
 
 	private UserEventEntity setupEvent(FyberCallbackDetails details, AppUserEntity appUser,
@@ -156,14 +152,13 @@ public class ExternalOfferWallManager {
 		userEvent.setIosDeviceToken(appUser.getiOSDeviceToken());
 		userEvent.setOfferId(details.getSid());
 
-		userEvent.setOfferPayout(
-				denominateValue(denominationModel, rewardValue));
-		userEvent.setOfferPayoutInTargetCurrency(
-				denominateValue(denominationModel, rewardValue));
-		//System.out.println("rewardValue: " + rewardValue +  " native: " + denominationModel.getNativeMultipler() + " multipler: " + denominationModel.getMultiplier());
-		userEvent.setRewardValue(
-				 rewardValue);
-		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage()/100);
+		userEvent.setOfferPayout(denominateValue(denominationModel, rewardValue));
+		userEvent.setOfferPayoutInTargetCurrency(denominateValue(denominationModel, rewardValue));
+		// System.out.println("rewardValue: " + rewardValue + " native: " +
+		// denominationModel.getNativeMultipler() + " multipler: " +
+		// denominationModel.getMultiplier());
+		userEvent.setRewardValue(rewardValue);
+		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage() / 100);
 		double denominatedRewardValue = userEvent.getRewardValue();
 		userEvent.setProfitValue(denominatedRewardValue * userEvent.getProfilSplitFraction());
 		userEvent.setRewardValue(denominatedRewardValue - userEvent.getProfitValue());
@@ -184,10 +179,11 @@ public class ExternalOfferWallManager {
 		userEvent.setRealmId(appUser.getRealmId());
 		return userEvent;
 	}
-	private double denominateValue(DenominationModelEntity model, double value){
+
+	private double denominateValue(DenominationModelEntity model, double value) {
 		return round(value / model.getMultiplier(), 4);
 	}
-	
+
 	public double round(double value, int places) {
 
 		if (places < 0)
@@ -197,7 +193,7 @@ public class ExternalOfferWallManager {
 		bd = bd.setScale(places, RoundingMode.HALF_DOWN);
 		return bd.doubleValue();
 	}
-	
+
 	public void saveConversion(TrialpayCallbackDetails details) {
 		try {
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processing trialpay event: " + details.toString());
@@ -209,15 +205,15 @@ public class ExternalOfferWallManager {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select user for: " + details.toString());
 				return;
 			}
-			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(), appUser.getRealmId());
+			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(),
+					appUser.getRealmId());
 			if (denominationModel == null) {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select denomination model for: "
 						+ details.toString() + " appuser: " + appUser.toString());
 				return;
 			}
 			Timestamp timestamp = getCurrentTime();
-			UserEventEntity userEvent = 
-			setupEvent(details, appUser, denominationModel, timestamp);
+			UserEventEntity userEvent = setupEvent(details, appUser, denominationModel, timestamp);
 			daoUserEvent.create(userEvent);
 			indexUserEvent(userEvent);
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processed event: " + userEvent.toString()
@@ -231,7 +227,7 @@ public class ExternalOfferWallManager {
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Processing trialpay event: " + details.toString()
 					+ " failed exc: " + ExceptionUtils.getFullStackTrace(exc));
 		}
-		
+
 	}
 
 	private UserEventEntity setupEvent(TrialpayCallbackDetails details, AppUserEntity appUser,
@@ -255,14 +251,13 @@ public class ExternalOfferWallManager {
 		userEvent.setIosDeviceToken(appUser.getiOSDeviceToken());
 		userEvent.setOfferId(details.getOid());
 
-		userEvent.setOfferPayout(
-				denominateValue(denominationModel, rewardValue));
-		userEvent.setOfferPayoutInTargetCurrency(
-				denominateValue(denominationModel, rewardValue));
-		//System.out.println("rewardValue: " + rewardValue +  " native: " + denominationModel.getNativeMultipler() + " multipler: " + denominationModel.getMultiplier());
-		userEvent.setRewardValue(
-				 rewardValue);
-		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage()/100);
+		userEvent.setOfferPayout(denominateValue(denominationModel, rewardValue));
+		userEvent.setOfferPayoutInTargetCurrency(denominateValue(denominationModel, rewardValue));
+		// System.out.println("rewardValue: " + rewardValue + " native: " +
+		// denominationModel.getNativeMultipler() + " multipler: " +
+		// denominationModel.getMultiplier());
+		userEvent.setRewardValue(rewardValue);
+		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage() / 100);
 		double denominatedRewardValue = userEvent.getRewardValue();
 		userEvent.setProfitValue(denominatedRewardValue * userEvent.getProfilSplitFraction());
 		userEvent.setRewardValue(denominatedRewardValue - userEvent.getProfitValue());
@@ -284,7 +279,6 @@ public class ExternalOfferWallManager {
 		return userEvent;
 	}
 
-
 	public void saveConversion(AdGateCallbackDetails details) {
 		try {
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processing adgate event: " + details.toString());
@@ -296,15 +290,15 @@ public class ExternalOfferWallManager {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select user for: " + details.toString());
 				return;
 			}
-			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(), appUser.getRealmId());
+			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(),
+					appUser.getRealmId());
 			if (denominationModel == null) {
 				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select denomination model for: "
 						+ details.toString() + " appuser: " + appUser.toString());
 				return;
 			}
 			Timestamp timestamp = getCurrentTime();
-			UserEventEntity userEvent = 
-			setupEvent(details, appUser, denominationModel, timestamp);
+			UserEventEntity userEvent = setupEvent(details, appUser, denominationModel, timestamp);
 			daoUserEvent.create(userEvent);
 			indexUserEvent(userEvent);
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processed event: " + userEvent.toString()
@@ -318,9 +312,8 @@ public class ExternalOfferWallManager {
 			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Processing adgate event: " + details.toString()
 					+ " failed exc: " + ExceptionUtils.getFullStackTrace(exc));
 		}
-		
-	}
 
+	}
 
 	private UserEventEntity setupEvent(AdGateCallbackDetails details, AppUserEntity appUser,
 			DenominationModelEntity denominationModel, Timestamp timestamp) {
@@ -343,14 +336,13 @@ public class ExternalOfferWallManager {
 		userEvent.setIosDeviceToken(appUser.getiOSDeviceToken());
 		userEvent.setOfferId(details.getOfferId());
 
-		userEvent.setOfferPayout(
-				denominateValue(denominationModel, rewardValue));
-		userEvent.setOfferPayoutInTargetCurrency(
-				denominateValue(denominationModel, rewardValue));
-		//System.out.println("rewardValue: " + rewardValue +  " native: " + denominationModel.getNativeMultipler() + " multipler: " + denominationModel.getMultiplier());
-		userEvent.setRewardValue(
-				 rewardValue);
-		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage()/100);
+		userEvent.setOfferPayout(denominateValue(denominationModel, rewardValue));
+		userEvent.setOfferPayoutInTargetCurrency(denominateValue(denominationModel, rewardValue));
+		// System.out.println("rewardValue: " + rewardValue + " native: " +
+		// denominationModel.getNativeMultipler() + " multipler: " +
+		// denominationModel.getMultiplier());
+		userEvent.setRewardValue(rewardValue);
+		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage() / 100);
 		double denominatedRewardValue = userEvent.getRewardValue();
 		userEvent.setProfitValue(denominatedRewardValue * userEvent.getProfilSplitFraction());
 		userEvent.setRewardValue(denominatedRewardValue - userEvent.getProfitValue());
@@ -371,8 +363,87 @@ public class ExternalOfferWallManager {
 		userEvent.setRealmId(appUser.getRealmId());
 		return userEvent;
 	}
-	
-	
-	
+
+	public void saveConversion(PersonalyCallbackDetails details) {
+		try {
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processing personaly event: " + details.toString());
+			AppUserEntity appUser = null;
+			if (details.getUserId() != null) {
+				appUser = selectAppUser(details.getUserId());
+			}
+			if (appUser == null) {
+				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select user for: " + details.toString());
+				return;
+			}
+			DenominationModelEntity denominationModel = this.selectDenominationModel(appUser.getRewardTypeName(),
+					appUser.getRealmId());
+			if (denominationModel == null) {
+				log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Couldnt select denomination model for: "
+						+ details.toString() + " appuser: " + appUser.toString());
+				return;
+			}
+			Timestamp timestamp = getCurrentTime();
+			UserEventEntity userEvent = setupEvent(details, appUser, denominationModel, timestamp);
+			daoUserEvent.create(userEvent);
+			indexUserEvent(userEvent);
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.OK, "Processed event: " + userEvent.toString()
+					+ " for supersonic details:" + details.toString() + " appuser: " + appUser.toString());
+			rewardManager.updateUserConversionHistory(userEvent);
+			RealmEntity realm = daoRealm.findById(appUser.getRealmId());
+
+			rewardManager.issueReward(realm, userEvent, null, false);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			log(Application.EXTERNAL_OFFER_WALL, LogStatus.ERROR, "Processing personaly event: " + details.toString()
+					+ " failed exc: " + ExceptionUtils.getFullStackTrace(exc));
+		}
+
+	}
+
+	private UserEventEntity setupEvent(PersonalyCallbackDetails details, AppUserEntity appUser,
+			DenominationModelEntity denominationModel, Timestamp timestamp) {
+		UserEventEntity userEvent = new UserEventEntity();
+		userEvent.setAdProviderCodeName("Personaly");
+		userEvent.setAdvertisingId(appUser.getAdvertisingId());
+		userEvent.setAndroidDeviceToken(appUser.getAndroidDeviceToken());
+		userEvent.setApplicationName(appUser.getApplicationName());
+		userEvent.setClickDate(timestamp);
+		userEvent.setConversionDate(timestamp);
+		userEvent.setCountryCode(appUser.getCountryCode());
+		userEvent.setCustomRewardCurrencyCode(denominationModel.getTargetPayoutCurrencyCode());
+		Double rewardValue = Double.valueOf(details.getAmount());
+		userEvent.setCustomRewardValue(rewardValue);
+		userEvent.setDeviceId(appUser.getDeviceId());
+		userEvent.setDeviceType(appUser.getDeviceType());
+		userEvent.setEmail(appUser.getEmail());
+		userEvent.setIdfa(appUser.getIdfa());
+		userEvent.setInternalTransactionId(generateInternalTransactionId(appUser));
+		userEvent.setIosDeviceToken(appUser.getiOSDeviceToken());
+		userEvent.setOfferId(details.getOfferId());
+
+		userEvent.setOfferPayout(denominateValue(denominationModel, rewardValue));
+		userEvent.setOfferPayoutInTargetCurrency(denominateValue(denominationModel, rewardValue));
+		userEvent.setRewardValue(rewardValue);
+		userEvent.setProfilSplitFraction(denominationModel.getCommisionPercentage() / 100);
+		double denominatedRewardValue = userEvent.getRewardValue();
+		userEvent.setProfitValue(denominatedRewardValue * userEvent.getProfilSplitFraction());
+		userEvent.setRewardValue(denominatedRewardValue - userEvent.getProfitValue());
+		userEvent.setProfitValue(round(userEvent.getProfitValue(), 4));
+		userEvent.setRewardValue(round(userEvent.getRewardValue(), 4));
+		userEvent.setRewardIsoCurrencyCode(denominationModel.getTargetPayoutCurrencyCode());
+		userEvent.setOfferPayoutInTargetCurrencyIsoCurrencyCode(denominationModel.getSourcePayoutCurrencyCode());
+		userEvent.setOfferPayoutIsoCurrencyCode(userEvent.getOfferPayoutInTargetCurrencyIsoCurrencyCode());
+		userEvent.setUserId(appUser.getId());
+		userEvent.setRewardDate(timestamp);
+		userEvent.setRewardTypeName(appUser.getRewardTypeName());
+		userEvent.setUserEventCategory(UserEventCategory.INSTALL.toString());
+		userEvent.setTransactionId(userEvent.getInternalTransactionId());
+		userEvent.setOfferTitle(details.getOfferName());
+		userEvent.setOfferSourceId(details.getOfferId());
+		userEvent.setPhoneNumber(appUser.getPhoneNumber());
+		userEvent.setPhoneNumberExt(appUser.getPhoneNumberExtension());
+		userEvent.setRealmId(appUser.getRealmId());
+		return userEvent;
+	}
 
 }

@@ -15,6 +15,7 @@ import is.ejb.bl.offerWall.content.SerDeOfferWallContent;
 import is.ejb.bl.offerWall.external.AdGateCallbackDetails;
 import is.ejb.bl.offerWall.external.ExternalOfferWallManager;
 import is.ejb.bl.offerWall.external.FyberCallbackDetails;
+import is.ejb.bl.offerWall.external.PersonalyCallbackDetails;
 import is.ejb.bl.offerWall.external.TrialpayCallbackDetails;
 import is.ejb.bl.system.logging.LogStatus;
 import is.ejb.bl.system.security.HashValidationManager;
@@ -106,6 +107,45 @@ public class OfferWallService {
 	@Inject
 	private VideoManager videoManager;
 
+	@GET
+	@Path("/personaly/reward/")
+	public Response savePersonalyRewardCallback(@QueryParam("user_id") String userId,@QueryParam("amount") String amount,
+			@QueryParam("offer_id") String offerId, @QueryParam("app_id") String appId, @QueryParam("signature") String signature,
+			@QueryParam("offer_name") String offerName, @QueryParam("package_id") String packageId) {
+		String dataContent = "userId: " + userId + " amount: " + amount  + " offerId: " + offerId + " appId: " + appId + " signature: " + signature
+				+ " offerName: " + offerName + " packageId: " + packageId;
+		try {
+			String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = httpRequest.getRemoteAddr();
+			}
+			dataContent = dataContent + " ipAddress: " + ipAddress;
+			
+				Application.getElasticSearchLogger().indexLog(Application.PERSONALY_CALLBACK, -1, LogStatus.OK,
+						Application.PERSONALY_CALLBACK + " received callback for event: " + dataContent);
+				PersonalyCallbackDetails details = new PersonalyCallbackDetails();
+				details.setAmount(amount);
+				details.setAppId(appId);
+				details.setOfferId(offerId);
+				details.setOfferName(offerName);
+				details.setPackageId(packageId);
+				details.setSignature(signature);
+				details.setUserId(userId);
+				externalOfferwallManager.saveConversion(details);
+			
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.PERSONALY_CALLBACK, -1, LogStatus.ERROR,
+					Application.PERSONALY_CALLBACK + " received callback: " + dataContent + " but error occured: "
+							+ ExceptionUtils.getFullStackTrace(exc));
+		}
+
+		return Response.ok().build();
+	}
+	
+	
+	
 	@GET
 	@Path("/v2/adgate/reward/")
 	public Response saveAdGateRewardCallback(@QueryParam("offer_id") String offerId,
