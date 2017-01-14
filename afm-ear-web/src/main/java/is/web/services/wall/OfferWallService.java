@@ -109,7 +109,7 @@ public class OfferWallService {
 
 	@GET
 	@Path("/personaly/reward/")
-	public Response savePersonalyRewardCallback(@QueryParam("user_id") String userId,@QueryParam("amount") String amount,
+	public String savePersonalyRewardCallback(@QueryParam("user_id") String userId,@QueryParam("amount") String amount,
 			@QueryParam("offer_id") String offerId, @QueryParam("app_id") String appId, @QueryParam("signature") String signature,
 			@QueryParam("offer_name") String offerName, @QueryParam("package_id") String packageId) {
 		String dataContent = "userId: " + userId + " amount: " + amount  + " offerId: " + offerId + " appId: " + appId + " signature: " + signature
@@ -141,7 +141,7 @@ public class OfferWallService {
 							+ ExceptionUtils.getFullStackTrace(exc));
 		}
 
-		return Response.ok().build();
+		return "1";
 	}
 	
 	

@@ -50,6 +50,11 @@ public class PersonalyCallbackDetails {
 	public void setPackageId(String packageId) {
 		this.packageId = packageId;
 	}
+	@Override
+	public String toString() {
+		return "PersonalyCallbackDetails [userId=" + userId + ", amount=" + amount + ", offerId=" + offerId + ", appId="
+				+ appId + ", signature=" + signature + ", offerName=" + offerName + ", packageId=" + packageId + "]";
+	}
 	
 	
 }
