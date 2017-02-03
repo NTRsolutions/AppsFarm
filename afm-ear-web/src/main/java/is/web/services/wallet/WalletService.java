@@ -9,6 +9,7 @@ import is.ejb.dl.dao.DAOAppUser;
 import is.ejb.dl.dao.DAOWalletData;
 import is.ejb.dl.entities.AppUserEntity;
 import is.ejb.dl.entities.WalletDataEntity;
+import is.ejb.dl.entities.WalletTransactionEntity;
 import is.web.services.APIHelper;
 import is.web.services.APIRequestDetails;
 import is.web.services.APIValidator;
@@ -155,6 +156,50 @@ public class WalletService {
 		bd = bd.setScale(places, RoundingMode.HALF_DOWN);
 		return bd.doubleValue();
 	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/wallet/transactions")
+	public String getWalletTransactions(final APIRequestDetails details) {
+		WalletTransactionsResponse response = new WalletTransactionsResponse();
+		try {
+			Application.getElasticSearchLogger().indexLog(Application.WALLET_DATA_ACTIVITY, -1, LogStatus.OK,
+					Application.WALLET_DATA_ACTIVITY + "Received wallet transactions request from ipAddress: "
+							+ apiHelper.getIpAddressFromHttpRequest(httpRequest) + " " + details);
+
+			HashMap<String, Object> parameters = details.getParameters();
+			for (APIValidator validator : getWalletDataValidators()) {
+				if (validator.validate(parameters)) {
+					logger.info("Validator: " + validator.getClass() + " OK");
+				} else {
+					logger.info("Validator: " + validator.getClass() + " FAILED");
+					Application.getElasticSearchLogger().indexLog(Application.WALLET_DATA_ACTIVITY, -1, LogStatus.ERROR,
+							Application.WALLET_DATA_ACTIVITY + " Validator FAILED: " + validator.getClass()
+									+ " for request: " + details);
+					apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
+					return apiHelper.getGson().toJson(response);
+				}
+			}
+
+			AppUserEntity appUser = daoAppUser.findByUsername((String) parameters.get("username"));
+			int page = (Integer) parameters.get("page");
+			int size = (Integer) parameters.get("size");
+		
+			List<WalletTransactionEntity> walletTransactions = walletManager.selectWalletTransactions(appUser.getId(), page, size);
+			apiHelper.setupSuccessResponse(response);
+			response.setWalletTransactions(walletTransactions);
+			return apiHelper.getGson().toJson(response);
+			
+		} catch (Exception exc){
+			exc.printStackTrace();
+			apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
+			Application.getElasticSearchLogger().indexLog(Application.WALLET_DATA_ACTIVITY, -1, LogStatus.ERROR,
+					Application.WALLET_DATA_ACTIVITY + " exception : " + exc.toString() + " for request " + details);
+			return apiHelper.getGson().toJson(response);
+		}
+	}
+	
 
 	
 

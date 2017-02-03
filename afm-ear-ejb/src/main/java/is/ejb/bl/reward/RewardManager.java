@@ -131,9 +131,12 @@ public class RewardManager {
 							+ event.getInternalTransactionId());
 
 			appUser = daoAppUser.findById(event.getUserId());
+			String offerTitle = "Wallet payin";
+			if (event.getOfferTitle() != null){
+				offerTitle = event.getOfferTitle();
+			}
 			walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION, event.getCustomRewardValue(),
-					"Reward for event id: " + event.getId() + " internalTransactionId: "
-							+ event.getInternalTransactionId());
+					offerTitle);
 			sendNotification(appUser, event, NotificationMessageDictionary.REWARD_MESSAGE);
 			
 			

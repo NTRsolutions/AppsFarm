@@ -146,8 +146,7 @@ public class RewardTicketManager {
 					rewardTicket);
 
 			boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.ADDITION,
-					rewardTicket.getCreditPoints(), "Reward credit back from reward ticket with id: " + rewardTicket.getId()
-							+ " hash: " + rewardTicket.getHash());
+					rewardTicket.getCreditPoints(), "Return from failed reward: #" +rewardTicket.getId());
 
 			Application.getElasticSearchLogger().indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 					Application.REWARD_TICKET_CREATE_ACTIVITY + "Add reward amount from wallet for userId"
@@ -192,8 +191,7 @@ public class RewardTicketManager {
 
 			if (balanceAfterSubstract >= 0) {
 				boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.SUBTRACTION,
-						rewardTicket.getCreditPoints(), "Reward credit from reward ticket with id: "
-								+ rewardTicket.getId() + " hash: " + rewardTicket.getHash());
+						rewardTicket.getCreditPoints(), "Reward Ticket #"+rewardTicket.getId());
 				Application.getElasticSearchLogger()
 						.indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 								Application.REWARD_TICKET_CREATE_ACTIVITY

@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,8 @@ public class DAOWalletTransaction {
 
 	public WalletTransactionEntity findById(Integer id) throws Exception {
 		try {
-			TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.id = ?1", WalletTransactionEntity.class);
+			TypedQuery<WalletTransactionEntity> query = em.createQuery(
+					"SELECT o FROM WalletTransactionEntity o WHERE o.id = ?1", WalletTransactionEntity.class);
 
 			query.setParameter(1, id);
 
@@ -61,7 +63,9 @@ public class DAOWalletTransaction {
 
 	public WalletTransactionEntity findByInternalTransactionId(String id) throws Exception {
 		try {
-			TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.internalTransactionId = ?1", WalletTransactionEntity.class);
+			TypedQuery<WalletTransactionEntity> query = em.createQuery(
+					"SELECT o FROM WalletTransactionEntity o WHERE o.internalTransactionId = ?1",
+					WalletTransactionEntity.class);
 
 			query.setParameter(1, id);
 
@@ -72,12 +76,15 @@ public class DAOWalletTransaction {
 		}
 	}
 
-	public WalletTransactionEntity findByTicketIdAndApplicationName(long ticketId,String applicationName) throws Exception {
+	public WalletTransactionEntity findByTicketIdAndApplicationName(long ticketId, String applicationName)
+			throws Exception {
 		try {
-			TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.ticketId = ?1 AND o.applicationName=?2", WalletTransactionEntity.class);
+			TypedQuery<WalletTransactionEntity> query = em.createQuery(
+					"SELECT o FROM WalletTransactionEntity o WHERE o.ticketId = ?1 AND o.applicationName=?2",
+					WalletTransactionEntity.class);
 
 			query.setParameter(1, ticketId);
-            query.setParameter(2, applicationName);
+			query.setParameter(2, applicationName);
 			return query.getSingleResult();
 
 		} catch (NoResultException e) {
@@ -86,7 +93,8 @@ public class DAOWalletTransaction {
 	}
 
 	public List<WalletTransactionEntity> findByUserId(int userId) throws Exception {
-		TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.userId = ?1", WalletTransactionEntity.class);
+		TypedQuery<WalletTransactionEntity> query = em.createQuery(
+				"SELECT o FROM WalletTransactionEntity o WHERE o.userId = ?1", WalletTransactionEntity.class);
 
 		query.setParameter(1, userId);
 
@@ -99,7 +107,8 @@ public class DAOWalletTransaction {
 	}
 
 	public WalletTransactionEntity findById(int id) throws Exception {
-		TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.id = ?1", WalletTransactionEntity.class);
+		TypedQuery<WalletTransactionEntity> query = em
+				.createQuery("SELECT o FROM WalletTransactionEntity o WHERE o.id = ?1", WalletTransactionEntity.class);
 
 		query.setParameter(1, id);
 
@@ -112,7 +121,8 @@ public class DAOWalletTransaction {
 	}
 
 	public List<WalletTransactionEntity> findAll() throws Exception {
-		TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o", WalletTransactionEntity.class);
+		TypedQuery<WalletTransactionEntity> query = em.createQuery("SELECT o FROM WalletTransactionEntity o",
+				WalletTransactionEntity.class);
 
 		List<WalletTransactionEntity> list = query.getResultList();
 		if (list.size() == 0)
@@ -121,15 +131,15 @@ public class DAOWalletTransaction {
 			return list;
 	}
 
-	public List<WalletTransactionEntity> findFiltered(int first, int pageSize,
-		String sortField, String sortOrder, Map<String, String> filters,
-		Timestamp startDate, Timestamp endDate) throws Exception {
+	public List<WalletTransactionEntity> findFiltered(int first, int pageSize, String sortField, String sortOrder,
+			Map<String, String> filters, Timestamp startDate, Timestamp endDate) throws Exception {
 
 		try {
 			List<WalletTransactionEntity> data = new ArrayList<WalletTransactionEntity>();
 
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-			CriteriaQuery<WalletTransactionEntity> accountQuery = criteriaBuilder.createQuery(WalletTransactionEntity.class);
+			CriteriaQuery<WalletTransactionEntity> accountQuery = criteriaBuilder
+					.createQuery(WalletTransactionEntity.class);
 			Root<WalletTransactionEntity> from = accountQuery.from(WalletTransactionEntity.class);
 
 			if (sortField != null) {
@@ -147,11 +157,13 @@ public class DAOWalletTransaction {
 
 				if (isFilterPropertyInteger(filterProperty)) {
 					Expression<Integer> literal = criteriaBuilder.literal(new Integer(filterValue));
-					log.info("filterProperty: " + filterProperty + " filterValue: " + filterValue + " literal: " + literal);
+					log.info("filterProperty: " + filterProperty + " filterValue: " + filterValue + " literal: "
+							+ literal);
 					predicates.add(criteriaBuilder.equal(from.<Integer> get(filterProperty), literal));
 				} else {
 					Expression<String> literal = criteriaBuilder.literal((String) (filterValue + "%"));
-					log.info("filterProperty: " + filterProperty + " filterValue: " + filterValue + " literal: " + literal);
+					log.info("filterProperty: " + filterProperty + " filterValue: " + filterValue + " literal: "
+							+ literal);
 					predicates.add(criteriaBuilder.like(from.<String> get(filterProperty), literal));
 				}
 			}
@@ -176,21 +188,22 @@ public class DAOWalletTransaction {
 		final String SORT_FIELD = null;
 		final String SORT_ORDER = null;
 
-		List<WalletTransactionEntity> list = findFiltered(FIRST, PAGE_SIZE, SORT_FIELD, SORT_ORDER, filters, startDate, endDate);
+		List<WalletTransactionEntity> list = findFiltered(FIRST, PAGE_SIZE, SORT_FIELD, SORT_ORDER, filters, startDate,
+				endDate);
 		count = list.size();
 
 		return count;
 	}
 
-	public double getSumPayout(Timestamp startDate, Timestamp endDate, 
-		Map<String, String> filters) throws Exception {
+	public double getSumPayout(Timestamp startDate, Timestamp endDate, Map<String, String> filters) throws Exception {
 
 		final int FIRST = 0;
 		final int PAGE_SIZE = Integer.MAX_VALUE;
 		final String SORT_FIELD = null;
 		final String SORT_ORDER = null;
 
-		List<WalletTransactionEntity> transactions = findFiltered(FIRST, PAGE_SIZE, SORT_FIELD, SORT_ORDER, filters, startDate, endDate);
+		List<WalletTransactionEntity> transactions = findFiltered(FIRST, PAGE_SIZE, SORT_FIELD, SORT_ORDER, filters,
+				startDate, endDate);
 		return getSumPayout(transactions);
 	}
 
@@ -223,6 +236,22 @@ public class DAOWalletTransaction {
 		default:
 			return false;
 		}
+	}
+
+	public List<WalletTransactionEntity> findByUserIdFiltered(int userId, int page, int size) {
+		TypedQuery<WalletTransactionEntity> query = em.createQuery(
+				"SELECT o FROM WalletTransactionEntity o WHERE o.userId = ?1 ORDER BY o.timestamp DESC",
+				WalletTransactionEntity.class);
+		query.setParameter(1, userId);
+		query.setFirstResult(page * size);
+		query.setMaxResults(size);
+
+		List<WalletTransactionEntity> list = query.getResultList();
+		if (list == null){
+			list =  Collections.emptyList();
+		}
+		return list;
+		
 	}
 
 }

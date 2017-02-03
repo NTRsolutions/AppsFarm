@@ -3,6 +3,7 @@ package is.ejb.bl.wallet;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -225,5 +226,11 @@ public class WalletManager {
 		logger.info(" inserted new walletData for appUser: " + appUser);
 		return walletData;
 	}
+	
+	public List<WalletTransactionEntity> selectWalletTransactions(int userId,int page, int size){
+		return this.daoWalletTransaction.findByUserIdFiltered(userId,page,size);
+	}
+	
+	
 
 }
