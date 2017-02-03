@@ -13,6 +13,7 @@ import is.ejb.bl.offerWall.content.Offer;
 import is.ejb.bl.offerWall.content.OfferWallContent;
 import is.ejb.bl.offerWall.content.SerDeOfferWallContent;
 import is.ejb.bl.offerWall.external.AdGateCallbackDetails;
+import is.ejb.bl.offerWall.external.AdscendMediaCallbackDetails;
 import is.ejb.bl.offerWall.external.ExternalOfferWallManager;
 import is.ejb.bl.offerWall.external.FyberCallbackDetails;
 import is.ejb.bl.offerWall.external.PersonalyCallbackDetails;
@@ -107,6 +108,66 @@ public class OfferWallService {
 	@Inject
 	private VideoManager videoManager;
 
+	@GET
+	@Path("/adscendmedia/reward/")
+	public String saveAdscendMediaRewardCallback(@QueryParam("oid") String oid,@QueryParam("odyn") String odyn,
+			@QueryParam("onm") String onm, @QueryParam("pay") String pay, @QueryParam("cur") String cur,
+			@QueryParam("sb1") String sb1, @QueryParam("sid") String sid, @QueryParam("sb2") String sb2,
+			@QueryParam("sb3") String sb3, @QueryParam("sb4") String sb4, @QueryParam("src") String src,
+			@QueryParam("dvc") String dvc, @QueryParam("sts") String sts, @QueryParam("ip") String ip,
+			@QueryParam("tid") String tid, @QueryParam("rnd") String rnd, @QueryParam("uts") String uts,
+			@QueryParam("prd") String prd, @QueryParam("prf") String prf, @QueryParam("asid") String asid,
+			@QueryParam("apla") String apla, @QueryParam("hsh") String hsh)
+			{
+		String dataContent = "oid: " + oid + " odyn: " + odyn  + " onm: " + onm + " pay: " + pay + " cur: " + cur
+				+ " sb1: " + sb1 + " sid: " + sid + " sb2: " + sb2 + " sb3: " + sb3 + " sb4: " + sb4 + " src: " + src 
+				+ " dvc: " + dvc + " sts: " + sts + " ip: " + ip + " tid: " + tid + " rnd: " + rnd + " uts: " + uts 
+				+ " prd: " + prd + " prf: " + prf + " asid: " + asid + " apla: " + apla + " hsh: " + hsh;
+		try {
+			String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = httpRequest.getRemoteAddr();
+			}
+			dataContent = dataContent + " ipAddress: " + ipAddress;
+			
+				Application.getElasticSearchLogger().indexLog(Application.ADSCEND_MEDIA_CALLBACK, -1, LogStatus.OK,
+						Application.ADSCEND_MEDIA_CALLBACK + " received callback for event: " + dataContent);
+				AdscendMediaCallbackDetails details = new AdscendMediaCallbackDetails();
+				details.setOid(oid);
+				details.setOdyn(odyn);
+				details.setOnm(onm);
+				details.setPay(pay);
+				details.setCur(cur);
+				details.setSb1(sb1);
+				details.setSid(sid);
+				details.setSb2(sb2);
+				details.setSb3(sb3);
+				details.setSb4(sb4);
+				details.setSrc(src);
+				details.setDvc(dvc);
+				details.setSts(sts);
+				details.setIp(ip);
+				details.setTid(tid);
+				details.setRnd(rnd);
+				details.setUts(uts);
+				details.setPrd(prd);
+				details.setPrf(prf);
+				details.setAsid(asid);
+				details.setApla(apla);
+				details.setHsh(hsh);
+				externalOfferwallManager.saveConversion(details);
+			
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+			Application.getElasticSearchLogger().indexLog(Application.PERSONALY_CALLBACK, -1, LogStatus.ERROR,
+					Application.PERSONALY_CALLBACK + " received callback: " + dataContent + " but error occured: "
+							+ ExceptionUtils.getFullStackTrace(exc));
+		}
+
+		return "1";
+	}
+	
 	@GET
 	@Path("/personaly/reward/")
 	public String savePersonalyRewardCallback(@QueryParam("user_id") String userId,@QueryParam("amount") String amount,

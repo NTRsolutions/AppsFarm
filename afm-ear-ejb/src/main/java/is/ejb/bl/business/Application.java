@@ -539,6 +539,8 @@ public class Application {
 	public static final String ADGATE_CALLBACK = "ADGATE_CALLBACK";
 
 	public static final String PERSONALY_CALLBACK = "PERSONALY_CALLBACK";
+
+	public static final String ADSCEND_MEDIA_CALLBACK = "ADSCEND_MEDIA_CALLBACK";
 	
     private static Application app;
     private String overrideServerName = null;
