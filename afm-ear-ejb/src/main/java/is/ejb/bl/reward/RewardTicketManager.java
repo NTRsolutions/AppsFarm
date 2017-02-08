@@ -191,7 +191,7 @@ public class RewardTicketManager {
 
 			if (balanceAfterSubstract >= 0) {
 				boolean result = walletManager.createWalletAction(appUser, WalletTransactionType.SUBTRACTION,
-						rewardTicket.getCreditPoints(), "Reward Ticket #"+rewardTicket.getId());
+						rewardTicket.getCreditPoints(), "Reward Ticket");
 				Application.getElasticSearchLogger()
 						.indexLog(Application.REWARD_TICKET_CREATE_ACTIVITY, -1, LogStatus.OK,
 								Application.REWARD_TICKET_CREATE_ACTIVITY
