@@ -110,7 +110,7 @@ public class WalletManager {
 			walletTransactionEntity.setPayoutCurrencyCode(getCurrencyForUser(appUser));
 			walletTransactionEntity.setPayoutDescription(message);
 			walletTransactionEntity.setPayoutValue(transactionAmount);
-			walletTransactionEntity.setRewardName(type.toString());
+			walletTransactionEntity.setRewardName(message);
 			walletTransactionEntity.setStatus("SUCCESS");
 			walletTransactionEntity.setTimestamp(new Timestamp(new Date().getTime()));
 			walletTransactionEntity.setType(type.toString());
