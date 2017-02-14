@@ -37,10 +37,13 @@
 				<h:outputText value="#{model.rewardType}" />
 			</p:column>
 			<p:column rendered="true" headerText="Action"
-				style="width:50px;text-align:left; font-weight:bold;"
+				style="width:200px;text-align:left; font-weight:bold;"
 				styleClass="ui-nodesStatusTableHeader">
 
-
+				<p:commandButton value="Edit" icon="ui-icon-search"
+					action="#{rewardCategoryBean.setEditingModel(model)}"
+					oncomplete="widgetEditRewardCategoryDialog.show()"
+					style="margin-right:20px;" update="@form" process="@this" />
 				<p:commandButton value="Delete" icon="ui-icon-search"
 					action="#{rewardCategoryBean.remove(model)}"
 					style="margin-right:20px;" update="@form" process="@this" />
@@ -63,11 +66,12 @@
 				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
 				<p:inputText size="30"
 					value="#{rewardCategoryBean.createModel.name}" />
-					
+
 				<h:outputText styleClass="dialog-mediumFont" value="Reward type:" />
 				<p:selectOneMenu rendered="true"
 					value="#{rewardCategoryBean.createModel.rewardType}">
-					<f:selectItems value="#{rewardCategoryBean.rewardTypeList}" var="entry" itemValue="#{entry.name}" itemLabel="#{entry.name}" />
+					<f:selectItems value="#{rewardCategoryBean.rewardTypeList}"
+						var="entry" itemValue="#{entry.name}" itemLabel="#{entry.name}" />
 				</p:selectOneMenu>
 
 
@@ -84,6 +88,40 @@
 			</h:panelGrid>
 
 		</p:dialog>
+
+
+		<p:dialog id="idWidgetEditRewardCategoryDialog" width="500"
+			style="width:500px;" header="Edit reward category"
+			widgetVar="widgetEditRewardCategoryDialog" resizable="false"
+			showEffect="clip" hideEffect="fold" modal="false"
+			appendToBody="false">
+			<h:panelGrid columns="2" cellpadding="4">
+
+				<h:outputText styleClass="dialog-mediumFont" value="Name:" />
+				<p:inputText size="30" value="#{rewardCategoryBean.editModel.name}" />
+
+				<h:outputText styleClass="dialog-mediumFont" value="Reward type:" />
+				<p:selectOneMenu rendered="true"
+					value="#{rewardCategoryBean.editModel.rewardType}">
+					<f:selectItems value="#{rewardCategoryBean.rewardTypeList}"
+						var="entry" itemValue="#{entry.name}" itemLabel="#{entry.name}" />
+				</p:selectOneMenu>
+
+
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="4">
+				<p:commandButton value="Save" icon="ui-icon-search"
+					action="#{rewardCategoryBean.saveEditingCategory()}" update="@form" />
+				<p:commandButton value="Close" icon="ui-icon-search"
+					oncomplete="widgetCreateRewardCategory.hide()"
+					action="#{rewardCategoryBean.refresh()}" update="@form" />
+
+			</h:panelGrid>
+
+		</p:dialog>
+
 
 
 	</p:panel>

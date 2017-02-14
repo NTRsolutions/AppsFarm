@@ -174,7 +174,7 @@ public class RewardManager {
 
 	private void sendNotification(AppUserEntity appUser, UserEventEntity event, String message) {
 		logger.info("Sending notification: " + message + " event: " + event + " appUser: " + appUser);
-		message = message.replaceAll("\\{reward\\}", event.getCustomRewardValue() + " points ");
+		message = message.replaceAll("\\{reward\\}", event.getCustomRewardValue() + event.getCustomRewardCurrencyCode());
 		message = message.replaceAll("\\{offer\\}", event.getOfferTitle());
 		FirebaseResponse response = notificationManager.sendNotification(appUser, message);
 		event.setMobileAppNotificationDate(new Timestamp(new Date().getTime()));

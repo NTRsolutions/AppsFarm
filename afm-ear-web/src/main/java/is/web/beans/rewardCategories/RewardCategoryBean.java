@@ -35,7 +35,7 @@ public class RewardCategoryBean {
 	private List<RewardTypeEntity> rewardTypeList = new ArrayList<RewardTypeEntity>();
 	private List<RewardCategoryEntity> allCategories = new ArrayList<RewardCategoryEntity>();
 	private RewardCategoryTableDataModelBean modelBean;
-
+	private RewardCategoryEntity editModel = new RewardCategoryEntity();
 	@PostConstruct
 	public void init() {
 		loadAllCategories();
@@ -103,6 +103,24 @@ public class RewardCategoryBean {
 			exc.printStackTrace();
 		}
 	}
+	
+	public void setEditingModel(RewardCategoryEntity rewardCategory){
+		this.editModel = rewardCategory;
+		RequestContext.getCurrentInstance().update("tabView:idWidgetEditRewardCategoryDialog");
+	}
+	
+	public void saveEditingCategory(){
+		RequestContext.getCurrentInstance().execute("widgetEditRewardCategoryDialog.hide()");
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Reward category updated"));
+
+		daoRewardCategory.createOrUpdate(editModel);
+		loadAllCategories();
+		refresh();
+	
+	}
+	
+	
 
 	public RewardCategoryEntity getCreateModel() {
 		return createModel;
@@ -126,6 +144,14 @@ public class RewardCategoryBean {
 
 	public void setRewardTypeList(List<RewardTypeEntity> rewardTypeList) {
 		this.rewardTypeList = rewardTypeList;
+	}
+
+	public RewardCategoryEntity getEditModel() {
+		return editModel;
+	}
+
+	public void setEditModel(RewardCategoryEntity editModel) {
+		this.editModel = editModel;
 	}
 
 }

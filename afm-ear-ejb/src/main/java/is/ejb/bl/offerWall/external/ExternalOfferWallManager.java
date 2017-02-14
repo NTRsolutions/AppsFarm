@@ -172,7 +172,7 @@ public class ExternalOfferWallManager {
 		userEvent.setRewardTypeName(appUser.getRewardTypeName());
 		userEvent.setUserEventCategory(UserEventCategory.INSTALL.toString());
 		userEvent.setTransactionId(details.getSid());
-		userEvent.setOfferTitle("Fyber offer");
+		userEvent.setOfferTitle("Great offer");
 		userEvent.setOfferSourceId(details.getSid());
 		userEvent.setPhoneNumber(appUser.getPhoneNumber());
 		userEvent.setPhoneNumberExt(appUser.getPhoneNumberExtension());
@@ -271,7 +271,7 @@ public class ExternalOfferWallManager {
 		userEvent.setRewardTypeName(appUser.getRewardTypeName());
 		userEvent.setUserEventCategory(UserEventCategory.INSTALL.toString());
 		userEvent.setTransactionId(details.getOid());
-		userEvent.setOfferTitle("Trialpay offer");
+		userEvent.setOfferTitle("Enjoyable offer");
 		userEvent.setOfferSourceId(details.getOid());
 		userEvent.setPhoneNumber(appUser.getPhoneNumber());
 		userEvent.setPhoneNumberExt(appUser.getPhoneNumberExtension());
