@@ -35,10 +35,11 @@ import is.web.services.APIValidator;
 import is.web.services.user.validators.AdvertisingIdValidator;
 import is.web.services.user.validators.ApplicationValidator;
 import is.web.services.user.validators.CountryCodeValidator;
-import is.web.services.user.validators.DeviceTokenValidator;
+import is.web.services.user.validators.AndroidDeviceTokenValidator;
 import is.web.services.user.validators.DeviceTypeValidator;
 import is.web.services.user.validators.EmailDBValidator;
 import is.web.services.user.validators.EmailValidator;
+import is.web.services.user.validators.IosDeviceTokenValidator;
 import is.web.services.user.validators.PasswordValidator;
 import is.web.services.user.validators.UsernameDBValidator;
 import is.web.services.user.validators.UsernameValidator;
@@ -77,7 +78,9 @@ public class AppUserService {
 	@Inject
 	private PhoneValidator phoneValidator;
 	@Inject
-	private DeviceTokenValidator deviceTokenValidator;
+	private AndroidDeviceTokenValidator androidDeviceTokenValidator;
+	@Inject
+	private IosDeviceTokenValidator iosDeviceTokenValidator;
 	@Inject
 	private UsernamePasswordCombinationValidator usernamePasswordCombinationValidator;
 	@Inject
@@ -106,10 +109,11 @@ public class AppUserService {
 				apiHelper.setupSuccessResponse(response);
 				insertedUser.setPassword("");
 				response.setAppUserEntity(insertedUser);
-				indexUserRegistrationInElastic(insertedUser,apiHelper.getIpAddressFromHttpRequest(httpRequest));
+				indexUserRegistrationInElastic(insertedUser, apiHelper.getIpAddressFromHttpRequest(httpRequest));
 			} else {
-				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1, LogStatus.ERROR,
-						Application.USER_REGISTRATION_ACTIVITY + "Error user register for request: " + apiRequestDetails);
+				Application.getElasticSearchLogger().indexLog(Application.USER_REGISTRATION_ACTIVITY, -1,
+						LogStatus.ERROR, Application.USER_REGISTRATION_ACTIVITY + "Error user register for request: "
+								+ apiRequestDetails);
 				apiHelper.setupFailedResponseForError(response, RespCodesEnum.ERROR_INTERNAL_SERVER_ERROR);
 
 			}
@@ -123,7 +127,7 @@ public class AppUserService {
 	private void validateRegisterRequest(APIRequestDetails apiRequestDetails, APIResponse response) {
 		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
 		logger.info("** Validating register request: **");
-		for (APIValidator validator : getRegisterValidators()) {
+		for (APIValidator validator : getRegisterValidators(apiRequestDetails)) {
 			if (!validator.validate(parameters)) {
 				logger.info("-> Validator: " + validator.getClass() + " FAILED");
 				apiHelper.setupFailedResponseForError(response, validator.getInvalidValueErrorCode());
@@ -207,16 +211,18 @@ public class AppUserService {
 		}
 	}
 
-	private void indexUserRegistrationInElastic(AppUserEntity appUser,String ipAddress) {
+	private void indexUserRegistrationInElastic(AppUserEntity appUser, String ipAddress) {
 		logger.info("Indexed success user register in es.");
-		boolean gender = (appUser.getGender() != null && appUser.getGender().toLowerCase().equals("male")) ? true: false;
+		boolean gender = (appUser.getGender() != null && appUser.getGender().toLowerCase().equals("male")) ? true
+				: false;
 		Application.getElasticSearchLogger().indexUserRegistration(appUser.getFullName(), appUser.getEmail(),
 				appUser.getPhoneNumberExtension(), appUser.getPhoneNumber(), appUser.getLocale(),
-				appUser.getSystemInfo(), "", ipAddress, appUser.getAgeRange(), gender, appUser.getDeviceType(), "BPM", appUser.getCountryCode(),
-				"", appUser.getRewardTypeName(), appUser.getAdvertisingId(), appUser.getIdfa(), appUser.getApplicationName());
+				appUser.getSystemInfo(), "", ipAddress, appUser.getAgeRange(), gender, appUser.getDeviceType(), "BPM",
+				appUser.getCountryCode(), "", appUser.getRewardTypeName(), appUser.getAdvertisingId(),
+				appUser.getIdfa(), appUser.getApplicationName());
 	}
 
-	private List<APIValidator> getRegisterValidators() {
+	private List<APIValidator> getRegisterValidators(APIRequestDetails details) {
 		List<APIValidator> validators = new ArrayList<APIValidator>();
 		validators.add(usernameValidator);
 		validators.add(passwordValidator);
@@ -225,13 +231,20 @@ public class AppUserService {
 		validators.add(usernameDBValidator);
 		validators.add(emailValidator);
 		validators.add(emailDBValidator);
-		validators.add(advertisingIdValidator);
 		validators.add(applicationValidator);
 		validators.add(deviceTypeValidator);
-		validators.add(phoneValidator);
-		validators.add(deviceValidator);
-		validators.add(deviceTokenValidator);
+		// validators.add(phoneValidator);
+		// validators.add(deviceValidator);
+		// validators.add(advertisingIdValidator);
+		String deviceType = (String) details.getParameters().get("deviceType");
+		if (deviceType.equals("Android")) {
+			validators.add(androidDeviceTokenValidator);
+		}
+		if (deviceType.equals("iOS")) {
+			validators.add(iosDeviceTokenValidator);
+		}
 		validators.add(requestValidator);
+		
 		return validators;
 	}
 
@@ -294,10 +307,10 @@ public class AppUserService {
 		List<APIValidator> validators = new ArrayList<APIValidator>();
 		validators.add(usernameValidator);
 		validators.add(passwordValidator);
-		validators.add(advertisingIdValidator);
-		validators.add(deviceTokenValidator);
-		validators.add(deviceValidator);
-		validators.add(phoneValidator);
+		//validators.add(advertisingIdValidator);
+		//validators.add(androidDeviceTokenValidator);
+		//validators.add(deviceValidator);
+		//validators.add(phoneValidator);
 		validators.add(requestValidator);
 		return validators;
 	}
@@ -342,9 +355,10 @@ public class AppUserService {
 		HashMap<String, Object> parameters = apiRequestDetails.getParameters();
 		String advertisingId = (String) parameters.get("advertisingId");
 		String androidDeviceToken = (String) parameters.get("androidDeviceToken");
+		String iosDeviceToken = (String) parameters.get("iosDeviceToken");
 		String deviceId = (String) parameters.get("deviceId");
 		String phoneId = (String) parameters.get("phoneId");
-		if (appUser.getAdvertisingId() == null || !appUser.getAdvertisingId().equals(advertisingId)) {
+		if (advertisingId != null && (appUser.getAdvertisingId() == null || !appUser.getAdvertisingId().equals(advertisingId))) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating advertisingId for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -352,7 +366,16 @@ public class AppUserService {
 			logger.info("Updated advertisingId for appUser: " + appUser);
 			isUpdate = true;
 		}
-		if (appUser.getAndroidDeviceToken() == null || !appUser.getAndroidDeviceToken().equals(androidDeviceToken)) {
+		if (iosDeviceToken != null && (appUser.getiOSDeviceToken() == null || !appUser.getiOSDeviceToken().equals(androidDeviceToken))) {
+			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
+					Application.USER_LOGIN_ACTIVITY + " updating android ios token for request : "
+							+ apiRequestDetails + " for appuser: " + appUser);
+			appUser.setiOSDeviceToken(iosDeviceToken);
+			logger.info("Updated ios device token for appUser: " + appUser);
+			isUpdate = true;
+		}
+		
+		if (androidDeviceToken != null && (appUser.getAndroidDeviceToken() == null || !appUser.getAndroidDeviceToken().equals(androidDeviceToken))) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating android device token for request : "
 							+ apiRequestDetails + " for appuser: " + appUser);
@@ -361,7 +384,7 @@ public class AppUserService {
 			isUpdate = true;
 		}
 
-		if (appUser.getDeviceId() == null || !appUser.getDeviceId().equals(deviceId)) {
+		if (deviceId != null && (appUser.getDeviceId() == null || !appUser.getDeviceId().equals(deviceId))) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating device id for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -370,7 +393,7 @@ public class AppUserService {
 			isUpdate = true;
 		}
 
-		if (appUser.getPhoneId() == null || !appUser.getPhoneId().equals(phoneId)) {
+		if (phoneId != null && (appUser.getPhoneId() == null || !appUser.getPhoneId().equals(phoneId))) {
 			Application.getElasticSearchLogger().indexLog(Application.USER_LOGIN_ACTIVITY, -1, LogStatus.OK,
 					Application.USER_LOGIN_ACTIVITY + " updating phone id for request : " + apiRequestDetails
 							+ " for appuser: " + appUser);
@@ -429,6 +452,14 @@ public class AppUserService {
 		try {
 			boolean isUpdate = false;
 			AppUserEntity appUser = daoAppUser.findByUsername((String) parameters.get("username"));
+			if (parameters.containsKey("iosDeviceToken")) {
+
+				String iosDeviceToken = (String) parameters.get("iosDeviceToken");
+				if (iosDeviceToken != null && iosDeviceToken.length() > 0) {
+					appUser.setiOSDeviceToken(iosDeviceToken);
+					isUpdate = true;
+				}
+			}
 			if (parameters.containsKey("androidDeviceToken")) {
 
 				String androidDeviceToken = (String) parameters.get("androidDeviceToken");

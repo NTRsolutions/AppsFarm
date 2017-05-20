@@ -5,7 +5,7 @@ import java.util.HashMap;
 import is.ejb.bl.business.RespCodesEnum;
 import is.web.services.APIValidator;
 
-public class DeviceTokenValidator implements APIValidator{
+public class AndroidDeviceTokenValidator implements APIValidator{
 
 	@Override
 	public boolean validate(HashMap<String, Object> parameters) {

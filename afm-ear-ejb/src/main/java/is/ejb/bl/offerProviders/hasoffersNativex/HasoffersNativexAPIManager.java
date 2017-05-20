@@ -695,7 +695,8 @@ public class HasoffersNativexAPIManager {
 			// offerWall.getRealm().getId(),
 			// LogStatus.OK, OfferProviderCodeNames.HASOFFERS_NATIVEX+" rest
 			// response: "+reqResponse);
-
+			logger.info(" !!!! !!!! !!!! Req response: " +reqResponse);
+			logger.info(" !!!! !!!! !!!! Req response: " +reqResponse);
 			// serialise response into object
 			ObjectMapper mapper = new ObjectMapper();
 			GetTrackingLink obj = mapper.readValue(reqResponse, GetTrackingLink.class);
