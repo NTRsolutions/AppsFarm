@@ -11,7 +11,9 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -40,10 +42,16 @@ public class HashValidationManager {
 		logger.info("Validating hash map with " + parameters.size() + " parameters");
 		String hashCodeFromRequest = (String) parameters.remove("hashCode");
 		System.out.println(parameters);
-		int hashCode = parameters.hashCode();
+		
+		SortedSet<String> keys = new TreeSet<String>(parameters.keySet());
+		String resultString = "";
+		for (String key : keys) {
+			resultString = resultString + key + ":" + parameters.get(key) + ",";
+		}
+		
 		RealmEntity realm = getRealmWithId(4);
-		String generatedHash = DigestUtils.sha1Hex(hashCode + realm.getApiKey());
-		logger.info("Hash code from request: " + hashCodeFromRequest + " generated: " + hashCode);
+		String generatedHash = DigestUtils.sha1Hex(resultString + realm.getApiKey());
+		logger.info("Hash code from request: " + hashCodeFromRequest + " generated: " + resultString);
 		if (hashCodeFromRequest.equals(generatedHash)) {
 			return true;
 		} else {
