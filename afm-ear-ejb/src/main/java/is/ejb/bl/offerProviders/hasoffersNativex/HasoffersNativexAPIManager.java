@@ -201,8 +201,7 @@ public class HasoffersNativexAPIManager {
 							// logger.info("C----> "+strOfferConuntryContent);
 							// }
 
-							if (matchesTargetDevice && matchesTargetGeoLocation) 
-							{
+							if (matchesTargetDevice && matchesTargetGeoLocation) {
 								// logger.info("start index: "+startIndex+" end
 								// index:" +endIndex);
 								strOfferContent = strOfferContent.substring(0, startCatIndex - 1) + "}";
