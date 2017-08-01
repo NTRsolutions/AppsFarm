@@ -183,7 +183,7 @@ public class HasoffersNativexAPIManager {
 									&& strOfferCategoryContent.contains(adProviderConfig.getCategoryName())
 									&& strOfferConuntryContent.contains("\"UK\"")) {
 								matchesTargetGeoLocation = true;
-							}
+							} 
 							// TODO override geo as it will be set based on
 							// category name in HO:
 							matchesTargetDevice = true;
@@ -226,6 +226,7 @@ public class HasoffersNativexAPIManager {
 								// add offer that matches geo and device
 								// targeting and is
 								if (!of.getOffer().getName().contains("Non-Incent")) {
+									logger.info("A=====> added offer to the list: "+of.getOffer().getName());
 									listPulledOffers.add(of.getOffer());
 								} else {
 									logger.info("-> removed non-incent offer: " + of.getOffer().getName());
@@ -267,12 +268,9 @@ public class HasoffersNativexAPIManager {
 			} else {
 				// pick offers randomly and make sure they do not repeat in the
 				// offer wall
-				for (int i=0;i<listPulledOffers.size();i++){
-
-					
-					is.ejb.bl.offerProviders.hasoffersExt.getOffer.Offer selectedOffer = listPulledOffers
-							.get(i);
-
+				for (int i=listPulledOffers.size()-1;i>0;i--){
+					is.ejb.bl.offerProviders.hasoffersExt.getOffer.Offer selectedOffer = listPulledOffers.get(i);
+					logger.info("+++++offerIdac: "+listPulledOffers.get(i).getName());
 					// transform it into our internal format
 					is.ejb.bl.offerWall.content.Offer offerToAdd = new is.ejb.bl.offerWall.content.Offer();
 
@@ -443,17 +441,10 @@ public class HasoffersNativexAPIManager {
 																	// to the
 																	// wall
 
-						listSelectedIndividualOffers.add(offerToAdd); // add to
-																		// list
+						listSelectedIndividualOffers.add(offerToAdd); // add to // list
+						logger.info("--> adding offer to the wall: "+listPulledOffers.get(i).getName());
 						listPulledOffers.remove(i); // remove
-																// successfully
-																// added offer
-																// from the pool
-																// that we
-																// select from
-																// potential
-																// offers
-
+																
 						Application.getElasticSearchLogger().indexLog(Application.OFFER_WALL_GENERATION_ACTIVITY,
 								offerWall.getRealm().getId(), LogStatus.OK,
 								Application.SINGLE_OFFER_CREATED + " " + OfferProviderCodeNames.HASOFFERS_NATIVEX
@@ -461,6 +452,7 @@ public class HasoffersNativexAPIManager {
 										+ offerToAdd.getId());
 					} else { // if below threshold - remove that offer id from
 								// the pool of offer ids as well
+						logger.info("--> removing offer as it does not comply with settings: "+listPulledOffers.get(i).getName());
 						listPulledOffers.remove(i); // also remove
 																// offer id from
 																// the pool as
