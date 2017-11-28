@@ -103,6 +103,7 @@ public class RewardTrackingService {
 	@Inject
 	private DAOAppUser daoAppUser;
 
+	
 	@GET
 	@Produces("application/json")
 	@Path("/v1/reward/{internalTransactionId}/{status}/{statusMessage}/")
