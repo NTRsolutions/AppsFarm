@@ -102,7 +102,6 @@ public class RewardTrackingService {
 	
 	@Inject
 	private DAOAppUser daoAppUser;
-
 	
 	@GET
 	@Produces("application/json")
