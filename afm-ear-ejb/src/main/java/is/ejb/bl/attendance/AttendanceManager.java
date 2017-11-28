@@ -21,6 +21,7 @@ import is.ejb.dl.entities.AppUserEntity;
 import is.ejb.dl.entities.RewardTypeEntity;
 import is.ejb.dl.entities.WalletDataEntity;
 
+
 @Stateless
 public class AttendanceManager {
 
